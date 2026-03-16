@@ -1,0 +1,5 @@
+E:\Workspace\codex\Introduction to Classical Music\target\owner-launcher\古典导聆维护工具.exe
+E:\Workspace\codex\Introduction to Classical Music\target\owner-launcher\古典导聆维护工具.dll
+E:\Workspace\codex\Introduction to Classical Music\target\owner-launcher\古典导聆维护工具.deps.json
+E:\Workspace\codex\Introduction to Classical Music\target\owner-launcher\古典导聆维护工具.runtimeconfig.json
+E:\Workspace\codex\Introduction to Classical Music\target\owner-launcher\古典导聆维护工具.pdb

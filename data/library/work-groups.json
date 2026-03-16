@@ -1,0 +1,124 @@
+[
+  {
+    "id": "group-布鲁克纳-交响曲",
+    "composerId": "composer-布鲁克纳",
+    "title": "交响曲",
+    "slug": "交响曲",
+    "path": [
+      "交响曲"
+    ],
+    "sortKey": "0010"
+  },
+  {
+    "id": "group-柏辽兹-交响曲",
+    "composerId": "composer-柏辽兹",
+    "title": "交响曲",
+    "slug": "交响曲",
+    "path": [
+      "交响曲"
+    ],
+    "sortKey": "0020"
+  },
+  {
+    "id": "group-理查施特劳斯-交响诗",
+    "composerId": "composer-理查施特劳斯",
+    "title": "交响诗",
+    "slug": "交响诗",
+    "path": [
+      "交响诗"
+    ],
+    "sortKey": "0030"
+  },
+  {
+    "id": "group-罗伯特舒曼-钢琴协奏曲",
+    "composerId": "composer-罗伯特舒曼",
+    "title": "钢琴协奏曲",
+    "slug": "钢琴协奏曲",
+    "path": [
+      "钢琴协奏曲"
+    ],
+    "sortKey": "0040"
+  },
+  {
+    "id": "group-让西贝柳斯-小提琴协奏曲",
+    "composerId": "composer-让西贝柳斯",
+    "title": "小提琴协奏曲",
+    "slug": "小提琴协奏曲",
+    "path": [
+      "小提琴协奏曲"
+    ],
+    "sortKey": "0050"
+  },
+  {
+    "id": "group-贝多芬-交响曲",
+    "composerId": "composer-贝多芬",
+    "title": "交响曲",
+    "slug": "交响曲",
+    "path": [
+      "交响曲"
+    ],
+    "sortKey": "0060"
+  },
+  {
+    "id": "group-贝多芬-奏鸣曲",
+    "composerId": "composer-贝多芬",
+    "title": "奏鸣曲",
+    "slug": "奏鸣曲",
+    "path": [
+      "奏鸣曲"
+    ],
+    "sortKey": "0070"
+  },
+  {
+    "id": "group-贝多芬-奏鸣曲-小提琴奏鸣曲",
+    "composerId": "composer-贝多芬",
+    "title": "小提琴奏鸣曲",
+    "slug": "小提琴奏鸣曲",
+    "path": [
+      "奏鸣曲",
+      "小提琴奏鸣曲"
+    ],
+    "sortKey": "0080"
+  },
+  {
+    "id": "group-贝多芬-奏鸣曲-钢琴奏鸣曲",
+    "composerId": "composer-贝多芬",
+    "title": "钢琴奏鸣曲",
+    "slug": "钢琴奏鸣曲",
+    "path": [
+      "奏鸣曲",
+      "钢琴奏鸣曲"
+    ],
+    "sortKey": "0090"
+  },
+  {
+    "id": "group-贝多芬-小提琴协奏曲",
+    "composerId": "composer-贝多芬",
+    "title": "小提琴协奏曲",
+    "slug": "小提琴协奏曲",
+    "path": [
+      "小提琴协奏曲"
+    ],
+    "sortKey": "0100"
+  },
+  {
+    "id": "group-马勒-交响曲",
+    "composerId": "composer-马勒",
+    "title": "交响曲",
+    "slug": "交响曲",
+    "path": [
+      "交响曲"
+    ],
+    "sortKey": "0110"
+  },
+  {
+    "id": "group-composer-柴可夫斯基-交响曲",
+    "composerId": "composer-柴可夫斯基",
+    "title": "交响曲",
+    "slug": "交响曲",
+    "path": [
+      "交响曲"
+    ],
+    "sortKey": "0120"
+  }
+]

@@ -1,0 +1,102 @@
+---
+interface RecommendationItem {
+  id: string;
+  title: string;
+  workTitle: string;
+  conductorName: string;
+  orchestraName: string;
+  performanceDateText: string;
+  href: string;
+  imageSrc: string;
+}
+
+interface Props {
+  items: RecommendationItem[];
+}
+
+const { items } = Astro.props;
+const initialItems = items.slice(0, 5);
+---
+
+<section class="daily-section">
+  <div class="section-heading section-heading--centered">
+    <p class="section-heading__eyebrow">Daily Rotation</p>
+    <h2>每日推荐</h2>
+  </div>
+
+  <div class="daily-strip" data-daily-strip>
+    {initialItems.map((item) => (
+      <article class="daily-card">
+        <a class="daily-card__link" href={item.href}>
+          {item.imageSrc ? (
+            <img class="daily-card__image" src={item.imageSrc} alt={item.title} loading="lazy" />
+          ) : (
+            <div class="daily-card__image daily-card__image--empty">{item.workTitle}</div>
+          )}
+          <div class="daily-card__body">
+            <h3>{item.workTitle}</h3>
+            <p>{item.conductorName || "未标注指挥"}</p>
+            <p>{item.orchestraName || "未标注乐团"}</p>
+            <p>{item.performanceDateText || item.title}</p>
+          </div>
+        </a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline define:vars={{ items }}>
+  const strip = document.querySelector("[data-daily-strip]");
+
+  const hashValue = (value) => {
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index += 1) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  };
+
+  const pickDaily = (allItems, dateKey, count) =>
+    [...allItems]
+      .sort((left, right) => hashValue(`${dateKey}:${left.id}`) - hashValue(`${dateKey}:${right.id}`))
+      .slice(0, Math.min(count, allItems.length));
+
+  const escapeHtml = (value) =>
+    String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+  const render = (records) => {
+    if (!strip) {
+      return;
+    }
+
+    strip.innerHTML = records
+      .map((item) => {
+        const image = item.imageSrc
+          ? `<img class="daily-card__image" src="${escapeHtml(item.imageSrc)}" alt="${escapeHtml(item.title)}" loading="lazy" />`
+          : `<div class="daily-card__image daily-card__image--empty">${escapeHtml(item.workTitle)}</div>`;
+
+        return `
+          <article class="daily-card">
+            <a class="daily-card__link" href="${escapeHtml(item.href)}">
+              ${image}
+              <div class="daily-card__body">
+                <h3>${escapeHtml(item.workTitle)}</h3>
+                <p>${escapeHtml(item.conductorName || "未标注指挥")}</p>
+                <p>${escapeHtml(item.orchestraName || "未标注乐团")}</p>
+                <p>${escapeHtml(item.performanceDateText || item.title)}</p>
+              </div>
+            </a>
+          </article>
+        `;
+      })
+      .join("");
+  };
+
+  const dateKey = new Date().toISOString().slice(0, 10);
+  render(pickDaily(items, dateKey, 5));
+</script>

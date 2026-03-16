@@ -1,0 +1,38 @@
+---
+import type { Article } from "@/lib/articles";
+import type { InfoPanel } from "@/lib/schema";
+
+interface Props {
+  infoPanel?: InfoPanel;
+  article?: Article;
+}
+
+const { infoPanel, article } = Astro.props;
+const collectionLinks = infoPanel?.collectionLinks || [];
+const hasContent = Boolean(infoPanel?.text || collectionLinks.length || article);
+---
+
+{hasContent && (
+  <>
+    <div class="section-divider section-divider--short"></div>
+    <section class="entity-info-panel">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">Related Guide</p>
+        <h2>相关导览（Related Guide）</h2>
+      </div>
+      {infoPanel?.text && <p class="body-copy">{infoPanel.text}</p>}
+      <div class="entity-info-panel__actions">
+        {article && (
+          <a class="resource-button" href={`/columns/${article.slug}/`}>
+            专栏：{article.title}
+          </a>
+        )}
+        {collectionLinks.map((link, index) => (
+          <a class="resource-button" href={link.url} target="_blank" rel="noreferrer">
+            {(link.title || link.platform || "合集链接") + (collectionLinks.length > 1 ? ` ${index + 1}` : "")}
+          </a>
+        ))}
+      </div>
+    </section>
+  </>
+)}

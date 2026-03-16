@@ -1,0 +1,11 @@
+[
+  {
+    "id": "article-test",
+    "slug": "test",
+    "title": "test",
+    "summary": "testtest",
+    "markdown": "# test\ntesttest\ntest\n## testtest\n\ntesttest\n\n![test](/library-assets/managed/articles/test/test-d4511b5cf4.jpg){size=small}\n\ntest",
+    "createdAt": "2026-03-15T02:19:19.772Z",
+    "updatedAt": "2026-03-15T14:20:55.316Z"
+  }
+]

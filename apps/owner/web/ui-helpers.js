@@ -1,0 +1,186 @@
+export function createEmptyActiveEntity() {
+  return { type: "", id: "" };
+}
+
+const compact = (value) => String(value ?? "").trim();
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+
+const buildBatchRelationLabel = (item) => {
+  const primary = compact(item?.name || item?.title || item?.id || "");
+  const secondary = compact(item?.nameLatin || "");
+  if (!primary) {
+    return "";
+  }
+  return secondary && secondary !== primary ? `${primary} / ${secondary}` : primary;
+};
+
+export function buildComposerOptionLabel(item) {
+  return buildBatchRelationLabel(item);
+}
+
+export function getProposalModeAttributes(options = {}) {
+  if (options.mode === "batch") {
+    return {
+      imageSelectAttr: "data-batch-image-select",
+      actionAttr: "data-owner-proposal-action",
+      proposalIdAttr: "data-owner-proposal-id",
+      proposalTargetIdAttr: "data-owner-proposal-target-id",
+      inputAttr: "data-batch-proposal-field-input",
+      fieldPathAttr: "data-batch-proposal-field-path",
+      imageUploadAttr: "data-batch-image-upload",
+    };
+  }
+  if (options.inline) {
+    return {
+      imageSelectAttr: "data-inline-image-select",
+      actionAttr: "data-owner-proposal-action",
+      proposalIdAttr: "data-owner-proposal-id",
+      proposalTargetIdAttr: "data-owner-proposal-target-id",
+      inputAttr: "data-inline-proposal-field-input",
+      fieldPathAttr: "data-inline-proposal-field-path",
+      imageUploadAttr: "data-inline-image-upload",
+    };
+  }
+  return {
+    imageSelectAttr: "data-image-select",
+    actionAttr: "data-owner-proposal-action",
+    proposalIdAttr: "data-owner-proposal-id",
+    proposalTargetIdAttr: "data-owner-proposal-target-id",
+    inputAttr: "data-proposal-field-input",
+    fieldPathAttr: "data-proposal-field-path",
+    imageUploadAttr: "data-image-upload",
+  };
+}
+
+export function resolveProposalActionContext(button = null, card = null) {
+  const buttonDataset = button?.dataset || {};
+  const cardDataset = card?.dataset || {};
+  return {
+    proposalId: compact(buttonDataset.ownerProposalTargetId || cardDataset.ownerProposalId || ""),
+    action: compact(buttonDataset.ownerProposalAction || ""),
+    mode: compact(cardDataset.ownerProposalMode || "review"),
+    runId: compact(cardDataset.ownerRunId || ""),
+  };
+}
+
+export function buildWorkOptionLabel(work, composers = []) {
+  if (!work) {
+    return "";
+  }
+  const composer = composers.find((item) => compact(item?.id) === compact(work?.composerId));
+  const composerLabel = composer ? buildComposerOptionLabel(composer) : compact(work?.composerId || "");
+  const title = compact(work?.title || work?.id || "");
+  const titleLatin = compact(work?.titleLatin || "");
+  const catalogue = compact(work?.catalogue || "");
+  return [composerLabel, catalogue, title, titleLatin].filter(Boolean).join(" · ");
+}
+
+export function buildBatchPreviewShellHtml(listHtml, detailHtml) {
+  return `
+      <div class="owner-batch-preview-shell">
+        <div class="owner-batch-preview-shell__list">${listHtml}</div>
+        <div class="owner-batch-preview-shell__detail">${detailHtml}</div>
+      </div>`;
+}
+
+function countBatchDraftEntities(draftEntities = {}) {
+  return {
+    composers: draftEntities.composers?.length || 0,
+    people: draftEntities.people?.length || 0,
+    works: draftEntities.works?.length || 0,
+    recordings: draftEntities.recordings?.length || 0,
+  };
+}
+
+export function buildBatchResultSummary(action, result = {}) {
+  const session = result.session || {};
+  return {
+    action,
+    sessionId: session.id || "",
+    status: session.status || "",
+    counts: countBatchDraftEntities(session.draftEntities),
+    warnings: Array.isArray(session.warnings) ? session.warnings : [],
+    runId: result.run?.id || session.runId || "",
+  };
+}
+
+export function buildRecordingLinkChipLabel(link, index, links = []) {
+  const platform = compact(link?.platform) || "other";
+  const comparablePlatform = platform.toLowerCase();
+  const samePlatformLinks = links.filter((item) => compact(item?.platform).toLowerCase() === comparablePlatform);
+  if (samePlatformLinks.length <= 1) {
+    return platform;
+  }
+  const currentIndex =
+    links.filter((item, itemIndex) => compact(item?.platform).toLowerCase() === comparablePlatform && itemIndex <= index).length || 1;
+  return `${platform}${currentIndex}`;
+}
+
+export function buildRecordingLinkEditorHtml(links = [], emptyMessage = "暂无资源链接。") {
+  if (!Array.isArray(links) || links.length === 0) {
+    return `<p class="owner-empty">${escapeHtml(emptyMessage)}</p>`;
+  }
+  return links
+    .map(
+      (link, index) => `
+        <button
+          type="button"
+          class="owner-link-chip"
+          data-recording-link-index="${escapeHtml(index)}"
+        >${escapeHtml(buildRecordingLinkChipLabel(link, index, links))}</button>`,
+    )
+    .join("");
+}
+
+export function buildBatchRelationOptions(entryType, field, library = {}, draftEntities = {}, currentValue = "") {
+  const sourceItems =
+    entryType === "work" && field === "composerId"
+      ? [...(draftEntities.composers || []).map((entry) => entry?.entity || entry), ...(library.composers || [])]
+      : entryType === "recording" && field === "workId"
+        ? [...(draftEntities.works || []).map((entry) => entry?.entity || entry), ...(library.works || [])]
+        : [];
+  const composers = [...(draftEntities.composers || []).map((entry) => entry?.entity || entry), ...(library.composers || [])];
+
+  const options = [{ value: "", label: "请选择" }];
+  const seenIds = new Set();
+
+  sourceItems.forEach((item) => {
+    const id = compact(item?.id);
+    const label = buildBatchRelationLabel(item);
+    if (!id || !label || seenIds.has(id)) {
+      return;
+    }
+    seenIds.add(id);
+    options.push({
+      value: id,
+      label: entryType === "recording" && field === "workId" ? buildWorkOptionLabel(item, composers) : label,
+    });
+  });
+
+  const normalizedCurrentValue = compact(currentValue);
+  if (normalizedCurrentValue && !seenIds.has(normalizedCurrentValue)) {
+    options.push({
+      value: normalizedCurrentValue,
+      label: `当前关联（${normalizedCurrentValue}）`,
+    });
+  }
+
+  return options;
+}
+
+export function selectBatchSessionAfterRefresh(sessions = [], currentSessionId = "", preferEmptyState = false) {
+  if (preferEmptyState || !Array.isArray(sessions) || sessions.length === 0) {
+    return null;
+  }
+  return (
+    sessions.find((session) => session.id === currentSessionId) ||
+    sessions.find((session) => session.status !== "applied" && session.status !== "abandoned") ||
+    sessions[0] ||
+    null
+  );
+}

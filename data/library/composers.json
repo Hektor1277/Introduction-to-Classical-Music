@@ -1,0 +1,217 @@
+[
+  {
+    "id": "composer-布鲁克纳",
+    "slug": "布鲁克纳",
+    "name": "安东·布鲁克纳",
+    "nameLatin": "Anton Bruckner",
+    "country": "Austria",
+    "avatarSrc": "/library-assets/managed/composers/composer-布鲁克纳/composer-布鲁克纳-3c2a16492d.jpg",
+    "birthYear": 1824,
+    "deathYear": 1896,
+    "aliases": [
+      "安东·布鲁克纳",
+      "布鲁克纳"
+    ],
+    "sortKey": "0010",
+    "summary": "安东·布鲁克纳（德语：Anton Bruckner，1824年9月4日—1896年10月11日），奥地利作曲家、管风琴演奏家、音乐教育家。他以创作交响曲、弥撒曲与经文歌而著称，亦有创作出优秀的室内乐作品如弦乐四重奏和弦乐五重奏。其交响曲因其丰富的音响结构、多重的复调特性和宏大的结构而被认为是德奥派浪漫主义最后阶段的代表人物。布鲁克纳的作品以其对不和谐音的使用、突然的转调以及延绵不断的和声而对当代音乐激进主义产生了广博的影响。\n\n与同时代的桀骜不驯的音乐激进派瓦格纳与胡戈·沃尔夫不同的是，布鲁克纳对其他音乐家，尤其是瓦格纳，表现得极其谦虚。布鲁克纳这种作为一个人与其作为一个作曲家的迥异，使得描述他的人生以及通过这种描述去理解其音乐之背景变得极其困难。\n\n他的作品尤其是交响曲，遭致许多人的批评。批评者中最著名的有奥地利作曲家爱德华·汉斯力克以及其他支持勃拉姆斯的人们（这其中还包括瓦格纳的批评者）。作品冗长、旋律重复，以及布鲁克纳经常在他同僚的协助下不停修改自己作品的习惯，并且因此对哪个版本认可的举棋不定为他们所诟病。正因为布鲁克纳经常性重复地修改已完成的作品，造成他的交响曲作品版本众多，所以产生了音乐学中著名的“布鲁克纳难题”（The Bruckner Problem）。\n\n虽然批评者众，但布鲁克纳亦有许多支持者，其中最著名的是他的学生兼朋友古斯塔夫·马勒。而汉斯·冯·彪罗曾评价布鲁克纳为“半神半痴”。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Anton_Bruckner",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Anton Bruckner",
+    "imageUpdatedAt": "2026-03-10T14:52:46.152Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-柏辽兹",
+    "slug": "柏辽兹",
+    "name": "赫克托·路易·柏辽兹",
+    "nameLatin": "Hector Louis Berlioz",
+    "country": "France",
+    "avatarSrc": "/library-assets/managed/composers/composer-柏辽兹/composer-柏辽兹-d6622ec8be.png",
+    "birthYear": 1803,
+    "deathYear": 1869,
+    "aliases": [
+      "赫克托·路易·柏辽兹",
+      "柏辽兹"
+    ],
+    "sortKey": "0020",
+    "summary": "艾克托尔·路易·柏辽兹（Hector Louis Berlioz，1803年12月11日—1869年3月8日），法国作曲家，法国浪漫乐派的主要代表人物。出生于法国柯特·圣·安得烈，1869年3月8日在巴黎逝世。柏辽兹对浪漫主义音乐影响深远，他的《幻想交响曲》指明了浪漫主义标题音乐的创作道路，可以说是后来的标题交响曲和交响诗的样板；柏辽兹喜欢从著名的文学作品中汲取灵感，这也契合并影响着当时音乐家对于选材的偏好，他的管弦乐序曲《李尔王》，戏剧交响曲《罗密欧与朱丽叶》，喜歌剧《比阿特丽丝和本尼迪克》取材于莎士比亚的剧作，戏剧康塔塔《浮士德的劫罚》的灵感来自歌德，管弦乐序曲《海盗》，中提琴和乐队作品《哈罗尔德在意大利》取材于拜伦的作品，歌剧《特洛伊人》根据维吉尔的史诗《埃涅阿斯纪》自撰脚本等等；柏辽兹写了一本经典著作《配器法》，被称为是这门艺术的第一本和最重要的一本专著；除了在音乐创作上的成就之外，柏辽兹也创作散文和音乐评论，并且受到广泛的称赞，他著有自传，如他在自传中所说，就如同一本小说一样曲折精彩，不过虽然他的经历的确非常丰富，他在写自传的时候也常有夸大之处。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Hector_Berlioz",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Hector Berlioz",
+    "imageUpdatedAt": "2026-03-11T16:50:29.165Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-柴可夫斯基",
+    "slug": "柴可夫斯基",
+    "name": "彼得·伊里奇·柴可夫斯基",
+    "nameLatin": "Peter Ilyich Tchaikovsky | Пётр Ильич Чайковский",
+    "country": "Russia",
+    "avatarSrc": "/library-assets/managed/composers/composer-柴可夫斯基/composer-柴可夫斯基-5ee5697c54.jpg",
+    "birthYear": 1840,
+    "deathYear": 1893,
+    "aliases": [
+      "彼得·伊里奇·柴可夫斯基",
+      "Tchaikovsky",
+      "Чайковский",
+      "柴科夫斯基",
+      "柴可夫斯基"
+    ],
+    "sortKey": "0030",
+    "summary": "彼得·伊里奇·柴可夫斯基（Peter Ilyich Tchaikovsky，1840年5月7日—1893年11月6日），出生于伏特金斯克市，俄罗斯浪漫乐派作曲家 [1]。 1864年，从圣彼得堡音乐学院毕业。1867年，《第一交响曲》在莫斯科首次演出。1870年，幻想序曲《罗密欧与朱丽叶》在莫斯科初次演出。1876年，与梅克夫人开始通信。1877年，芭蕾舞剧《天鹅湖》首演。1879年，歌剧《叶甫盖尼·奥涅金》首演。1880年，《意大利随想曲》首演。1888年，《第五交响曲》在圣彼得堡首演。1890年，创作歌剧《黑桃皇后》。1892年，芭蕾舞剧《胡桃夹子》在圣彼得堡首演。1893年，创作《第六交响曲》；1893年11月6日，逝世。 柴可夫斯基的创作几乎涉及了所有的音乐体裁和形式，其中交响乐创作处于重要位置。他继承了格林卡以来俄罗斯音乐的发展成就，同时又注意吸取西欧音乐文化发展的经验，把高度的专业技巧同俄罗斯民族音乐传统有机结合，创造出具有戏剧性冲突和浓郁民族风格的作品。",
+    "imageSourceUrl": "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Peter%20Ilyich%20Tchaikovsky&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1200&iilimit=1&format=json&origin=*",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Nikolai Kuznetsov",
+    "imageUpdatedAt": "2026-03-10T14:52:07.907Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-理查施特劳斯",
+    "slug": "理查施特劳斯",
+    "name": "理查德·施特劳斯",
+    "nameLatin": "Richard Georg Strauss",
+    "country": "Germany",
+    "avatarSrc": "/library-assets/managed/composers/composer-理查施特劳斯/composer-理查施特劳斯-be429ae267.jpg",
+    "birthYear": 1864,
+    "deathYear": 1949,
+    "aliases": [
+      "理查·格奥尔格·施特劳斯",
+      "理查德·施特劳斯",
+      "理查·施特劳斯"
+    ],
+    "sortKey": "0040",
+    "summary": "理查·格奥尔格·施特劳斯（德语：Richard Georg Strauss，1864年6月11日—1949年9月8日），德国作曲家、指挥家。施特劳斯深受以李斯特、瓦格纳为首的“新日耳曼学派”之影响，被认为是德奥音乐传统的最后继承者，也是晚期浪漫主义的代表作曲家，常与马勒并称。\n\n施特劳斯的早期作品具有典型浪漫主义的特点；在1888年创作的交响诗《唐·乔万尼》则运用了更加丰富的半音，展现不同以往的“嘉年华式”风格，被视为他迈入浪漫晚期风格的代表作品。此后他继续在作品中探索半音与和声的可能性，分别于1905年和1909年首演的《莎乐美》、《厄勒克特拉》是这波趋势的高峰，也为现代主义音乐奠下相当的基础。自1911年的《玫瑰骑士》开始，施特劳斯的歌剧无论在选材或风格上都回归其原先的稳健，从此而终。在施特劳斯创作生涯后半，他的作品常被看作是守旧和过时的。施特劳斯具有极其卓越的对位写作才能及配器技术，几乎所有作品的织体都非常复杂",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Richard_Strauss",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Richard Strauss",
+    "imageUpdatedAt": "2026-03-11T16:50:56.271Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-罗伯特舒曼",
+    "slug": "罗伯特舒曼",
+    "name": "罗伯特·舒曼",
+    "nameLatin": "Robert Schumann",
+    "country": "Germany",
+    "avatarSrc": "/library-assets/managed/composers/composer-罗伯特舒曼/composer-罗伯特舒曼-86569ce55a.jpg",
+    "birthYear": 1810,
+    "deathYear": 1856,
+    "aliases": [
+      "舒曼",
+      "罗伯特·舒曼"
+    ],
+    "sortKey": "0050",
+    "summary": "罗伯特·舒曼（Robert Schumann，1810年6月8日—1856年7月29日），19世纪德国作曲家、音乐评论家。浪漫主义早期的德国作曲家、钢琴家和音乐评论家。他创作了当时所有主要音乐流派，为钢琴独奏、声乐和钢琴、室内乐团、管弦乐队、合唱团和歌剧创作。他的作品代表了德国音乐中浪漫主义时代的精神。舒曼狂喜的、热情的精力增加了他音乐的个人特征。他关注高于他内在自我和灵感的源泉，无论是霍夫曼还是克拉拉。这种思想几乎是意识流的，造就了奇迹般的具有独创性的形式——在此之前，从未有像《狂欢节》或者《C大调幻想曲》那样的作品问世。 罗伯特·舒曼是19世纪德国浪漫主义音乐的典型代表人物，他的浪漫主义精神主要是受到家庭和时代的影响而形成，这个时代流行的唯心主义哲学、浪漫主义文学以及浪漫主义音乐塑造了浪漫主义音乐家舒曼。舒曼是属于十九世纪的，也是属于后世的，舒曼的音乐创作和音乐评论，更重要的是他那种精神，对后世乐坛产生深刻而长远的影响。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Robert_Schumann",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Robert Schumann",
+    "imageUpdatedAt": "2026-03-11T16:50:36.744Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-让西贝柳斯",
+    "slug": "让西贝柳斯",
+    "name": "让·西贝柳斯",
+    "nameLatin": "Jean Sibelius",
+    "country": "Finland",
+    "avatarSrc": "/library-assets/managed/composers/composer-让西贝柳斯/composer-让西贝柳斯-8fcc9a7542.jpg",
+    "birthYear": 1865,
+    "deathYear": 1957,
+    "aliases": [
+      "西贝流士",
+      "西贝柳斯",
+      "西贝流斯",
+      "让·西贝柳斯"
+    ],
+    "sortKey": "0060",
+    "summary": "让·西贝柳斯（瑞典语：Jean Sibelius，1865年12月8日—1957年9月20日）；原名约翰·尤利乌斯·克里斯蒂安·西贝柳斯（瑞典语：Johan Julius Christian Sibelius），芬兰作曲家，活跃于晚期浪漫主义和早期现代主义时期。他被广泛认为是芬兰最伟大的作曲家，他的音乐常被认为在19世纪末芬兰遭受多次俄罗斯化企图时，帮助芬兰发展出了更强烈的国族认同。\n\n他作品的核心是七部交响曲，这些作品与他的其他主要作品一样，在芬兰和世界各地定期演出和录制。他其他最著名的作品包括《芬兰颂》、《卡累利阿组曲》、《悲伤圆舞曲》、小提琴协奏曲、合唱交响曲《库勒沃》和《图奥内拉的天鹅》（来自《莱明凯宁组曲》）。他的其他作品包括受自然、北欧神话和芬兰民族史诗《卡勒瓦拉》启发的作品；100多首声乐钢琴歌曲；多部戏剧的配乐；独幕歌剧《塔楼少女》；室内乐、钢琴音乐、共济会仪式音乐，以及21部合唱音乐作品。\n\n西贝柳斯在1920年代中期之前创作甚丰，但在完成第七交响曲（1924年）、配乐《暴风雨》（1926年）和交响诗《塔皮奥拉》（1926年）后，他在最后30年里停止了创作主要作品——这一退隐通常被称为“耶尔文佩的沉默”（他家所在地）。虽然他被认为已停止创作，但他曾尝试继续写作，包括对第八交响曲的未完成尝试。在晚年，他创作了共济会音乐并重新编辑了一些早期作品，同时保持着对音乐新发展的积极但并不总是赞同的兴趣。尽管这种“沉默”常常令学者困惑，但实际上，西贝柳斯很明确：他觉得自己已经创作得足够多了。\n\n芬兰100马克纸币上曾印有他的肖像，直到2002年采用欧元。自2011年起，芬兰在12月8日（作曲家的生日）庆祝升旗日，这一天也被称为芬兰音乐日。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Jean_Sibelius",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Jean Sibelius",
+    "imageUpdatedAt": "2026-03-11T16:50:26.412Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-贝多芬",
+    "slug": "贝多芬",
+    "name": "路德维希·凡·贝多芬",
+    "nameLatin": "Ludwig van Beethoven",
+    "country": "Germany",
+    "avatarSrc": "/library-assets/managed/composers/composer-贝多芬/composer-贝多芬-6ae8d30952.jpg",
+    "birthYear": 1803,
+    "deathYear": 1804,
+    "aliases": [
+      "路德维希·冯·贝多芬",
+      "路德维希·凡·贝多芬",
+      "贝多芬"
+    ],
+    "sortKey": "0070",
+    "summary": "路德维希·凡·贝多芬（Ludwig van Beethoven，1770年12月16日或17日—1827年3月26日），出生于神圣罗马帝国-科隆选侯国（今德国）的波恩，维也纳古典乐派代表人物之一，欧洲古典主义时期作曲家。贝多芬在父亲严厉苛刻的教育下度过了童年，造就了他倔强、敏感激动的性格。22岁开始终生定居于维也纳，创作于1803年至1804年间的《第三交响曲》标志着其创作进入成熟阶段。此后20余年间，他数量众多的音乐作品通过强烈的艺术感染力和宏伟气魄，将古典主义音乐推向高峰，并预示了19世纪浪漫主义音乐的到来。1825年3月，创作完成《庄严弥撒曲》。1827年3月26日，贝多芬于维也纳逝世，享年57岁。贝多芬一生创作题材广泛，重要作品包括9部交响曲、1部歌剧、32首钢琴奏鸣曲、5首钢琴协奏曲、多首管弦乐序曲及小提琴、大提琴奏鸣曲等。因其对古典音乐的重大贡献，对奏鸣曲式和交响曲套曲结构的发展和创新，而被后世尊称为“乐圣”、“交响乐之王”。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Ludwig_van_Beethoven",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Ludwig van Beethoven",
+    "imageUpdatedAt": "2026-03-11T16:51:35.248Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  },
+  {
+    "id": "composer-马勒",
+    "slug": "马勒",
+    "name": "古斯塔夫·马勒",
+    "nameLatin": "Gustav Mahler",
+    "country": "Austria",
+    "avatarSrc": "/library-assets/managed/composers/composer-马勒/composer-马勒-ebec0fc75a.jpg",
+    "birthYear": 1860,
+    "deathYear": 1911,
+    "aliases": [
+      "古斯塔夫·马勒",
+      "马勒"
+    ],
+    "sortKey": "0080",
+    "summary": "古斯塔夫·马勒（Gustav Mahler，1860年7月7日－1911年5月18日），出生于波希米亚卡里什特，毕业于维也纳音乐学院，奥地利作曲家及指挥家。1885年，在莱比锡指挥门德尔松的清唱剧《圣·保罗》获得巨大的成功，后被聘为布拉格歌剧院指挥。还曾在莱比锡、布达佩斯、维也纳等地歌剧院任指挥。代表作有交响乐《巨人》、《复活》和《大地之歌》等等。2021年1月23日，中国交响乐团“纪念马勒逝世110周年交响音乐会”在北京音乐厅精彩上演。音乐会由李心草指挥，演奏了马勒第七交响曲《夜之歌》 。",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Gustav_Mahler",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Gustav Mahler",
+    "imageUpdatedAt": "2026-03-11T16:51:20.369Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    }
+  }
+]

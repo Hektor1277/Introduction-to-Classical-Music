@@ -1,0 +1,67 @@
+---
+import DailyRecommendations from "@/components/DailyRecommendations.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { readGeneratedLibrary, readGeneratedSite } from "@/lib/library-store";
+import { buildRecentWorkUpdates } from "@/lib/site-content";
+
+const [site, library] = await Promise.all([
+  readGeneratedSite(),
+  readGeneratedLibrary(),
+]);
+
+const composerById = new Map(library.composers.map((composer) => [composer.id, composer]));
+const workById = new Map(library.works.map((work) => [work.id, work]));
+
+const recommendationItems = library.recordings.map((recording) => {
+  const work = workById.get(recording.workId);
+  const composer = work ? composerById.get(work.composerId) : undefined;
+  const conductor = recording.credits.find((credit) => credit.role === "conductor");
+  const orchestra = recording.credits.find((credit) => credit.role === "orchestra");
+
+  return {
+    id: recording.id,
+    title: recording.title,
+    workTitle: work ? `${composer?.name ?? "未知作曲家"} / ${work.title}` : recording.title,
+    conductorName: conductor?.displayName ?? conductor?.label ?? "",
+    orchestraName: orchestra?.displayName ?? orchestra?.label ?? "",
+    performanceDateText: recording.performanceDateText || recording.venueText || "",
+    href: `/recordings/${recording.id}/`,
+    imageSrc: recording.images[0]?.src ?? "",
+  };
+});
+
+const recentUpdates = buildRecentWorkUpdates(library, 5);
+---
+
+<BaseLayout title={`${site.title} | 首页`} description={site.description}>
+  <div class="container home-shell">
+    <section class="home-intro">
+      <h1>{site.title}</h1>
+      <p>{site.subtitle}</p>
+      <p class="page-note">{site.heroIntro || site.description}</p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <DailyRecommendations items={recommendationItems} />
+
+    <section class="home-updates">
+      <div class="section-heading section-heading--centered">
+        <p class="section-heading__eyebrow">Recent Changes</p>
+        <h2>最近更新</h2>
+      </div>
+
+      <div class="line-entry-list">
+        {recentUpdates.map((item) => (
+          <article class="line-entry">
+            <div>
+              <h3><a href={item.href}>{item.workTitle}</a></h3>
+              <p>{item.composerName}</p>
+            </div>
+            <span>{item.updatedAt}</span>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,2228 @@
+[
+  {
+    "entityId": "recording-第七交响曲-伯姆1976",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/伯姆1976.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-伯姆1976",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/伯姆1976.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-伯姆bpo1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/伯姆BPO1977.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-伯姆bpo1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/伯姆BPO1977.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1958",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/克伦佩勒1958.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/克伦佩勒1958.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克列茨基1973",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/克列茨基1973.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克列茨基1973",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/克列茨基1973.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1989",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/卡拉扬1989.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1989",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/卡拉扬1989.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-富特文格勒1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/富特文格勒1951.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-富特文格勒1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/富特文格勒1951.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-岑德2004",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/岑德2004.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-岑德2004",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/岑德2004.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹2005",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/布列兹2005.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹2005",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/布列兹2005.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布隆斯泰特2017",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/布隆斯泰特2017.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布隆斯泰特2017",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/布隆斯泰特2017.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-朱里尼1985",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/朱里尼1985.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-朱里尼1985",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/朱里尼1985.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-朱里尼1986",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/朱里尼1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-朱里尼1986",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/朱里尼1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-海廷克2019",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/海廷克2019.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-海廷克2019",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/海廷克2019.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-海廷克bpo2019",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/海廷克BPO2019.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-海廷克bpo2019",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/海廷克BPO2019.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-穆拉文斯基",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/穆拉文斯基,__.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-穆拉文斯基",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/穆拉文斯基,__.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1939",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1939.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1939",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1939.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1979",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1979",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1986",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-约胡姆1986",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-罗格纳1979",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/罗格纳1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-罗格纳1979",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/罗格纳1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-老桑德林1999",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/老桑德林1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-老桑德林1999",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/老桑德林1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-老桑德林brso1999",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/老桑德林BRSO1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-老桑德林brso1999",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/老桑德林BRSO1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1954",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特1954.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特1954.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1964",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特1964.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1964",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特1964.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特bpo",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特BPO.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特bpo",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/布鲁克纳/交响曲/第七交响曲/舒里希特BPO.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-伯恩斯坦1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/伯恩斯坦1977_.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-伯恩斯坦1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/伯恩斯坦1977_.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-戴维斯",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/戴维斯_.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-戴维斯",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/戴维斯_.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-戴维斯",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/戴维斯_.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-斯托科夫斯基1968",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/斯托科夫斯基1968.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-杨松斯2001",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/杨松斯2001.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-比彻姆1986",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/比彻姆1986.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-米特罗普洛斯1957",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/米特罗普洛斯1957.htm"
+  },
+  {
+    "entityId": "recording-幻想交响曲-米特罗普洛斯1957",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/柏辽兹/交响曲/幻想交响曲/米特罗普洛斯1957.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-卡拉扬1982",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/卡拉扬1982.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-卡拉扬1982",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/卡拉扬1982.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-布隆斯泰特1988",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/布隆斯泰特1988.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-布隆斯泰特1988",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/布隆斯泰特1988.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-海廷克2012",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/海廷克2012.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-海廷克2012",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/海廷克2012.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-穆拉文斯基1962",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/穆拉文斯基1962.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-莫斯特2022",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/莫斯特2022.htm"
+  },
+  {
+    "entityId": "recording-阿尔卑斯山交响曲-莫斯特2022",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/理查·施特劳斯/交响诗/阿尔卑斯山交响曲/莫斯特2022.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-劳拉-and-怀特1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/劳拉&怀特1951.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-劳拉-and-怀特1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/劳拉&怀特1951.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-吉泽金-and-富特文格勒1942",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/吉泽金&富特文格勒1942.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-安妮-and-佩里克1985",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/安妮&佩里克1985.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-安妮-and-克列茨基",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/安妮&克列茨基.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-安妮-and-克列茨基",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/安妮&克列茨基.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-安妮-and-克列茨基",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/安妮&克列茨基.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-弗朗索瓦-and-克列茨基1958",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/弗朗索瓦&克列茨基1958.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-弗朗索瓦-and-克列茨基1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/弗朗索瓦&克列茨基1958.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-拉罗查-and-萨瓦利施1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/拉罗查&萨瓦利施1977.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-格林伯格-and-埃利亚斯伯格1958",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/格林伯格&埃利亚斯伯格1958.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-格林伯格-and-埃利亚斯伯格1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/格林伯格&埃利亚斯伯格1958.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-福斯特-1953",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-福斯特-1953",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-科尔托-and-弗里乔伊1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/科尔托&弗里乔伊1951.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-科尔托-and-弗里乔伊1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/科尔托&弗里乔伊1951.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-维尔萨拉泽-and-鲁丁",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/维尔萨拉泽&鲁丁.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-维尔萨拉泽-and-鲁丁",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/维尔萨拉泽&鲁丁.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-肯普夫-and-多拉蒂1959",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/肯普夫&多拉蒂1959.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-肯普夫-and-多拉蒂1959",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/肯普夫&多拉蒂1959.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-莫伊塞维奇-and-阿克曼1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/莫伊塞维奇&阿克曼1954.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-里赫特-and-费伦奇克1954",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/里赫特&费伦奇克1954.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-里赫特-and-费伦奇克1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/里赫特&费伦奇克1954.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-阿劳-and-约胡姆1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/阿劳&约胡姆1977.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-阿劳-and-约胡姆1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/阿劳&约胡姆1977.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-鲁普-and-朱里尼1980",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/鲁普&朱里尼1980.htm"
+  },
+  {
+    "entityId": "recording-a小调钢琴协奏曲-鲁普-and-朱里尼1980",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/鲁普&朱里尼1980.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-伊格内修斯-and-施内沃伊特1945",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/伊格内修斯&施内沃伊特1945.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-伊格内修斯-and-施内沃伊特1945",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/伊格内修斯&施内沃伊特1945.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-佩妮曼-and-凯尔伯特1967",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/佩妮曼&凯尔伯特1967.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-佩妮曼-and-凯尔伯特1967",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/佩妮曼&凯尔伯特1967.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-佩妮曼-and-布尔1952",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/佩妮曼&布尔1952_.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-佩妮曼-and-布尔1952",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/佩妮曼&布尔1952_.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-卡瓦科斯-and-万斯凯1991",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/卡瓦科斯&万斯凯1991.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-卡瓦科斯-and-万斯凯1991",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/卡瓦科斯&万斯凯1991.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-吉特列斯-and-霍伦斯坦1992",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/吉特列斯&霍伦斯坦1992.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-吉特列斯-and-霍伦斯坦1992",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/吉特列斯&霍伦斯坦1992.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-吉特利斯-and-塞尔2017",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/吉特利斯&塞尔2017_.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-吉特利斯-and-塞尔2017",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/吉特利斯&塞尔2017_.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1956",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/奥伊斯特拉赫&埃尔林1956.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1956",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/奥伊斯特拉赫&埃尔林1956.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-威克斯-and-埃尔林1952",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/威克斯&埃尔林1952.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-威克斯-and-埃尔林1952",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/威克斯&埃尔林1952.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-弗里德-and-卡姆1987",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/弗里德&卡姆1987.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-弗里德-and-卡姆1987",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/弗里德&卡姆1987.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-海菲兹-and-米特罗普洛斯1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/海菲兹&米特罗普洛斯1951.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-海菲兹-and-米特罗普洛斯1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/海菲兹&米特罗普洛斯1951.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-达莱内-and-斯托加德2021",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/达莱内&斯托加德2021.htm"
+  },
+  {
+    "entityId": "recording-d小调小提琴协奏曲-达莱内-and-斯托加德2021",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/让·西贝柳斯/小提琴协奏曲/d小调小提琴协奏曲/达莱内&斯托加德2021.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1957",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/克伦佩勒1957.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1957",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/克伦佩勒1957.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1962",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/克伦佩勒1962.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1962",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/克伦佩勒1962.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1951-1955",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/卡拉扬1951-1955.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1963",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/卡拉扬1963.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1976",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/卡拉扬1976.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-卡拉扬1983",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/卡拉扬1983.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-富特文格勒1943",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/富特文格勒1943.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-富特文格勒1953",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/富特文格勒1953.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-小克莱伯1976",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/小克莱伯1976.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-库伦齐斯2018",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/库伦齐斯2018.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-斯托科夫斯基1973",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/斯托科夫斯基1973.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-比彻姆1959",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/比彻姆1959.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-穆拉文斯基1964",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/穆拉文斯基1964.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-老克莱伯1949-1955",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/老克莱伯1949-1955_.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1957",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/舒里希特1957.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-舒里希特1957",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/舒里希特1957.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-莱纳1955",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/莱纳1955.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿本德罗特1954",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/阿本德罗特1954.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿本德罗特1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第七交响曲/阿本德罗特1954.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-克纳-1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/克纳-1951.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-克纳-1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/克纳-1951.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-克莱茨基-1962",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/克莱茨基-1962.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-卡拉扬-1971",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/卡拉扬-1971.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-卡拉扬-1971",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/卡拉扬-1971.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-富特-1944",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/富特-1944.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-舒里希特-1961",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/舒里希特-1961.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-舒里希特-1961",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/舒里希特-1961.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-萨瓦尔-2020",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/萨瓦尔-2020.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-阿本-1953-华沙",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/阿本-1953-华沙.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-魏因加特纳-1933",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/魏因加特纳-1933.htm"
+  },
+  {
+    "entityId": "recording-第三交响曲英雄-魏因加特纳-1933",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第三交响曲“英雄”/魏因加特纳-1933.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1980",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1980.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1980",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1980.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1980",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1980.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1989",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1989.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1989",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1989.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-伯恩斯坦1989",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1989.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-卡拉扬1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/卡拉扬1977.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-卡拉扬1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/卡拉扬1977.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-富特1942",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/富特1942.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-富特1942",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/富特1942.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-富特1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/富特1951.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-富特1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/富特1951.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-富特1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/富特1954.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-小泽征尔2002",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/小泽征尔2002.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-小泽征尔2002",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/小泽征尔2002.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-巴伦博伊姆2006",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/巴伦博伊姆2006.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-巴伦博伊姆2006",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/巴伦博伊姆2006.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-弗里乔伊1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/弗里乔伊1958.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-弗里乔伊",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/弗里乔伊_.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-弗里乔伊",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/弗里乔伊_.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-弗里乔伊",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/弗里乔伊_.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-托斯卡尼尼1948",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/托斯卡尼尼1948.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-汉斯施密特1970",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/汉斯施密特1970.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-汉斯施密特1970",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/汉斯施密特1970.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-纽曼1989",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/纽曼1989.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-纽曼1989",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/纽曼1989.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-舒里希特1965",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/舒里希特1965.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-阿本德罗特1950",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/阿本德罗特1950.htm"
+  },
+  {
+    "entityId": "recording-第九交响曲合唱-阿本德罗特1950",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第九交响曲“合唱”/阿本德罗特1950.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-乔治约胡姆-1961",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/乔治·约胡姆-1961.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-乔治约胡姆-1961",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/乔治·约胡姆-1961.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-加德纳-2011",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/加德纳-2011.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-卡拉扬-1962",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/卡拉扬-1962.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-卡拉扬-1963",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/卡拉扬-1963.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-厄特沃什-2017",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/厄特沃什-2017.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-富特-1943",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/富特-1943.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-库伦齐斯-2018",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/库伦齐斯-2018.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-赛尔-1969",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/赛尔-1969.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-门格尔贝格1940",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/门格尔贝格1940.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-门格尔贝格1940",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/门格尔贝格1940.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-马苏尔-1993",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/马苏尔-1993.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲命运-马苏尔-1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第五交响曲“命运”/马苏尔-1993.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-克伦佩勒1957",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/克伦佩勒1957.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-克伦佩勒1957",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/克伦佩勒1957.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-克伦佩勒1970",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/克伦佩勒1970.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-克伦佩勒1970",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/克伦佩勒1970.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-卡尔伯姆1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/卡尔伯姆1977.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-卡尔伯姆1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/卡尔伯姆1977.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-瓦尔特1960",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/瓦尔特1960.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-瓦尔特1960",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/瓦尔特1960.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-穆拉文斯基1979",
+    "entityType": "recording",
+    "issue": "missing-performance-date",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/穆拉文斯基1979.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-穆拉文斯基1979",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/穆拉文斯基1979.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-舍尔兴1964",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/舍尔兴1964.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-舒里希特1957",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/舒里希特1957.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-蒙都1958",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/蒙都1958.htm"
+  },
+  {
+    "entityId": "recording-第六交响曲田园-蒙都1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/交响曲/第六交响曲“田园”/蒙都1958.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-亚历山大莫吉列夫斯基-and-列奥尼德克鲁策",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/亚历山大·莫吉列夫斯基_&_列奥尼德·克鲁策.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-亚历山大莫吉列夫斯基-and-列奥尼德克鲁策",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/亚历山大·莫吉列夫斯基_&_列奥尼德·克鲁策.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-安特耶魏特哈斯-and-丹尼斯瓦里翁",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/安特耶·魏特哈斯_&__丹尼斯.瓦里翁.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-安特耶魏特哈斯-and-丹尼斯瓦里翁",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/安特耶·魏特哈斯_&__丹尼斯.瓦里翁.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-席蒙戈尔德贝格-and-山根美代子",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/席蒙·戈尔德贝格_&_山根美代子.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-席蒙戈尔德贝格-and-山根美代子",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/席蒙·戈尔德贝格_&_山根美代子.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-弗里茨克莱斯勒-and-弗朗茨鲁普",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/弗里茨·克莱斯勒_&_弗朗茨·鲁普.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-弗里茨克莱斯勒-and-弗朗茨鲁普",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/弗里茨·克莱斯勒_&_弗朗茨·鲁普.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-沃尔夫冈施奈德汉-and-卡尔希曼",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/沃尔夫冈·施奈德汉_&_卡尔·希曼.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-沃尔夫冈施奈德汉-and-卡尔希曼",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/沃尔夫冈·施奈德汉_&_卡尔·希曼.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-艾丽卡莫莉妮-and-鲁道夫菲尔库什尼",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/艾丽卡·莫莉妮_&_鲁道夫·菲尔库什尼.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-艾丽卡莫莉妮-and-鲁道夫菲尔库什尼",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/艾丽卡·莫莉妮_&_鲁道夫·菲尔库什尼.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-西盖蒂约瑟夫-and-米奇斯瓦夫霍尔绍夫斯基",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/西盖蒂·约瑟夫_&_米奇斯瓦夫·霍尔绍夫斯基.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-西盖蒂约瑟夫-and-米奇斯瓦夫霍尔绍夫斯基",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/西盖蒂·约瑟夫_&_米奇斯瓦夫·霍尔绍夫斯基.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-西盖蒂约瑟夫-and-阿图尔施纳贝尔",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/西盖蒂·约瑟夫_&_阿图尔·施纳贝尔.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-西盖蒂约瑟夫-and-阿图尔施纳贝尔",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/西盖蒂·约瑟夫_&_阿图尔·施纳贝尔.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-让富尼埃-and-吉内特多延",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/让·富尼埃&吉内特·多延.htm"
+  },
+  {
+    "entityId": "recording-第5号小提琴奏鸣曲-春天-让富尼埃-and-吉内特多延",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/小提琴奏鸣曲/第5号小提琴奏鸣曲, “春天”/让·富尼埃&吉内特·多延.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-克劳迪奥阿劳1970",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/克劳迪奥·阿劳1970.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-克劳迪奥阿劳1970",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/克劳迪奥·阿劳1970.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-哈罗德鲍尔1927",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/哈罗德·鲍尔1927.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-哈罗德鲍尔1927",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/哈罗德·鲍尔1927.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-園田高弘2023",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/園田高弘2023.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-園田高弘2023",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/園田高弘2023.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-埃贡佩特里1956",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/埃贡·佩特里1956.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-埃贡佩特里1956",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/埃贡·佩特里1956.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-威廉肯普夫1965",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/威廉·肯普夫1965.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-威廉肯普夫1965",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/威廉·肯普夫1965.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-威廉默多克1927",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/威廉·默多克1927.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-威廉默多克1927",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/威廉·默多克1927.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-安妮费舍尔1977",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/安妮·费舍尔1977.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-安妮费舍尔1977",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/安妮·费舍尔1977.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-尤尼丝诺顿1971-1988",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/尤尼丝·诺顿1971_1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-尤尼丝诺顿1971-1988",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/尤尼丝·诺顿1971_1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-尼古拉梅特纳1946",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/尼古拉·梅特纳1946.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-尼古拉梅特纳1946",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/尼古拉·梅特纳1946.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-帕维尔谢列布里亚科夫1973",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/帕维尔·谢列布里亚科夫1973.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-帕维尔谢列布里亚科夫1973",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/帕维尔·谢列布里亚科夫1973.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-弗拉基米尔索夫罗尼茨基1960",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/弗拉基米尔·索夫罗尼茨基1960.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-弗拉基米尔索夫罗尼茨基1960",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/弗拉基米尔·索夫罗尼茨基1960.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-弗拉基米尔阿什肯纳齐1988",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/弗拉基米尔·阿什肯纳齐1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-弗拉基米尔阿什肯纳齐1988",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/弗拉基米尔·阿什肯纳齐1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-恩斯特利维1956",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/恩斯特·利维1956.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-恩斯特利维1956",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/恩斯特·利维1956.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-所罗门卡特纳",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/所罗门·卡特纳.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-所罗门卡特纳",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/所罗门·卡特纳.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-斯坦尼斯拉夫布宁1993",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/斯坦尼斯拉夫·布宁1993.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-斯坦尼斯拉夫布宁1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/斯坦尼斯拉夫·布宁1993.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-斯维亚托斯拉夫里赫特1960",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/斯维亚托斯拉夫·里赫特1960.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-斯维亚托斯拉夫里赫特1960",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/斯维亚托斯拉夫·里赫特1960.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-玛丽亚格林伯格1966",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/玛丽亚·格林伯格1966.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-玛丽亚格林伯格1966",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/玛丽亚·格林伯格1966.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-瓦尔特吉泽金",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/瓦尔特·吉泽金.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-瓦尔特吉泽金",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/瓦尔特·吉泽金.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-皮埃尔巴尔比泽1989",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/皮埃尔·巴尔比泽1989.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-皮埃尔巴尔比泽1989",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/皮埃尔·巴尔比泽1989.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-科尔德格鲁特",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/科尔·德·格鲁特.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-科尔德格鲁特",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/科尔·德·格鲁特.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-维托尔德马库津斯基1963",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/维托尔德·马库津斯基1963.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-维托尔德马库津斯基1963",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/维托尔德·马库津斯基1963.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-罗伯特卡萨德修",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/罗伯特·卡萨德修.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-罗伯特卡萨德修",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/罗伯特·卡萨德修.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-豪尔赫博列特1988",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/豪尔赫·博列特1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-豪尔赫博列特1988",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/豪尔赫·博列特1988.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-迪特泽克林1970",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/迪特·泽克林1970.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-迪特泽克林1970",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/迪特·泽克林1970.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-阿图尔施纳贝尔1933",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/阿图尔·施纳贝尔1933.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-阿图尔施纳贝尔1933",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/阿图尔·施纳贝尔1933.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-阿尔多奇科里尼2004",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/阿尔多·奇科里尼2004.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-阿尔多奇科里尼2004",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/阿尔多·奇科里尼2004.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-马克斯艾格1971",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/马克斯·艾格1971.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-马克斯艾格1971",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/马克斯·艾格1971.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-马塞尔钱皮1955",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/马塞尔·钱皮1955.htm"
+  },
+  {
+    "entityId": "recording-第二十三号奏鸣曲-热情-马塞尔钱皮1955",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/奏鸣曲/钢琴奏鸣曲/第二十三号奏鸣曲，热情/马塞尔·钱皮1955.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-克莱斯勒-and-布莱赫1926",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/克莱斯勒&布莱赫1926.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-克莱斯勒-and-布莱赫1926",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/克莱斯勒&布莱赫1926.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-内芙-and-罗斯鲍德1949",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/内芙&罗斯鲍德1949.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-内芙-and-罗斯鲍德1949",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/内芙&罗斯鲍德1949.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-博贝斯库-and-克雷1960",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/博贝斯库&克雷1960.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-博贝斯库-and-克雷1960",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/博贝斯库&克雷1960.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-卡瓦科斯-and-梅塔2009",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/卡瓦科斯&梅塔2009.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-卡瓦科斯-and-梅塔2009",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/卡瓦科斯&梅塔2009.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1954",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/奥伊斯特拉赫&埃尔林1954.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1954",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/奥伊斯特拉赫&埃尔林1954.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-布斯塔博-and-门贝尔伯格1943",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/布斯塔博&门贝尔伯格1943.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-布斯塔博-and-门贝尔伯格1943",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/布斯塔博&门贝尔伯格1943.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-施耐德汉-and-富特文格勒1953",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/施耐德汉&富特文格勒1953.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-施耐德汉-and-富特文格勒1953",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/施耐德汉&富特文格勒1953.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-梅纽因-and-富特文格勒1953",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/梅纽因&富特文格勒1953.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-梅纽因-and-富特文格勒1953",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/梅纽因&富特文格勒1953.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-海菲兹-and-托斯卡尼尼1940",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/海菲兹&托斯卡尼尼1940.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-海菲兹-and-托斯卡尼尼1940",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/海菲兹&托斯卡尼尼1940.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-瓦尔加-and-霍瓦特1960s",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/瓦尔加&霍瓦特1960s.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-瓦尔加-and-霍瓦特1960s",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/瓦尔加&霍瓦特1960s.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-罗恩-and-富特文格勒1944",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/罗恩&富特文格勒1944.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-罗恩-and-富特文格勒1944",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/罗恩&富特文格勒1944.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-胡贝尔曼-and-赛尔1934",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/胡贝尔曼&赛尔1934.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-胡贝尔曼-and-赛尔1934",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/胡贝尔曼&赛尔1934.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-西盖蒂-and-瓦尔特1932",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/西盖蒂&瓦尔特1932.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-西盖蒂-and-瓦尔特1932",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/西盖蒂&瓦尔特1932.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-费拉斯-and-伯姆1951",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/费拉斯&伯姆1951.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-费拉斯-and-伯姆1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/费拉斯&伯姆1951.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-金佩尔-and-霍尔莱瑟1955",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/金佩尔&霍尔莱瑟1955_.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-金佩尔-and-霍尔莱瑟1955",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/金佩尔&霍尔莱瑟1955_.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-马宁-and-杰拉伯特1916",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/马宁&杰拉伯特1916_.htm"
+  },
+  {
+    "entityId": "recording-d大调小提琴协奏曲-马宁-and-杰拉伯特1916",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/贝多芬/小提琴协奏曲/D大调小提琴协奏曲/马宁&杰拉伯特1916_.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1986",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/克伦佩勒1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-克伦佩勒1986",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/克伦佩勒1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-吉伦1993",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/吉伦1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-吉伦1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/吉伦1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-吉伦1994",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/吉伦1994.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-吉伦1994",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/吉伦1994.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹1996",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/布列兹1996.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹1996",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/布列兹1996.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹2011",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/布列兹2011.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-布列兹2011",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/布列兹2011.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-库贝利克1981",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/库贝利克1981.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-库贝利克1981",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/库贝利克1981.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-康德拉辛1979",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/康德拉辛1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-康德拉辛1979",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/康德拉辛1979.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-拉特1999",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/拉特1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-拉特1999",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/拉特1999.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-殷巴尔",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/殷巴尔,__.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-殷巴尔",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/殷巴尔,__.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-殷巴尔1986",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/殷巴尔1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-殷巴尔1986",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/殷巴尔1986.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-滕施泰特1993",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/滕施泰特1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-滕施泰特1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/滕施泰特1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-罗格纳1993",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/罗格纳1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-罗格纳1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/罗格纳1993.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-莫斯特2023",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/莫斯特2023.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-莫斯特2023",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/莫斯特2023.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-贝奴姆1958",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/贝奴姆1958.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-贝奴姆1958",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/贝奴姆1958.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-贝蒂尼1991",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/贝蒂尼1991.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-贝蒂尼1991",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/贝蒂尼1991.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿巴多1984",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/阿巴多1984.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿巴多1984",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/阿巴多1984.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿巴多2001",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/阿巴多2001.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-阿巴多2001",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/阿巴多2001.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-马泽尔1984",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/马泽尔1984.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-马泽尔1984",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/马泽尔1984.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-马泽尔2002",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/马泽尔2002.htm"
+  },
+  {
+    "entityId": "recording-第七交响曲-马泽尔2002",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第七交响曲/马泽尔2002.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-加蒂2010",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/加蒂2010.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-加蒂2010",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/加蒂2010.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-巴尔沙伊1999",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/巴尔沙伊1999.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-巴比罗利1969",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/巴比罗利1969.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-布列兹1996",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/布列兹1996.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-库伦齐斯2021",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/库伦齐斯2021.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-库伦齐斯2021",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/库伦齐斯2021.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-库伦齐斯2024",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/库伦齐斯2024.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-库伦齐斯2024",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/库伦齐斯2024.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-滕施泰特1988",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/滕施泰特1988.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-滕施泰特1988",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/滕施泰特1988.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-米特罗普洛斯1960",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/米特罗普洛斯1960.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-米特罗普洛斯1960",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/米特罗普洛斯1960.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-罗斯鲍德1951",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/罗斯鲍德1951.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-腾斯泰特1980",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/腾斯泰特1980.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-腾斯泰特1980",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/腾斯泰特1980.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-莱因斯多夫1963",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/莱因斯多夫1963.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-莱因斯多夫1963",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/莱因斯多夫1963.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-西诺波利1999",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/西诺波利1999.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-西诺波利1999",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/西诺波利1999.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-诺特2022",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/诺特2022.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-阿巴多1993",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/阿巴多1993.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-霍伦斯坦1961",
+    "entityType": "recording",
+    "issue": "missing-image",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/霍伦斯坦1961.htm"
+  },
+  {
+    "entityId": "recording-第五交响曲-霍伦斯坦1961",
+    "entityType": "recording",
+    "issue": "missing-album-metadata",
+    "sourcePath": "作曲家/马勒/交响曲/第五交响曲/霍伦斯坦1961.htm"
+  }
+]
