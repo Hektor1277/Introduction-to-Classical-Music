@@ -15,4 +15,11 @@ data/automation/batches/
 data/automation/runs/
 data/automation/settings.local.json
 data/automation/recording-retrieval.local.json
+tools/recording-retrieval-service/app/
+tools/recording-retrieval-service/cache/
+tools/recording-retrieval-service/logs/
+tools/recording-retrieval-service/downloads/
+tools/recording-retrieval-service/node_modules/
+tools/recording-retrieval-service/dist/
+tools/recording-retrieval-service/output/
 *.log

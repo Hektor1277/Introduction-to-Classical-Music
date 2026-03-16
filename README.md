@@ -63,6 +63,14 @@ npm run build
 npm test -- --runInBand
 ```
 
+## 快捷启动入口
+为了便于本地联调，仓库提供了两个 Windows（视窗）快捷脚本：
+
+- [`start-site.cmd`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/scripts/start-site.cmd)：启动公开站点开发服务并自动打开 `http://127.0.0.1:4321`
+- [`start-owner.cmd`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/scripts/start-owner.cmd)：启动 owner 维护工具并自动打开 `http://127.0.0.1:4322`
+
+如果本地没有安装依赖，先执行一次 `npm ci`。
+
 ## 外部版本自动检索工具
 `recording`（版本）自动检查已经从 owner 内部剥离，统一通过 [`tools/recording-retrieval-service`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service) 目录约定的本地 HTTP 服务完成。
 
@@ -70,6 +78,7 @@ npm test -- --runInBand
 - [`PROJECT_CONTEXT.md`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service/PROJECT_CONTEXT.md)
 - [`README.md`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service/README.md)
 - [`PROTOCOL.md`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service/PROTOCOL.md)
+- [`GIT_AND_WORKSPACE.md`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service/GIT_AND_WORKSPACE.md)
 
 ## 编码与开发约定
 - 所有源码、配置、文档统一使用 `UTF-8` 编码，默认不使用 BOM（Byte Order Mark，字节顺序标记）。
