@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getAffectedPaths } from "@/lib/owner-tools";
+import { getAffectedPaths, mergeLibraryEntities } from "@/lib/owner-tools";
 import { validateLibrary } from "@/lib/schema";
 
 const library = validateLibrary({
@@ -83,5 +83,38 @@ describe("getAffectedPaths", () => {
     expect(paths).toContain("/recordings/karajan-1963/");
     expect(paths).toContain("/conductors/karajan/");
     expect(paths).toContain("/search/");
+  });
+});
+
+describe("mergeLibraryEntities", () => {
+  it("merges duplicate people into a primary entity and rewires recording credits", () => {
+    const duplicatedLibrary = validateLibrary({
+      ...library,
+      people: [
+        ...library.people,
+        {
+          id: "karajan-legacy",
+          slug: "karajan-legacy",
+          name: "卡拉扬",
+          nameLatin: "",
+          roles: ["conductor"],
+          aliases: ["Herbert Karajan"],
+          sortKey: "karajan-legacy",
+          summary: "",
+        },
+      ],
+      recordings: [
+        {
+          ...library.recordings[0],
+          credits: [{ role: "conductor", personId: "karajan-legacy", displayName: "卡拉扬" }],
+        },
+      ],
+    });
+
+    const merged = mergeLibraryEntities(duplicatedLibrary, "person", "karajan", "karajan-legacy");
+
+    expect(merged.people).toHaveLength(1);
+    expect(merged.people[0]?.aliases).toEqual(expect.arrayContaining(["卡拉扬", "Herbert Karajan"]));
+    expect(merged.recordings[0]?.credits[0]?.personId).toBe("karajan");
   });
 });

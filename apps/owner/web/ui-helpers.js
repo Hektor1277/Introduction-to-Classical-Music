@@ -3,6 +3,15 @@ export function createEmptyActiveEntity() {
 }
 
 const compact = (value) => String(value ?? "").trim();
+const personRoleLabels = {
+  conductor: "指挥",
+  orchestra: "乐团",
+  soloist: "独奏",
+  singer: "歌手",
+  ensemble: "组合",
+  chorus: "合唱团",
+  instrumentalist: "器乐",
+};
 const escapeHtml = (value) =>
   String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -78,6 +87,52 @@ export function buildWorkOptionLabel(work, composers = []) {
   const titleLatin = compact(work?.titleLatin || "");
   const catalogue = compact(work?.catalogue || "");
   return [composerLabel, catalogue, title, titleLatin].filter(Boolean).join(" · ");
+}
+
+export function buildBatchWorkOptionLabel(work) {
+  if (!work) {
+    return "";
+  }
+  return [compact(work?.title || work?.id || ""), compact(work?.titleLatin || ""), compact(work?.catalogue || "")]
+    .filter(Boolean)
+    .join(" / ");
+}
+
+export function buildSearchResultBadges(item = {}) {
+  const type = compact(item.type);
+  if (type === "site") {
+    return ["网站文本"];
+  }
+  if (type === "composer") {
+    return ["作曲家"];
+  }
+  if (type === "work") {
+    return ["作品"];
+  }
+  if (type === "recording") {
+    return ["版本"];
+  }
+  const roles = Array.isArray(item.roles) ? item.roles.map((role) => compact(role)).filter(Boolean) : [];
+  if (type === "person") {
+    const badges = [];
+    const isGroup = roles.some((role) => ["orchestra", "ensemble", "chorus"].includes(role));
+    badges.push(isGroup ? "团体" : "人物");
+    roles.forEach((role) => {
+      if (personRoleLabels[role] && !badges.includes(personRoleLabels[role])) {
+        badges.push(personRoleLabels[role]);
+      }
+    });
+    return badges;
+  }
+  return [type || "条目"];
+}
+
+export function filterMergeTargetOptions(options = [], query = "") {
+  const normalizedQuery = compact(query).toLowerCase();
+  if (!normalizedQuery) {
+    return [...options];
+  }
+  return options.filter((option) => compact(option?.label).toLowerCase().includes(normalizedQuery));
 }
 
 export function buildBatchPreviewShellHtml(listHtml, detailHtml) {

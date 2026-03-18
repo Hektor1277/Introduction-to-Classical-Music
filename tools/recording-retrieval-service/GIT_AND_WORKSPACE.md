@@ -36,6 +36,15 @@
 4. `app/` 使用自己的远端仓库、自己的 `.gitignore`、自己的发布节奏
 5. 父仓库通过本地路径和 HTTP 协议与它协作，而不是通过源码直接耦合
 
+当前本地目录已经按此方式整理：
+
+- `tools/recording-retrieval-service/app/` 已存在独立实现
+- `app/` 根目录提供双击入口：
+  - `start-ui.cmd`
+  - `start-service.cmd`
+  - `install-windows.cmd`
+- Windows 便携包输出位于 `app/dist/portable/`
+
 ## 4. 父仓库如何处理这个子项目
 父仓库应忽略以下目录：
 

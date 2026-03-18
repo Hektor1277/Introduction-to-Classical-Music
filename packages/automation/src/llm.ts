@@ -27,6 +27,22 @@ export type LlmEntityKnowledgeCandidate = {
   rationale?: string;
 };
 
+export type LlmWorkKnowledgeCandidate = {
+  titleLatin?: string;
+  catalogue?: string;
+  summary?: string;
+  aliases?: string[];
+  confidence?: number;
+  rationale?: string;
+};
+
+export type LlmProposalReview = {
+  status: "ok" | "needs-attention";
+  issues: string[];
+  confidence?: number;
+  rationale?: string;
+};
+
 type EntityKnowledgePromptInput = {
   title: string;
   entityType: "composer" | "person";
@@ -38,7 +54,29 @@ type EntityKnowledgePromptInput = {
   knownAbbreviations?: string[];
 };
 
-type LlmRequestPurpose = "entity-knowledge" | "summary" | "connectivity";
+type WorkKnowledgePromptInput = {
+  title: string;
+  composerName: string;
+  composerLatinName?: string;
+  groupPath?: string[];
+  knownTitleLatin?: string;
+  knownCatalogue?: string;
+  knownSummary?: string;
+  knownAliases?: string[];
+};
+
+type ProposalReviewPromptInput = {
+  entityType: "composer" | "person" | "work";
+  title: string;
+  roles?: string[];
+  current: Record<string, unknown>;
+  preview: Record<string, unknown>;
+  fields: Array<{ path: string; before: unknown; after: unknown }>;
+  sources: string[];
+  evidence?: Array<{ field?: string; sourceLabel?: string; sourceUrl?: string; confidence?: number }>;
+};
+
+type LlmRequestPurpose = "entity-knowledge" | "summary" | "connectivity" | "proposal-review";
 
 export const defaultLlmConfig: LlmConfig = {
   enabled: false,
@@ -105,6 +143,9 @@ function getEffectiveTimeoutMs(config: LlmConfig, purpose: LlmRequestPurpose) {
     return Math.max(configured, 90000);
   }
   if (purpose === "summary" && looksReasoningModel(effectiveModel)) {
+    return Math.max(configured, 60000);
+  }
+  if (purpose === "proposal-review" && looksReasoningModel(effectiveModel)) {
     return Math.max(configured, 60000);
   }
   return configured;
@@ -214,6 +255,24 @@ function hasUsefulEntityKnowledge(candidate: LlmEntityKnowledgeCandidate | null,
   return true;
 }
 
+function coerceWorkKnowledgeCandidate(parsed: Record<string, unknown>) {
+  return {
+    titleLatin: pickString(parsed.titleLatin, parsed.originalTitle, parsed.englishTitle, parsed.normalizedTitle),
+    catalogue: pickString(parsed.catalogue, parsed.catalogNumber, parsed.opus),
+    summary: pickString(parsed.summary, parsed.description),
+    aliases: normalizeStringList(parsed.aliases),
+    confidence: Number.isFinite(Number(parsed.confidence)) ? Number(parsed.confidence) : undefined,
+    rationale: pickString(parsed.rationale, parsed.reason),
+  } satisfies LlmWorkKnowledgeCandidate;
+}
+
+function hasUsefulWorkKnowledge(candidate: LlmWorkKnowledgeCandidate | null) {
+  if (!candidate) {
+    return false;
+  }
+  return Boolean(candidate.titleLatin || candidate.catalogue || candidate.summary || candidate.aliases?.length);
+}
+
 function buildEntityKnowledgeMessages(input: EntityKnowledgePromptInput, attempt: "primary" | "repair") {
   const jsonTemplate = {
     summary: "short Chinese summary under 80 Chinese characters, or empty string",
@@ -258,6 +317,85 @@ function buildEntityKnowledgeMessages(input: EntityKnowledgePromptInput, attempt
   ];
 }
 
+function buildWorkKnowledgeMessages(input: WorkKnowledgePromptInput, attempt: "primary" | "repair") {
+  const jsonTemplate = {
+    titleLatin: "canonical Latin-script or English work title, or empty string",
+    catalogue: "catalogue / opus string such as Op. 64, BWV 1007, or empty string",
+    summary: "short Chinese summary under 80 Chinese characters, or empty string",
+    aliases: ["common alternative Chinese titles or catalog forms, max 4"],
+    confidence: "decimal between 0 and 1",
+    rationale: "one short Chinese sentence explaining certainty and uncertainty",
+  };
+  const task = {
+    title: input.title,
+    composerName: input.composerName,
+    composerLatinName: input.composerLatinName || "",
+    groupPath: input.groupPath || [],
+    known: {
+      titleLatin: input.knownTitleLatin || "",
+      catalogue: input.knownCatalogue || "",
+      summary: input.knownSummary || "",
+      aliases: input.knownAliases || [],
+    },
+    schema: jsonTemplate,
+  };
+
+  const system =
+    attempt === "primary"
+      ? "You normalize classical music works. Return exactly one JSON object and nothing else. No markdown. No explanations. Keys allowed only: titleLatin,catalogue,summary,aliases,confidence,rationale. If uncertain, leave the field empty instead of guessing. titleLatin must be a commonly used Latin-script or English work title."
+      : "Your previous answer was unusable. Return exactly one JSON object with only these keys: titleLatin,catalogue,summary,aliases,confidence,rationale. No markdown. No explanations. If you are unsure, leave the field empty.";
+
+  const user =
+    attempt === "primary"
+      ? `Normalize this classical music work and return exactly one JSON object.\n${JSON.stringify(task, null, 2)}`
+      : `Repair the previous output and strictly follow the JSON schema.\n${JSON.stringify(task, null, 2)}`;
+
+  return [
+    { role: "system", content: system },
+    { role: "user", content: user },
+  ];
+}
+
+function coerceProposalReview(parsed: Record<string, unknown>) {
+  return {
+    status: parsed.status === "needs-attention" ? "needs-attention" : "ok",
+    issues: normalizeStringList(parsed.issues).slice(0, 5),
+    confidence: Number.isFinite(Number(parsed.confidence)) ? Number(parsed.confidence) : undefined,
+    rationale: pickString(parsed.rationale, parsed.reason),
+  } satisfies LlmProposalReview;
+}
+
+function buildProposalReviewMessages(input: ProposalReviewPromptInput) {
+  const task = {
+    entityType: input.entityType,
+    title: input.title,
+    roles: input.roles || [],
+    current: input.current,
+    preview: input.preview,
+    fields: input.fields,
+    sources: input.sources,
+    evidence: input.evidence || [],
+    schema: {
+      status: "ok or needs-attention",
+      issues: ["short Chinese review issues, max 4"],
+      confidence: "decimal between 0 and 1",
+      rationale: "one short English or Chinese sentence",
+    },
+  };
+
+  return [
+    {
+      role: "system",
+      content:
+        "You review classical music catalog patches. Decide whether the proposal is grounded, internally consistent, and appropriate for the entity role. Return exactly one JSON object with only: status,issues,confidence,rationale. issues must be short Chinese phrases. If the proposal is acceptable, return status ok and an empty issues array.",
+    },
+    {
+      role: "user",
+      content: `Review this proposal and return exactly one JSON object.\n${JSON.stringify(task, null, 2)}`,
+    },
+  ];
+}
+
 async function requestEntityKnowledgeCandidate(
   config: LlmConfig,
   input: EntityKnowledgePromptInput,
@@ -299,6 +437,100 @@ async function requestEntityKnowledgeCandidate(
     }
     const normalized = coerceEntityKnowledgeCandidate(parsed);
     return hasUsefulEntityKnowledge(normalized, input) ? normalized : null;
+  } catch {
+    return null;
+  } finally {
+    abortable.clear();
+  }
+}
+
+async function requestProposalReview(
+  config: LlmConfig,
+  input: ProposalReviewPromptInput,
+  fetchImpl: typeof fetch,
+) {
+  const abortable = createAbortController(getEffectiveTimeoutMs(config, "proposal-review"));
+  const requestModel = getEffectiveModel(config, "proposal-review");
+
+  try {
+    const response = await fetchImpl(buildChatUrl(config), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: requestModel,
+        messages: buildProposalReviewMessages(input),
+        temperature: 0,
+        max_tokens: 320,
+        ...(!looksReasoningModel(requestModel) ? { response_format: { type: "json_object" as const } } : {}),
+      }),
+      signal: abortable.controller.signal,
+    });
+
+    const rawPayload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      return null;
+    }
+
+    const finalContent = String(rawPayload?.choices?.[0]?.message?.content ?? "").trim();
+    const reasoningContent = String(rawPayload?.choices?.[0]?.message?.reasoning_content ?? "").trim();
+    const content = finalContent || reasoningContent;
+    const parsed = parseJsonFromText<Record<string, unknown>>(content);
+    if (!parsed) {
+      return null;
+    }
+
+    return coerceProposalReview(parsed);
+  } catch {
+    return null;
+  } finally {
+    abortable.clear();
+  }
+}
+
+async function requestWorkKnowledgeCandidate(
+  config: LlmConfig,
+  input: WorkKnowledgePromptInput,
+  fetchImpl: typeof fetch,
+  attempt: "primary" | "repair",
+) {
+  const abortable = createAbortController(getEffectiveTimeoutMs(config, "entity-knowledge"));
+  const requestModel = getEffectiveModel(config, "entity-knowledge");
+
+  try {
+    const payload = {
+      model: requestModel,
+      messages: buildWorkKnowledgeMessages(input, attempt),
+      temperature: 0,
+      max_tokens: 420,
+      ...(attempt === "primary" && !looksReasoningModel(requestModel) ? { response_format: { type: "json_object" as const } } : {}),
+    };
+    const response = await fetchImpl(buildChatUrl(config), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify(payload),
+      signal: abortable.controller.signal,
+    });
+
+    const rawPayload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      return null;
+    }
+
+    const finalContent = String(rawPayload?.choices?.[0]?.message?.content ?? "").trim();
+    const reasoningContent = String(rawPayload?.choices?.[0]?.message?.reasoning_content ?? "").trim();
+    const content = finalContent || reasoningContent;
+    const parsed = parseJsonFromText<Record<string, unknown>>(content);
+    if (!parsed) {
+      return null;
+    }
+    const normalized = coerceWorkKnowledgeCandidate(parsed);
+    return hasUsefulWorkKnowledge(normalized) ? normalized : null;
   } catch {
     return null;
   } finally {
@@ -460,4 +692,82 @@ export async function generateEntityKnowledgeCandidate(options: {
   }
 
   return requestEntityKnowledgeCandidate(config, promptInput, fetchImpl, "repair");
+}
+
+export async function generateWorkKnowledgeCandidate(options: {
+  config: LlmConfig;
+  title: string;
+  composerName: string;
+  composerLatinName?: string;
+  groupPath?: string[];
+  knownTitleLatin?: string;
+  knownCatalogue?: string;
+  knownSummary?: string;
+  knownAliases?: string[];
+  fetchImpl?: typeof fetch;
+}) {
+  const {
+    config,
+    title,
+    composerName,
+    composerLatinName = "",
+    groupPath = [],
+    knownTitleLatin = "",
+    knownCatalogue = "",
+    knownSummary = "",
+    knownAliases = [],
+  } = options;
+  if (!isLlmConfigured(config) || !title.trim() || !composerName.trim()) {
+    return null;
+  }
+  const fetchImpl = options.fetchImpl ?? fetch;
+  const promptInput: WorkKnowledgePromptInput = {
+    title,
+    composerName,
+    composerLatinName,
+    groupPath,
+    knownTitleLatin,
+    knownCatalogue,
+    knownSummary,
+    knownAliases,
+  };
+
+  const primary = await requestWorkKnowledgeCandidate(config, promptInput, fetchImpl, "primary");
+  if (hasUsefulWorkKnowledge(primary)) {
+    return primary;
+  }
+
+  return requestWorkKnowledgeCandidate(config, promptInput, fetchImpl, "repair");
+}
+
+export async function reviewAutomationProposalWithLlm(options: {
+  config: LlmConfig;
+  entityType: "composer" | "person" | "work";
+  title: string;
+  roles?: string[];
+  current: Record<string, unknown>;
+  preview: Record<string, unknown>;
+  fields: Array<{ path: string; before: unknown; after: unknown }>;
+  sources: string[];
+  evidence?: Array<{ field?: string; sourceLabel?: string; sourceUrl?: string; confidence?: number }>;
+  fetchImpl?: typeof fetch;
+}) {
+  if (!isLlmConfigured(options.config) || !options.fields.length) {
+    return null;
+  }
+
+  return requestProposalReview(
+    options.config,
+    {
+      entityType: options.entityType,
+      title: options.title,
+      roles: options.roles || [],
+      current: options.current,
+      preview: options.preview,
+      fields: options.fields,
+      sources: options.sources,
+      evidence: options.evidence,
+    },
+    options.fetchImpl ?? fetch,
+  );
 }

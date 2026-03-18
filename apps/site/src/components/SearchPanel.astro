@@ -1,16 +1,8 @@
 ---
-interface SearchEntry {
-  id: string;
-  kind: "composer" | "workGroup" | "work" | "conductor" | "orchestra" | "person";
-  primaryText: string;
-  secondaryText: string;
-  href: string;
-  matchTokens: string[];
-  aliasTokens: string[];
-}
+import type { SearchPanelEntry } from "@/lib/search-panel";
 
 interface Props {
-  items: SearchEntry[];
+  items: SearchPanelEntry[];
 }
 
 const { items } = Astro.props;
@@ -20,22 +12,31 @@ const { items } = Astro.props;
   <div class="section-heading">
     <p class="section-heading__eyebrow">Search</p>
     <h1>搜索索引</h1>
-    <p class="page-lead">搜索结果按类型分组展示，每类仅保留前 5 个示例，优先返回目录实体而不是版本列表。</p>
+    <p class="page-lead">
+      未输入时每类保留前 5 条示例；输入并搜索后将按类型展示完整命中结果，并为每类结果提供分页。
+    </p>
   </div>
 
-  <div class="search-panel__controls">
+  <form class="search-panel__controls" data-search-form>
     <label class="sr-only" for="search-page-input">搜索</label>
     <input id="search-page-input" data-search-input type="search" name="q" placeholder="输入作曲家、指挥、乐团、作品类型或作品名" />
-  </div>
+  </form>
 
   <div class="search-panel__results" data-search-results></div>
 </section>
 
-<script is:inline define:vars={{ items }}>
+<script define:vars={{ items }}>
+  window.__SEARCH_PANEL_ITEMS__ = items;
+</script>
+
+<script>
+  import { buildSearchGroups, normalizeSearchQuery, SEARCH_PANEL_KIND_ORDER } from "@/lib/search-panel";
+
+  const items = window.__SEARCH_PANEL_ITEMS__ || [];
   const container = document.querySelector("[data-search-panel]");
+  const form = container?.querySelector("[data-search-form]");
   const input = container?.querySelector("[data-search-input]");
   const results = container?.querySelector("[data-search-results]");
-  const params = new URLSearchParams(window.location.search);
 
   const labels = {
     composer: "作曲家",
@@ -46,8 +47,6 @@ const { items } = Astro.props;
     person: "人物",
   };
 
-  const order = ["composer", "conductor", "orchestra", "workGroup", "work", "person"];
-
   const escapeHtml = (value) =>
     String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -55,57 +54,67 @@ const { items } = Astro.props;
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
 
-  const normalize = (value) =>
-    String(value ?? "")
-      .normalize("NFKC")
-      .toLowerCase()
-      .replace(/[·・•.。,'"`“”‘’()（）[\]\\/_-]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  const readPageState = (params) =>
+    Object.fromEntries(
+      SEARCH_PANEL_KIND_ORDER.map((kind) => [kind, Math.max(1, Number(params.get(`page-${kind}`) || 1) || 1)]),
+    );
 
-  const groupEntries = (entries) => {
-    const groups = new Map();
-
-    entries.forEach((entry) => {
-      const bucket = groups.get(entry.kind) ?? [];
-      bucket.push(entry);
-      groups.set(entry.kind, bucket);
-    });
-
-    return order.filter((kind) => groups.has(kind)).map((kind) => [kind, groups.get(kind)]);
+  const buildHref = (query, pageByKind) => {
+    const params = new URLSearchParams();
+    if (query) {
+      params.set("q", query);
+    }
+    for (const [kind, page] of Object.entries(pageByKind || {})) {
+      if (Number(page) > 1) {
+        params.set(`page-${kind}`, String(page));
+      }
+    }
+    const suffix = params.toString();
+    return suffix ? `${window.location.pathname}?${suffix}` : window.location.pathname;
   };
 
-  const matches = (entry, normalizedQuery) => {
-    if (!normalizedQuery) {
-      return true;
+  const renderPagination = (group, query, pageByKind) => {
+    if (!normalizeSearchQuery(query) || group.totalPages <= 1) {
+      return "";
     }
 
-    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
-    const pool = [...(entry.matchTokens ?? []), ...(entry.aliasTokens ?? []), entry.primaryText, entry.secondaryText]
-      .map(normalize)
-      .filter(Boolean);
+    const prevPage = Math.max(1, group.page - 1);
+    const nextPage = Math.min(group.totalPages, group.page + 1);
 
-    return queryTokens.every((queryToken) => pool.some((token) => token.includes(queryToken)));
+    return `
+      <div class="search-group__pagination">
+        <span>第 ${group.page} / ${group.totalPages} 页</span>
+        <div class="search-group__pagination-links">
+          <a href="${escapeHtml(buildHref(query, { ...pageByKind, [group.kind]: prevPage }))}" ${group.page <= 1 ? 'aria-disabled="true"' : ""}>上一页</a>
+          <a href="${escapeHtml(buildHref(query, { ...pageByKind, [group.kind]: nextPage }))}" ${group.page >= group.totalPages ? 'aria-disabled="true"' : ""}>下一页</a>
+        </div>
+      </div>
+    `;
   };
 
-  const render = (query) => {
+  const render = () => {
     if (!results) {
       return;
     }
 
-    const normalizedQuery = normalize(query);
-    const matched = !normalizedQuery ? items.slice(0, 24) : items.filter((entry) => matches(entry, normalizedQuery));
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("q") ?? "";
+    const pageByKind = readPageState(params);
+    const queryActive = Boolean(normalizeSearchQuery(query));
+    const groups = buildSearchGroups(items, query, pageByKind);
 
-    if (matched.length === 0) {
-      results.innerHTML = `<p class="page-note">没有找到匹配项。</p>`;
+    if (input instanceof HTMLInputElement) {
+      input.value = query;
+    }
+
+    if (!groups.length) {
+      results.innerHTML = '<p class="page-note">没有找到匹配项。</p>';
       return;
     }
 
-    const grouped = groupEntries(matched);
-    results.innerHTML = grouped
-      .map(([kind, entries]) => {
-        const rows = entries
-          .slice(0, 5)
+    results.innerHTML = groups
+      .map((group) => {
+        const rows = group.items
           .map(
             (entry) => `
               <li class="search-result">
@@ -117,34 +126,30 @@ const { items } = Astro.props;
             `,
           )
           .join("");
+
         return `
           <section class="search-group">
             <div class="search-group__header">
-              <h2>${labels[kind]}</h2>
-              <span>${Math.min(entries.length, 5)} / ${entries.length}</span>
+              <h2>${labels[group.kind]}</h2>
+              <span>${group.items.length} / ${group.totalItems}</span>
             </div>
             <ul>${rows}</ul>
+            ${queryActive ? renderPagination(group, query, pageByKind) : ""}
           </section>
         `;
       })
       .join("");
   };
 
-  if (input instanceof HTMLInputElement) {
-    const initialValue = params.get("q") ?? "";
-    input.value = initialValue;
-    render(initialValue);
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    const query = input.value.trim();
+    window.location.assign(buildHref(query, {}));
+  });
 
-    input.addEventListener("input", (event) => {
-      const value = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.value : "";
-      const nextUrl = new URL(window.location.href);
-      if (value.trim()) {
-        nextUrl.searchParams.set("q", value);
-      } else {
-        nextUrl.searchParams.delete("q");
-      }
-      window.history.replaceState({}, "", nextUrl);
-      render(value);
-    });
-  }
+  window.addEventListener("popstate", render);
+  render();
 </script>

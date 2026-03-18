@@ -1,12 +1,15 @@
-import {
+﻿import {
   buildBatchPreviewShellHtml,
   buildBatchRelationOptions,
   buildBatchResultSummary,
+  buildBatchWorkOptionLabel,
   buildComposerOptionLabel,
+  buildSearchResultBadges,
   buildRecordingLinkChipLabel,
   buildRecordingLinkEditorHtml,
   buildWorkOptionLabel,
   createEmptyActiveEntity,
+  filterMergeTargetOptions,
   getProposalModeAttributes,
   resolveProposalActionContext,
   selectBatchSessionAfterRefresh,
@@ -16,6 +19,7 @@ import {
   applyProposalDraft,
   buildDataAttributeSelector,
   buildExcerpt,
+  filterPendingProposalsForDisplay,
   getProposalsForReviewAction,
   hasProposalDraftChanges,
   paginateItems,
@@ -127,6 +131,7 @@ const inlineCheckTitle = document.querySelector("#owner-inline-check-title");
 const inlineCheckSubtitle = document.querySelector("#owner-inline-check-subtitle");
 const inlineCheckContent = document.querySelector("#owner-inline-check-content");
 const inlineCheckCloseButton = document.querySelector("#owner-inline-check-close");
+const detailCard = document.querySelector(".owner-card--detail");
 const reviewRunSelect = document.querySelector("#review-run-select");
 const proposalReviewList = document.querySelector("#proposal-review-list");
 const reviewPaginationTop = document.querySelector("#review-pagination-top");
@@ -173,6 +178,27 @@ const confirmDialogConfirm = document.querySelector("#owner-confirm-dialog-confi
 const articlePreviewDialog = document.querySelector("#owner-article-preview-dialog");
 const articlePreviewClose = document.querySelector("#owner-article-preview-close");
 
+const normalizeEntityActionButtons = () => {
+  entityForms.forEach((form) => {
+    const resetButton = form.querySelector('[data-action="reset"]');
+    const saveButton = form.querySelector('[data-action="save"]');
+    const deleteButton = form.querySelector('[data-action="delete"]');
+    const previewButton = form.querySelector('[data-action="preview"]');
+    if (resetButton) {
+      resetButton.textContent = "新建条目";
+    }
+    if (saveButton) {
+      saveButton.textContent = "保存条目";
+    }
+    if (deleteButton) {
+      deleteButton.textContent = "删除条目";
+    }
+    if (previewButton) {
+      previewButton.remove();
+    }
+  });
+};
+
 const llmDraftStorageKey = "owner.llm.apiKey";
 const collapsedPanelStoragePrefix = "owner.collapsed";
 const proposalDraftStoragePrefix = "owner.reviewDraft";
@@ -184,6 +210,7 @@ const entityTypeLabels = {
   work: "作品",
   recording: "版本",
 };
+normalizeEntityActionButtons();
 const automationCategoryLabels = {
   composer: "作曲家",
   conductor: "指挥",
@@ -452,7 +479,9 @@ const buildOptionLabel = (entity) => {
   return secondary ? `${title} / ${secondary}` : title;
 };
 const getEntityScopedProposals = (run, entityType, entityId) =>
-  (run?.proposals || []).filter((proposal) => proposal.entityType === entityType && proposal.entityId === entityId);
+  filterPendingProposalsForDisplay(run?.proposals || []).filter(
+    (proposal) => proposal.entityType === entityType && proposal.entityId === entityId,
+  );
 const getReviewRunById = (runId) => state.runs.find((run) => run.id === runId) || null;
 const getEntityBucket = (entityType) => {
   if (entityType === "composer") return "composers";
@@ -716,9 +745,41 @@ const deleteEntity = async (form) => {
   setResult(result);
 };
 
+const mergeEntity = async (form) => {
+  const entityType = form?.dataset?.entityForm || "";
+  const duplicateId = compact(form?.elements?.existingId?.value || "");
+  const targetId = compact(form?.elements?.mergeTargetId?.value || "");
+  if (!supportsManualMerge(entityType)) {
+    throw new Error("当前条目类型不支持手动合并。");
+  }
+  if (!duplicateId) {
+    throw new Error("请先载入重复条目并选择主条目。");
+  }
+  if (!targetId) {
+    throw new Error("请先选择主条目。");
+  }
+  const result = await fetchJson(`/api/entity/${encodeURIComponent(entityType)}/${encodeURIComponent(duplicateId)}/merge`, {
+    method: "POST",
+    body: JSON.stringify({ targetId }),
+  });
+  await refreshAll();
+  await loadEntity(entityType, targetId);
+  setActiveDetailTab(entityType);
+  setResult(result);
+};
+
 const setActiveView = (viewName) => {
   viewTabs.forEach((button) => button.classList.toggle("is-active", button.dataset.viewTab === viewName));
   viewPanels.forEach((panel) => panel.classList.toggle("is-active", panel.dataset.viewPanel === viewName));
+  if (viewName === "review") {
+    void renderReviewRun().catch((error) => setResult(error instanceof Error ? error.message : String(error)));
+  }
+  if (viewName === "logs") {
+    void renderLogRun().catch((error) => setResult(error instanceof Error ? error.message : String(error)));
+  }
+  if (viewName === "batch" && state.batchSession) {
+    void renderBatchReview().catch((error) => setResult(error instanceof Error ? error.message : String(error)));
+  }
 };
 
 const setActiveDetailTab = (tabName) => {
@@ -766,6 +827,118 @@ const populateArticleOptions = () => {
   });
 };
 
+const supportsManualMerge = (entityType) => ["composer", "person", "work"].includes(entityType);
+const getMergeOptionLabel = (entityType, entity) => {
+  if (!entity) {
+    return "";
+  }
+  if (entityType === "work") {
+    return getWorkDisplayLabel(entity);
+  }
+  return buildComposerOptionLabel(entity);
+};
+const getMergeTargetOptions = (entityType, currentId = "") => {
+  if (!supportsManualMerge(entityType)) {
+    return [];
+  }
+  const items =
+    entityType === "composer"
+      ? state.library?.composers || []
+      : entityType === "person"
+        ? state.library?.people || []
+        : state.library?.works || [];
+  return items
+    .filter((item) => item?.id && item.id !== currentId)
+    .map((item) => {
+      const label = getMergeOptionLabel(entityType, item);
+      return label
+        ? {
+            value: item.id,
+            label,
+          }
+        : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.label.localeCompare(right.label, "zh-Hans-CN"));
+};
+const ensureMergeControls = (form) => {
+  if (!form || form.querySelector("[data-merge-host]")) {
+    return form?.querySelector("[data-merge-host]") || null;
+  }
+  const actions = form.querySelector(".owner-form__actions");
+  if (!actions) {
+    return null;
+  }
+  const mergeHost = document.createElement("section");
+  mergeHost.className = "owner-merge-controls";
+  mergeHost.dataset.mergeHost = "true";
+  mergeHost.hidden = true;
+  mergeHost.innerHTML = `
+    <div class="owner-card__header">
+      <h3>合并到主条目</h3>
+    </div>
+    <div class="owner-merge-combobox">
+      <input type="search" data-merge-target-search placeholder="搜索主条目" />
+      <div class="owner-merge-combobox__results" data-merge-target-results></div>
+    </div>
+    <input type="hidden" name="mergeTargetId" />
+    <p class="owner-form__hint">当前加载条目会作为被合并条目，主条目保留已填写字段，缺失字段由当前条目补齐。</p>
+    <button type="button" data-action="merge" class="owner-button--danger">合并条目</button>
+  `;
+  actions.before(mergeHost);
+  return mergeHost;
+};
+const renderMergeControls = (form) => {
+  if (!form) {
+    return;
+  }
+  const entityType = form.dataset.entityForm || "";
+  const host = ensureMergeControls(form);
+  if (!host) {
+    return;
+  }
+  if (!supportsManualMerge(entityType)) {
+    host.hidden = true;
+    return;
+  }
+  const currentId = compact(form.elements.existingId?.value || "");
+  const searchInputControl = host.querySelector("[data-merge-target-search]");
+  const resultsPanel = host.querySelector("[data-merge-target-results]");
+  const mergeTargetField = form.elements.mergeTargetId;
+  if (!currentId) {
+    host.hidden = true;
+    if (mergeTargetField) {
+      mergeTargetField.value = "";
+    }
+    if (searchInputControl) {
+      searchInputControl.value = "";
+    }
+    if (resultsPanel) {
+      resultsPanel.innerHTML = "";
+    }
+    return;
+  }
+  host.hidden = false;
+  const query = compact(searchInputControl?.value || "");
+  const options = filterMergeTargetOptions(getMergeTargetOptions(entityType, currentId), query);
+  const selectedId = compact(mergeTargetField?.value || "");
+  if (resultsPanel) {
+    resultsPanel.innerHTML =
+      options.length > 0
+        ? options
+            .map(
+              (option) => `
+                <button
+                  type="button"
+                  class="owner-merge-combobox__option${option.value === selectedId ? " is-selected" : ""}"
+                  data-merge-target-option="${escapeHtml(option.value)}"
+                >${escapeHtml(option.label)}</button>`,
+            )
+            .join("")
+        : '<p class="owner-empty">没有匹配主条目。</p>';
+  }
+};
+
 const deriveGroupPath = (work) => {
   if (!work || !state.library) {
     return [];
@@ -791,13 +964,14 @@ const populateWorkSelectOptions = (select, composerId, selectedWorkId = "", prom
   if (!select) {
     return;
   }
+  const formatLabel = select.id === "batch-work-select" ? buildBatchWorkOptionLabel : getWorkDisplayLabel;
   const works = [...(state.library?.works || [])]
     .filter((item) => !composerId || item.composerId === composerId)
-    .sort((a, b) => getWorkDisplayLabel(a).localeCompare(getWorkDisplayLabel(b), "zh-Hans-CN"));
+    .sort((a, b) => formatLabel(a).localeCompare(formatLabel(b), "zh-Hans-CN"));
   select.disabled = !composerId;
   select.innerHTML =
     `<option value="">${composerId ? prompts.ready || "请选择作品" : prompts.empty || "请先选择作曲家"}</option>` +
-    works.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(getWorkDisplayLabel(item))}</option>`).join("");
+    works.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(formatLabel(item))}</option>`).join("");
   if (works.some((item) => item.id === selectedWorkId)) {
     select.value = selectedWorkId;
   }
@@ -901,6 +1075,7 @@ const fillNamedEntityForm = (form, entity) => {
   form.elements.aliases.value = (entity?.aliases || []).join("\n");
   form.elements.summary.value = entity?.summary || "";
   renderInfoPanelState(form, entity?.infoPanel);
+  renderMergeControls(form);
   const deleteButton = form.querySelector('[data-action="delete"]');
   if (deleteButton) {
     deleteButton.hidden = !entity?.id;
@@ -929,6 +1104,7 @@ const fillWorkForm = (form, entity) => {
   form.elements.aliases.value = (entity?.aliases || []).join("\n");
   form.elements.summary.value = entity?.summary || "";
   renderInfoPanelState(form, entity?.infoPanel);
+  renderMergeControls(form);
   const deleteButton = form.querySelector('[data-action="delete"]');
   if (deleteButton) {
     deleteButton.hidden = !entity?.id;
@@ -1519,6 +1695,9 @@ const resetEntityForm = (form) => {
     populateRecordingComposerOptions(form.elements.selectedComposerId);
     populateRecordingWorkOptions(form, "", "");
   }
+  if (form.elements.mergeTargetId) {
+    form.elements.mergeTargetId.value = "";
+  }
   state.activeEntity = createEmptyActiveEntity();
   renderInfoPanelState(form, emptyInfoPanel());
   const deleteButton = form.querySelector('[data-action="delete"]');
@@ -1530,6 +1709,7 @@ const resetEntityForm = (form) => {
     syncRecordingLinksField(form, []);
   }
   clearInlineCheck();
+  renderMergeControls(form);
 };
 
 const clearInlineCheck = () => {
@@ -1543,6 +1723,7 @@ const clearInlineCheck = () => {
   inlineCheckTitle.textContent = "当前条目自动检查";
   inlineCheckSubtitle.textContent = "将在当前条目内展示检查进度与候选。";
   inlineCheckContent.innerHTML = "";
+  detailCard?.classList.remove("is-inline-check-active");
 };
 
 const openInlineCheck = (entityType, entityId, title) => {
@@ -1554,6 +1735,7 @@ const openInlineCheck = (entityType, entityId, title) => {
   inlineCheckTitle.textContent = `${title || "当前条目"} · 自动检查`;
   inlineCheckSubtitle.textContent = "检查进度、错误与候选审查会直接显示在此处，不再跳转批量检查页面。";
   inlineCheckPanel.hidden = false;
+  detailCard?.classList.add("is-inline-check-active");
 };
 
 const resolveInlineCheck = (mode) => {
@@ -2226,7 +2408,7 @@ const buildProposalCardsHtml = (run, proposals, options = {}) => {
                 ? `<div class="owner-source-pills">${sourceLabels.map((label) => `<span class="owner-pill">${escapeHtml(label)}</span>`).join("")}</div>`
                 : ""
             }
-            ${buildEntitySummaryHtml(entity, { excerptLength: 56 })}
+            ${inline ? "" : buildEntitySummaryHtml(entity, { excerptLength: 56 })}
             ${
               editableFields.length
                 ? `<section class="owner-proposal__editor">
@@ -2277,7 +2459,8 @@ const renderReviewPagination = (pageData) => {
     </div>`;
 };
 
-const getRunPageProposals = (run) => paginateItems(run?.proposals || [], state.reviewPage, REVIEW_PAGE_SIZE);
+const getRunPageProposals = (run) =>
+  paginateItems(filterPendingProposalsForDisplay(run?.proposals || []), state.reviewPage, REVIEW_PAGE_SIZE);
 
 const renderInlineCheckJob = async (job) => {
   if (!job || !state.inlineCheck.entityType || !state.inlineCheck.entityId) {
@@ -2312,11 +2495,9 @@ const renderInlineCheckJob = async (job) => {
         <li>成功：${escapeHtml(job.progress.succeeded)}，无新增：${escapeHtml(job.progress.unchanged || 0)}，待关注：${escapeHtml(job.progress.attention || 0)}，失败：${escapeHtml(job.progress.failed)}，跳过：${escapeHtml(job.progress.skipped)}</li>
       </ul>
       ${buildInlineOutcomeHtml(currentItem, proposals)}
-      ${buildInlineEntityEditorHtml(state.inlineCheck.entityType, activeEntity)}
       ${
         hasRun && proposals.length
           ? `<section class="owner-job-detail__section">
-              <h4>当前条目候选</h4>
               <div class="owner-inline-check__proposal-list">${buildProposalCardsHtml(job.run, proposals, { inline: true })}</div>
             </section>`
           : ""
@@ -2330,19 +2511,13 @@ const renderInlineCheckJob = async (job) => {
           : ""
       }
       ${
-        proposals.length
+        !proposals.length && showResolutionActions
           ? `<div class="owner-inline-check__actions">
-              <button type="button" data-inline-run-action="apply-confirmed">应用本条目已确认候选</button>
-              <button type="button" data-inline-run-action="discard-pending">放弃本条目剩余候选</button>
+              <button type="button" data-inline-run-action="acknowledge">确认本次检查结论</button>
+              <button type="button" data-inline-run-action="dismiss">放弃并关闭</button>
             </div>`
-          : showResolutionActions
-            ? `<div class="owner-inline-check__actions">
-                <button type="button" data-inline-run-action="acknowledge">确认本次检查结论</button>
-                <button type="button" data-inline-run-action="dismiss">放弃并关闭</button>
-              </div>`
           : ""
       }
-      ${buildEntitySummaryHtml(activeEntity)}
       <section class="owner-job-detail__section">
         <h4>执行流程</h4>
         <div class="owner-inline-check__event-list">
@@ -2372,7 +2547,9 @@ const renderSearchResults = (results) => {
       .map(
         (item) => `
           <article class="owner-result-item">
-            <span class="owner-pill">${escapeHtml(entityTypeLabels[item.type] || item.type)}</span>
+            <div class="owner-result-item__badges">${buildSearchResultBadges(item)
+              .map((badge) => `<span class="owner-pill">${escapeHtml(badge)}</span>`)
+              .join("")}</div>
             <h3>${escapeHtml(item.title)}</h3>
             ${item.subtitle ? `<p class="owner-result-item__subtitle">${escapeHtml(item.subtitle)}</p>` : ""}
             <button type="button" data-load-type="${escapeHtml(item.type)}" data-load-id="${escapeHtml(item.id)}">载入详情</button>
@@ -3011,8 +3188,9 @@ const renderBatchReview = async () => {
     runId: run.id,
     run,
   };
+  const pendingProposals = filterPendingProposalsForDisplay(run.proposals || []);
   batchReviewStatus.textContent = `候选 ${run.summary.total} 条 / 待处理 ${run.summary.pending} 条 / 已应用 ${run.summary.applied} 条 / 已忽略 ${run.summary.ignored} 条`;
-  batchReviewList.innerHTML = buildProposalCardsHtml(run, run.proposals || [], {
+  batchReviewList.innerHTML = buildProposalCardsHtml(run, pendingProposals, {
     mode: "batch",
     allowDirectApply: false,
     library: state.batchSession.draftLibrary,
@@ -3394,9 +3572,7 @@ const refreshRuns = async () => {
   state.runs = runs;
   const optionsHtml =
     '<option value="">请选择</option>' +
-    runs
-      .map((run) => `<option value="${escapeHtml(run.id)}">${escapeHtml(`${run.id} / ${run.summary.total} 条候选`)}</option>`)
-      .join("");
+    runs.map((run) => `<option value="${escapeHtml(run.id)}">${escapeHtml(`${run.id} / ${run.summary.pending}`)}</option>`).join("");
   reviewRunSelect.innerHTML = optionsHtml;
   logRunSelect.innerHTML = optionsHtml;
 
@@ -3633,12 +3809,12 @@ const applyProposal = async (proposalId, options = {}) => {
     }),
   });
   await refreshAll();
+  if (!options.inline && state.inlineCheck.runId && state.inlineCheck.runId === runId) {
+    clearInlineCheck();
+  }
   if (options.inline && state.activeEntity.type && state.activeEntity.id) {
-    if (result.run) {
-      state.inlineCheck.runId = result.run.id;
-    }
     await loadEntity(state.activeEntity.type, state.activeEntity.id);
-    await renderInlineCheckJob({ ...(state.activeJob || {}), run: result.run });
+    setActiveView("detail");
   }
   setResult(result);
 };
@@ -3654,13 +3830,14 @@ const ignoreProposal = async (proposalId, options = {}) => {
       await syncUpdatedRunState(result.run, options);
     }
     if (options.inline) {
-      if (result.run) {
-        state.inlineCheck.runId = result.run.id;
-      }
-      await renderInlineCheckJob({ ...(state.activeJob || {}), run: result.run });
+      await loadEntity(state.activeEntity.type, state.activeEntity.id);
+      setActiveView("detail");
     }
   } else {
     await refreshRuns();
+    if (state.inlineCheck.runId && state.inlineCheck.runId === runId) {
+      clearInlineCheck();
+    }
   }
   setResult(result);
 };
@@ -4236,10 +4413,26 @@ entityForms.forEach((form) => {
         setResult(`已清空 ${entityTypeLabels[entityType]} 表单。`);
         return;
       }
+      if (button.dataset.action === "merge") {
+        const duplicateLabel = compact(form.elements.name?.value || form.elements.title?.value || form.elements.existingId?.value);
+        const targetId = compact(form.elements.mergeTargetId?.value || "");
+        const targetEntity = getEntityByTypeAndId(entityType, targetId);
+        showConfirmDialog({
+          title: "合并条目",
+          message: `确认将“${duplicateLabel || "当前条目"}”合并到“${
+            targetEntity ? getMergeOptionLabel(entityType, targetEntity) : targetId || "主条目"
+          }”吗？此操作会迁移引用并删除当前重复条目。`,
+          confirmText: "合并条目",
+          onConfirm: async () => {
+            await withBusyButton(button, "合并中…", () => mergeEntity(form));
+          },
+        });
+        return;
+      }
       if (button.dataset.action === "delete") {
         const entityLabel = compact(form.elements.name?.value || form.elements.title?.value || form.elements.existingId?.value);
         showConfirmDialog({
-          title: `删除${entityTypeLabels[entityType] || "条目"}`,
+          title: "删除条目",
           message: `确认删除“${entityLabel || "当前条目"}”吗？此操作不可撤销。`,
           confirmText: "确认删除",
           onConfirm: async () => {
@@ -4294,7 +4487,20 @@ entityForms.forEach((form) => {
       setResult(error instanceof Error ? error.message : String(error));
     }
   });
+  form.addEventListener("input", (event) => {
+    const mergeSearchInput = event.target.closest("[data-merge-target-search]");
+    if (!mergeSearchInput) {
+      return;
+    }
+    renderMergeControls(form);
+  });
   form.addEventListener("click", (event) => {
+    const mergeTargetButton = event.target.closest("[data-merge-target-option]");
+    if (mergeTargetButton && form.elements.mergeTargetId) {
+      form.elements.mergeTargetId.value = mergeTargetButton.dataset.mergeTargetOption || "";
+      renderMergeControls(form);
+      return;
+    }
     const textButton = event.target.closest('[data-info-panel-action="edit-text"]');
     if (textButton) {
       openInfoPanelTextDialog(form);

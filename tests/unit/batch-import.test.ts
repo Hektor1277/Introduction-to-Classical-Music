@@ -5,6 +5,7 @@ import {
   buildConfirmedBatchSelection,
   cloneBatchDraftEntities,
   loadOrchestraAbbreviationMap,
+  normalizeBatchImportSource,
   parseOrchestraAbbreviationText,
 } from "@/lib/batch-import";
 import { promises as fs } from "node:fs";
@@ -161,9 +162,20 @@ describe("batch import", () => {
     ).rejects.toThrow("批量导入前必须先选定作曲家和作品");
   });
 
+  it("normalizes loose text input into the strict template before analysis", () => {
+    const normalized = normalizeBatchImportSource(
+      " Kleiber｜ Wiener Philharmoniker ｜ 1975 \r\n\n Karajan|Berlin Philharmonic Orchestra|1963 ",
+      "orchestral",
+    );
+
+    expect(normalized).toBe(
+      "Kleiber | Wiener Philharmoniker | 1975 | -\nKarajan | Berlin Philharmonic Orchestra | 1963 | -",
+    );
+  });
+
   it("creates only recording drafts for the orchestral template", async () => {
     const result = await analyzeBatchImport({
-      sourceText: "Kleiber | Wiener Philharmoniker | 1975 | -\nKarajan | Berliner Philharmoniker | 1963 | https://example.com",
+      sourceText: "Kleiber | Wiener Philharmoniker | 1975\nKarajan | Berliner Philharmoniker | 1963 | https://example.com",
       library: baseLibrary(),
       composerId: "composer-beethoven",
       workId: "work-beethoven-5",
@@ -199,7 +211,7 @@ describe("batch import", () => {
   it("rejects malformed template rows", async () => {
     await expect(
       analyzeBatchImport({
-        sourceText: "Kleiber | Wiener Philharmoniker | 1975",
+        sourceText: "Kleiber | 1975",
         library: baseLibrary(),
         composerId: "composer-beethoven",
         workId: "work-beethoven-5",

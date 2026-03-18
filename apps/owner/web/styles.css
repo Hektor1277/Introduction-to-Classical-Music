@@ -662,6 +662,16 @@ button {
   gap: 0.85rem 1rem;
 }
 
+.owner-batch-input .owner-filter-grid {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  align-items: end;
+}
+
+.owner-batch-input .owner-filter-grid label,
+.owner-batch-input .owner-filter-grid select {
+  min-width: 0;
+}
+
 .owner-selection-preview,
 .owner-llm-panel {
   border-top: 1px solid var(--line);
@@ -1169,6 +1179,13 @@ button {
   border: 0;
   padding: 0;
   background: transparent;
+  margin: auto;
+  inset: 0;
+}
+
+.owner-dialog[open] {
+  display: grid;
+  place-items: center;
 }
 
 .owner-dialog::backdrop {
@@ -1676,6 +1693,12 @@ pre {
   margin: 0;
 }
 
+.owner-result-item__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
 .owner-card--search .owner-result-item p {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -1751,6 +1774,10 @@ pre {
 .owner-card--detail .owner-inline-check__proposal-list {
   min-width: 0;
   max-width: 100%;
+}
+
+.owner-card--detail.is-inline-check-active .owner-tab-panels {
+  display: none;
 }
 
 .owner-result-item {
@@ -1956,6 +1983,12 @@ pre {
   gap: 0.45rem;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.owner-batch-summary div,
+.owner-batch-summary strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .owner-inline-status {
@@ -2287,6 +2320,10 @@ pre {
   padding-right: 0.4rem;
 }
 
+.owner-card--detail .owner-inline-check {
+  max-height: min(48vh, 26rem);
+}
+
 .owner-article-layout {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -2317,6 +2354,49 @@ pre {
 .owner-batch-draft__field select {
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+#batch-work-select,
+#batch-composer-select,
+#batch-work-type-select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.owner-merge-controls {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: rgba(162, 82, 82, 0.06);
+}
+
+.owner-merge-combobox {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.owner-merge-combobox__results {
+  display: grid;
+  gap: 0.45rem;
+  max-height: 18rem;
+  overflow: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.owner-merge-combobox__option {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.owner-merge-combobox__option.is-selected {
+  border-color: var(--line-strong);
+  background: rgba(214, 222, 199, 0.7);
 }
 
 @media (max-width: 1180px) {

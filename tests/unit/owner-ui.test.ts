@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 import {
+  buildBatchWorkOptionLabel,
   buildBatchRelationOptions,
   buildBatchPreviewShellHtml,
   buildBatchResultSummary,
+  buildSearchResultBadges,
   buildRecordingLinkChipLabel,
   buildRecordingLinkEditorHtml,
+  filterMergeTargetOptions,
   getProposalModeAttributes,
   resolveProposalActionContext,
   buildWorkOptionLabel,
@@ -135,6 +140,18 @@ describe("owner ui helpers", () => {
 
     expect(label).toBe("Mahler / Gustav Mahler · Mahler No. 5 in C-sharp minor · Symphony No. 5 in C-sharp minor");
   });
+  it("builds batch work labels without composer names", () => {
+    const label = buildBatchWorkOptionLabel({
+      id: "work-beethoven-5",
+      composerId: "composer-beethoven",
+      title: "第五交响曲",
+      titleLatin: "Symphony No. 5 in C minor",
+      catalogue: "Op. 67",
+    });
+
+    expect(label).toBe("第五交响曲 / Symphony No. 5 in C minor / Op. 67");
+  });
+
   it("keeps proposal ids on cards and uses a separate target attribute on action buttons", () => {
     const attributes = getProposalModeAttributes();
 
@@ -166,6 +183,85 @@ describe("owner ui helpers", () => {
       mode: "batch",
       runId: "run-1",
     });
+  });
+
+  it("derives owner search badges from entity roles instead of collapsing groups into generic people", () => {
+    expect(buildSearchResultBadges({ type: "composer" })).toEqual(["作曲家"]);
+    expect(buildSearchResultBadges({ type: "person", roles: ["orchestra"] })).toEqual(["团体", "乐团"]);
+    expect(buildSearchResultBadges({ type: "person", roles: ["conductor", "soloist"] })).toEqual(["人物", "指挥", "独奏"]);
+  });
+
+  it("filters merge target options with a search query", () => {
+    const options = filterMergeTargetOptions(
+      [
+        { value: "bpo", label: "Berlin Philharmonic Orchestra" },
+        { value: "cso", label: "Chicago Symphony Orchestra" },
+        { value: "rso", label: "Rundfunk-Sinfonieorchester Berlin" },
+      ],
+      "berlin",
+    );
+
+    expect(options).toEqual([
+      { value: "bpo", label: "Berlin Philharmonic Orchestra" },
+      { value: "rso", label: "Rundfunk-Sinfonieorchester Berlin" },
+    ]);
+  });
+
+  it("keeps dialog centering rules in the owner stylesheet", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(/\.owner-dialog\s*\{[\s\S]*margin:\s*auto/i);
+    expect(css).toMatch(/\.owner-dialog\[open\][\s\S]*display:\s*grid/i);
+  });
+
+  it("limits inline-check height inside the detail card so form actions remain clickable", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(
+      /\.owner-card--detail\s+\.owner-inline-check\s*\{[\s\S]*max-height:\s*min\(48vh,\s*26rem\)/i,
+    );
+  });
+
+  it("treats inline auto-check as a replacement workspace instead of stacking the entity form underneath", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(script).toContain('detailCard?.classList.add("is-inline-check-active")');
+    expect(script).toContain('detailCard?.classList.remove("is-inline-check-active")');
+    expect(css).toMatch(
+      /\.owner-card--detail\.is-inline-check-active\s+\.owner-tab-panels\s*\{[\s\S]*display:\s*none/i,
+    );
+  });
+
+  it("uses generic entity action labels and removes the preview action from owner forms at runtime", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(script).toContain('resetButton.textContent = "新建条目"');
+    expect(script).toContain('saveButton.textContent = "保存条目"');
+    expect(script).toContain('deleteButton.textContent = "删除条目"');
+    expect(script).toContain("previewButton.remove()");
+  });
+
+  it("keeps merge search results inside a bounded dropdown panel", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(/\.owner-merge-combobox__results\s*\{[\s\S]*max-height:\s*18rem/i);
+    expect(css).toMatch(/\.owner-merge-combobox__results\s*\{[\s\S]*overflow:\s*auto/i);
+  });
+
+  it("refreshes review and log panels when switching views instead of leaving stale proposal cards on screen", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(script).toContain('if (viewName === "review")');
+    expect(script).toContain("void renderReviewRun().catch");
+    expect(script).toContain('if (viewName === "logs")');
+    expect(script).toContain("void renderLogRun().catch");
+  });
+
+  it("shows pending review counts in the run selector so applied runs are not mislabeled as active candidates", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(script).toContain("run.summary.pending");
   });
 });
 

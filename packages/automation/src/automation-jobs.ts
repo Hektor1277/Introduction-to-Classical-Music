@@ -1,13 +1,14 @@
 import { createAutomationRun, type AutomationCheckCategory, type AutomationRun } from "./automation.js";
 import {
   reviewAutomationProposalQuality,
+  reviewWorkAutomationProposalQuality,
   runAutomationChecks,
   type AutomationCheckRequest,
   type RunAutomationChecksOptions,
 } from "./automation-checks.js";
 import { getDisplayData, getWebsiteDisplay } from "../../shared/src/display.js";
-import type { LlmConfig } from "./llm.js";
-import type { Composer, LibraryData, Person } from "../../shared/src/schema.js";
+import { reviewAutomationProposalWithLlm, type LlmConfig } from "./llm.js";
+import type { Composer, LibraryData, Person, Work } from "../../shared/src/schema.js";
 
 export type AutomationJobStatus = "queued" | "preparing" | "running" | "completed" | "cancelled";
 export type AutomationJobItemStatus =
@@ -419,6 +420,38 @@ function findEntityForItem(library: LibraryData, item: AutomationJobSelectionIte
   return library.people.find((person) => person.id === item.entityId);
 }
 
+function findWorkForItem(library: LibraryData, item: AutomationJobSelectionItem): Work | undefined {
+  if (item.category !== "work") {
+    return undefined;
+  }
+  return library.works.find((work) => work.id === item.entityId);
+}
+
+function mergeReviewResults<T extends { ok: boolean; status: string; issues: string[]; preview: unknown; hasChanges: boolean }>(
+  review: T,
+  llmReview: Awaited<ReturnType<typeof reviewAutomationProposalWithLlm>> | null,
+) {
+  if (!llmReview) {
+    return review;
+  }
+  const issues = [...review.issues];
+  if (llmReview.status === "needs-attention") {
+    issues.push(...llmReview.issues);
+  }
+  const status =
+    llmReview.status === "needs-attention"
+      ? "needs-attention"
+      : review.status === "already-complete" && review.hasChanges
+        ? "ok"
+        : review.status;
+  return {
+    ...review,
+    ok: status === "ok",
+    status,
+    issues: [...new Set(issues)],
+  };
+}
+
 export function createAutomationJobManager() {
   const jobs = new Map<string, AutomationJobRecord>();
 
@@ -509,7 +542,7 @@ export function createAutomationJobManager() {
 
   const runSingleItem = async (job: AutomationJobRecord, item: AutomationJobItemRecord, input: CreateJobInput) => {
     if (jobs.get(job.id)?.status === "cancelled") {
-      skipItem(job, item, "任务已取消。");
+      skipItem(job, item, "Job cancelled.");
       return null;
     }
 
@@ -517,7 +550,7 @@ export function createAutomationJobManager() {
     item.status = "running";
     job.currentItem = item;
     job.currentItemIds.push(item.entityId);
-    appendItemEvent(job, item, "fetch", `开始检查：${item.label}`);
+    appendItemEvent(job, item, "fetch", `Starting auto-check: ${item.label}`);
 
     const run = await runChecksImpl(
       input.library,
@@ -527,27 +560,67 @@ export function createAutomationJobManager() {
       input.runChecksOptions,
     );
     item.runId = run.id;
+    const proposals = run.proposals.filter((proposal) => proposal.entityId === item.entityId);
 
-    if (isNamedEntityCategory(item.category)) {
-      const entity = findEntityForItem(input.library, item);
-      if (!entity) {
-        throw new Error(`未找到待复查实体：${item.entityId}`);
+    if (isNamedEntityCategory(item.category) || item.category === "work") {
+      let review:
+        | ReturnType<typeof reviewAutomationProposalQuality>
+        | ReturnType<typeof reviewWorkAutomationProposalQuality>;
+      let reviewTitle = item.label;
+      let reviewEntityType: "composer" | "person" | "work" = "work";
+      let reviewRoles: string[] = [];
+      let currentEntity: Record<string, unknown>;
+
+      if (isNamedEntityCategory(item.category)) {
+        const entity = findEntityForItem(input.library, item);
+        if (!entity) {
+          throw new Error(`闁剧虎浜濇竟姗€宕氶弶璺ㄧ濠㈣泛绉甸悡锛勨偓鍦仒缂嶅鏁?{item.entityId}`);
+        }
+        review = reviewAutomationProposalQuality(entity, proposals);
+        reviewTitle = entity.nameLatin || entity.name;
+        reviewEntityType = item.category === "composer" ? "composer" : "person";
+        reviewRoles = "roles" in entity ? [...entity.roles] : [];
+        currentEntity = entity as unknown as Record<string, unknown>;
+      } else {
+        const work = findWorkForItem(input.library, item);
+        if (!work) {
+          throw new Error(`闁剧虎浜濇竟姗€宕氶弶璺ㄧ濠㈣泛绉甸悡鈩冩媴濠婂啯鎯傞柨?{item.entityId}`);
+        }
+        const composer = input.library.composers.find((candidate) => candidate.id === work.composerId);
+        review = reviewWorkAutomationProposalQuality(work, composer, proposals);
+        reviewTitle = [composer?.nameLatin || composer?.name || "", work.title].filter(Boolean).join(" / ");
+        reviewEntityType = "work";
+        currentEntity = work as unknown as Record<string, unknown>;
       }
 
-      const proposals = run.proposals.filter((proposal) => proposal.entityId === item.entityId);
-      const review = reviewAutomationProposalQuality(entity, proposals);
+      if (proposals.length > 0 && input.llmConfig) {
+        const llmReview = await reviewAutomationProposalWithLlm({
+          config: input.llmConfig,
+          entityType: reviewEntityType,
+          title: reviewTitle,
+          roles: reviewRoles,
+          current: currentEntity,
+          preview: review.preview as Record<string, unknown>,
+          fields: proposals.flatMap((proposal) => proposal.fields || []),
+          sources: [...new Set(proposals.flatMap((proposal) => proposal.sources || []))],
+          evidence: proposals.flatMap((proposal) => proposal.evidence || []),
+          fetchImpl: input.fetchImpl ?? fetch,
+        });
+        review = mergeReviewResults(review, llmReview);
+      }
+
       item.reviewIssues = review.issues;
 
       if (review.status === "needs-attention") {
         const reviewMessage =
           proposals.length > 0
-            ? `自动复查完成：${item.label} 生成了候选，但仍需人工关注。`
-            : `自动复查完成：${item.label} 仍有待补全信息，当前未找到可靠候选。`;
+            ? `Auto review completed: ${item.label} still needs attention.`
+            : `Auto review completed: ${item.label} remains incomplete without usable candidates.`;
         appendItemEvent(job, item, "review", reviewMessage);
         completeItem(job, item, "needs-attention", reviewMessage, run.id);
         job.errors.push({
           code: proposals.length > 0 ? "needs-attention" : "no-candidate",
-          message: review.issues.join("；") || "当前没有新增候选，但条目仍未补齐。",
+          message: review.issues.join("; ") || "No new proposals were accepted and the item still needs review.",
           entityType: item.category,
           entityId: item.entityId,
         });
@@ -555,7 +628,7 @@ export function createAutomationJobManager() {
       }
 
       if (review.status === "already-complete") {
-        const reviewMessage = `自动复查完成：${item.label} 当前已较为完整，无需新增候选。`;
+        const reviewMessage = `Auto review completed: ${item.label} is already complete.`;
         appendItemEvent(job, item, "review", reviewMessage);
         completeItem(job, item, "completed-nochange", reviewMessage, run.id);
         return run;
@@ -563,19 +636,20 @@ export function createAutomationJobManager() {
 
       if (!review.ok) {
         item.reviewIssues = review.issues;
-        throw new Error(review.issues.join("；") || "自动复查未通过。");
+        throw new Error(review.issues.join("; ") || "Auto review failed.");
       }
 
-      appendItemEvent(job, item, "review", `自动复查通过：${item.label} 生成了可审查候选。`);
+      appendItemEvent(job, item, "review", `Auto review passed: ${item.label} has reviewable proposals.`);
     }
 
     if (run.proposals.length === 0) {
-      completeItem(job, item, "completed-nochange", `自动检查完成，${item.label} 没有生成新的审查候选。`, run.id);
+      completeItem(job, item, "completed-nochange", `Auto check completed: ${item.label} produced no new proposals.`, run.id);
       return run;
     }
 
-    completeItem(job, item, "succeeded", `自动检查完成，${item.label} 已生成待审候选。`, run.id);
+    completeItem(job, item, "succeeded", `Auto check completed: ${item.label} produced reviewable proposals.`, run.id);
     return run;
+
   };
 
   const runJob = async (jobId: string, input: CreateJobInput) => {
@@ -590,7 +664,7 @@ export function createAutomationJobManager() {
       job.completedAt = nowIso();
       job.errors.push({
         code: "selection-empty",
-        message: "当前筛选条件没有命中任何条目。",
+        message: "Current filters did not match any items.",
       });
       return;
     }
@@ -599,7 +673,7 @@ export function createAutomationJobManager() {
     appendEvent(jobId, {
       timestamp: nowIso(),
       phase: "selection",
-      message: `本次共选中 ${items.length} 个条目。`,
+      message: `Selected ${items.length} items for this run.`, 
     });
 
     const proposalRuns: AutomationRun[] = [];
@@ -651,7 +725,7 @@ export function createAutomationJobManager() {
     if (jobs.get(jobId)?.status === "cancelled") {
       job.errors.push({
         code: "job-cancelled",
-        message: "任务已取消。",
+        message: "Job cancelled.",
       });
     }
 
@@ -660,7 +734,7 @@ export function createAutomationJobManager() {
     appendEvent(jobId, {
       timestamp: nowIso(),
       phase: "complete",
-      message: `任务结束：${job.progress.succeeded} 成功，${job.progress.unchanged} 无新增，${job.progress.attention} 待关注，${job.progress.failed} 失败，${job.progress.skipped} 跳过。`,
+      message: `Job finished: ${job.progress.succeeded} succeeded, ${job.progress.unchanged} unchanged, ${job.progress.attention} needs attention, ${job.progress.failed} failed, ${job.progress.skipped} skipped.`,
     });
 
     if (input.onCompleted) {
@@ -696,7 +770,7 @@ export function createAutomationJobManager() {
           {
             timestamp: nowIso(),
             phase: "prepare",
-            message: "任务已创建，准备开始自动检查。",
+            message: "Job created. Preparing auto-check run.",
           },
         ],
         errors: [],

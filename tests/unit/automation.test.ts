@@ -571,6 +571,390 @@ describe("automation checks", () => {
     );
   });
 
+  it("prefers grounded conductor biography fields over a richer but conflicting llm candidate", async () => {
+    const peopleLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "barenboim",
+          slug: "daniel-barenboim",
+          name: "Daniel Barenboim",
+          fullName: "Daniel Barenboim",
+          nameLatin: "Daniel Barenboim",
+          displayName: "Daniel Barenboim",
+          displayFullName: "Daniel Barenboim",
+          displayLatinName: "Daniel Barenboim",
+          country: "",
+          avatarSrc: "",
+          roles: ["conductor"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    const run = await runAutomationChecks(
+      peopleLibrary,
+      { categories: ["conductor"], conductorIds: ["barenboim"] },
+      async (url, init) => {
+        const value = String(url);
+        if (value.includes("w/api.php") && value.includes("wikipedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Daniel Barenboim" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Daniel Barenboim",
+              description: "Argentine-born conductor and pianist",
+              extract: "Daniel Barenboim was born in 1942 and is an Argentine-born conductor and pianist.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Daniel_Barenboim" } },
+              originalimage: { source: "https://upload.wikimedia.org/barenboim.jpg" },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("/chat/completions")) {
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      displayName: "丹尼尔·巴伦博伊姆",
+                      displayFullName: "丹尼尔·巴伦博伊姆",
+                      displayLatinName: "Daniel Barenboim",
+                      aliases: ["巴伦博伊姆"],
+                      country: "United Kingdom",
+                      birthYear: 1992,
+                      deathYear: 2023,
+                      summary: "著名指挥家与钢琴家。",
+                      confidence: 0.94,
+                      rationale: "LLM assembled a richer candidate.",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`blocked: ${value} ${String(init?.method || "GET")}`);
+      },
+      llmConfig,
+    );
+
+    const proposal = run.proposals[0];
+    expect(proposal).toBeTruthy();
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "country", after: "Argentina" }),
+        expect.objectContaining({ path: "birthYear", after: 1942 }),
+      ]),
+    );
+    expect(proposal?.fields.some((field) => field.path === "deathYear")).toBe(false);
+  });
+
+  it("keeps life-year fields aligned with the selected living-person summary across conflicting grounded sources", async () => {
+    const peopleLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "barenboim",
+          slug: "daniel-barenboim",
+          name: "Daniel Barenboim",
+          fullName: "Daniel Barenboim",
+          nameLatin: "Daniel Barenboim",
+          displayName: "Daniel Barenboim",
+          displayFullName: "Daniel Barenboim",
+          displayLatinName: "Daniel Barenboim",
+          country: "",
+          avatarSrc: "",
+          roles: ["conductor"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0011",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const run = await runAutomationChecks(
+      peopleLibrary,
+      { categories: ["conductor"], conductorIds: ["barenboim"] },
+      async (url) => {
+        const value = String(url);
+        if (value.includes("w/api.php") && value.includes("wikipedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Daniel Barenboim" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Daniel Barenboim",
+              description: "Argentine-born conductor and pianist",
+              extract: "Daniel Barenboim was born in 1942 and is an Argentine-born conductor and pianist.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Daniel_Barenboim" } },
+              originalimage: { source: "https://upload.wikimedia.org/barenboim.jpg" },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("baike.baidu.com")) {
+          return new Response(
+            '<html><head><meta property="og:title" content="丹尼尔·巴伦博伊姆 - 百度百科" /><meta name="description" content="丹尼尔·巴伦博伊姆（1942—2023）是阿根廷指挥家、钢琴家。" /></head><body></body></html>',
+            { status: 200 },
+          );
+        }
+        if (value.includes("baidu.com/s?")) {
+          return new Response("<html><body>no result</body></html>", { status: 200 });
+        }
+        if (value.includes("commons.wikimedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                pages: {
+                  1: {
+                    title: "File:Daniel_Barenboim.jpg",
+                    imageinfo: [
+                      {
+                        url: "https://upload.wikimedia.org/barenboim.jpg",
+                        thumburl: "https://upload.wikimedia.org/barenboim.jpg",
+                        extmetadata: { Artist: { value: "Wikimedia Commons" } },
+                      },
+                    ],
+                  },
+                },
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`blocked: ${value}`);
+      },
+    );
+
+    const proposal = run.proposals[0];
+    expect(proposal).toBeTruthy();
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "country", after: "Argentina" }),
+        expect.objectContaining({ path: "birthYear", after: 1942 }),
+      ]),
+    );
+    expect(proposal?.fields.some((field) => field.path === "deathYear")).toBe(false);
+  });
+
+  it("treats orchestras as institutions and does not generate life-year fields", async () => {
+    const peopleLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "berlin-phil",
+          slug: "berlin-phil",
+          name: "Berlin Philharmonic",
+          fullName: "Berlin Philharmonic",
+          nameLatin: "Berlin Philharmonic",
+          displayName: "Berlin Philharmonic",
+          displayFullName: "Berlin Philharmonic",
+          displayLatinName: "Berlin Philharmonic",
+          country: "",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0100",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    const run = await runAutomationChecks(
+      peopleLibrary,
+      { categories: ["orchestra"], orchestraIds: ["berlin-phil"] },
+      async (url) => {
+        const value = String(url);
+        if (value.includes("w/api.php") && value.includes("wikipedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Berlin Philharmonic" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Berlin Philharmonic",
+              description: "German orchestra",
+              extract: "The Berlin Philharmonic is a German orchestra based in Berlin.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Berlin_Philharmonic" } },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("/chat/completions")) {
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      displayName: "柏林爱乐",
+                      displayFullName: "柏林爱乐乐团",
+                      displayLatinName: "Berlin Philharmonic",
+                      aliases: ["柏林爱乐"],
+                      abbreviations: ["BPO"],
+                      country: "Germany",
+                      birthYear: 1882,
+                      deathYear: 2024,
+                      summary: "德国柏林的著名管弦乐团。",
+                      confidence: 0.9,
+                      rationale: "Institution profile",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`blocked: ${value}`);
+      },
+      llmConfig,
+    );
+
+    const proposal = run.proposals[0];
+    expect(proposal).toBeTruthy();
+    expect(proposal?.fields.some((field) => field.path === "birthYear")).toBe(false);
+    expect(proposal?.fields.some((field) => field.path === "deathYear")).toBe(false);
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "country", after: "Germany" }),
+        expect.objectContaining({ path: "aliases", after: expect.arrayContaining(["BPO"]) }),
+      ]),
+    );
+  });
+
+  it("derives a usable orchestra abbreviation from institution-style latin names when sources omit one", async () => {
+    const peopleLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "cologne-symphony",
+          slug: "cologne-symphony",
+          name: "Cologne Symphony Orchestra",
+          fullName: "Cologne Symphony Orchestra",
+          nameLatin: "Cologne Symphony Orchestra",
+          displayName: "Cologne Symphony Orchestra",
+          displayFullName: "Cologne Symphony Orchestra",
+          displayLatinName: "Cologne Symphony Orchestra",
+          country: "",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0101",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const run = await runAutomationChecks(
+      peopleLibrary,
+      { categories: ["orchestra"], orchestraIds: ["cologne-symphony"] },
+      async (url) => {
+        const value = String(url);
+        if (value.includes("w/api.php") && value.includes("wikipedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Cologne Symphony Orchestra" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Cologne Symphony Orchestra",
+              description: "German orchestra",
+              extract: "The Cologne Symphony Orchestra is a German orchestra based in Cologne.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Cologne_Symphony_Orchestra" } },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("baike.baidu.com")) {
+          return new Response(
+            '<html><head><meta property="og:title" content="科隆交响乐团 - 百度百科" /><meta name="description" content="科隆交响乐团是德国科隆的管弦乐团。" /></head><body></body></html>',
+            { status: 200 },
+          );
+        }
+        if (value.includes("baidu.com/s?")) {
+          return new Response("<html><body>no result</body></html>", { status: 200 });
+        }
+        if (value.includes("commons.wikimedia.org")) {
+          return new Response(JSON.stringify({ query: { pages: {} } }), { status: 200 });
+        }
+        throw new Error(`blocked: ${value}`);
+      },
+    );
+
+    const proposal = run.proposals[0];
+    expect(proposal).toBeTruthy();
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "aliases", after: expect.arrayContaining(["CSO"]) }),
+      ]),
+    );
+  });
+
   it("checks work entities directly without falling through to recording checks", async () => {
     const workLibrary = validateLibrary({
       composers: [
@@ -679,5 +1063,475 @@ describe("automation checks", () => {
         expect.objectContaining({ path: "summary", after: expect.stringContaining("Beethoven") }),
       ]),
     );
+  });
+
+  it("keeps incomplete works reviewable when Wikipedia search is ambiguous and fallback sources still provide evidence", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "tchaikovsky",
+          slug: "tchaikovsky",
+          name: "柴可夫斯基",
+          fullName: "彼得·伊里奇·柴可夫斯基",
+          nameLatin: "Pyotr Ilyich Tchaikovsky",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "tchaikovsky",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "tchaikovsky-5",
+          composerId: "tchaikovsky",
+          groupIds: ["group-symphony"],
+          slug: "tchaikovsky-5",
+          title: "第五交响曲",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0010",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const fetchImpl: typeof fetch = async (input) => {
+      const url = String(input);
+      if (url.includes("w/api.php")) {
+        return new Response(
+          JSON.stringify({
+            query: {
+              search: [{ title: "Symphony No. 5" }],
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      if (url.includes("/page/summary/")) {
+        return new Response(
+          JSON.stringify({
+            title: "Symphony No. 5",
+            extract: "This is a disambiguation page.",
+            content_urls: {
+              desktop: {
+                page: "https://en.wikipedia.org/wiki/Symphony_No._5",
+              },
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      if (url.includes("baidu.com/s?")) {
+        return new Response(
+          '<html><body><h3><a href="https://baike.baidu.com/item/%E7%AC%AC%E4%BA%94%E4%BA%A4%E5%93%8D%E6%9B%B2">柴可夫斯基第五交响曲</a></h3><div class="c-abstract">《第五交响曲》是柴可夫斯基创作的 e 小调第五交响曲，作品64。</div></body></html>',
+          { status: 200 },
+        );
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    };
+
+    const run = await runAutomationChecks(workLibrary, { categories: ["work"], workIds: ["tchaikovsky-5"] }, fetchImpl);
+    const proposal = run.proposals[0];
+
+    expect(proposal?.entityType).toBe("work");
+    expect(proposal?.summary).toContain("柴可夫斯基");
+    expect(proposal?.summary).toContain("第五交响曲");
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "catalogue", after: "作品64" }),
+        expect.objectContaining({ path: "summary", after: expect.stringContaining("柴可夫斯基") }),
+      ]),
+    );
+    expect(proposal?.evidence?.some((item) => item.sourceLabel.includes("Baidu"))).toBe(true);
+  });
+
+  it("re-injects composer context when concise work summaries would otherwise omit the composer", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "beethoven",
+          slug: "beethoven",
+          name: "贝多芬",
+          fullName: "路德维希·范·贝多芬",
+          nameLatin: "Ludwig van Beethoven",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "beethoven",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "beethoven-6",
+          composerId: "beethoven",
+          groupIds: ["group-symphony"],
+          slug: "beethoven-6",
+          title: "第六交响曲“田园”",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0010",
+          updatedAt: "2026-03-17T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    let chatCalls = 0;
+    const run = await runAutomationChecks(
+      workLibrary,
+      { categories: ["work"], workIds: ["beethoven-6"] },
+      async (url, init) => {
+        const value = String(url);
+        if (value.includes("w/api.php") && value.includes("wikipedia.org")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Symphony No. 6 (Beethoven)" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Symphony No. 6 (Beethoven)",
+              description: "Symphony by Beethoven",
+              extract: "Symphony No. 6 in F major, Op. 68, also known as the Pastoral Symphony, is a symphony by Ludwig van Beethoven.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Symphony_No._6_(Beethoven)" } },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("baidu.com/s?")) {
+          return new Response("<html><body>no result</body></html>", { status: 200 });
+        }
+        if (value.includes("/chat/completions")) {
+          chatCalls += 1;
+          if (chatCalls === 1) {
+            return new Response(
+              JSON.stringify({
+                choices: [
+                  {
+                    message: {
+                      content: "以田园风景与自然意象著称的交响曲。",
+                    },
+                  },
+                ],
+              }),
+              { status: 200 },
+            );
+          }
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      status: "ok",
+                      issues: [],
+                      confidence: 0.92,
+                      rationale: "grounded",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`blocked: ${value} ${String(init?.method || "GET")}`);
+      },
+      llmConfig,
+    );
+
+    const proposal = run.proposals[0];
+    const summaryField = proposal?.fields.find((field) => field.path === "summary");
+    expect(summaryField?.after).toContain("贝多芬");
+    expect(String(summaryField?.after || "")).toContain("田园");
+  });
+
+  it("falls back to structured LLM work knowledge when web sources produce no usable fields", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "tchaikovsky",
+          slug: "tchaikovsky",
+          name: "柴可夫斯基",
+          fullName: "彼得·伊里奇·柴可夫斯基",
+          nameLatin: "Pyotr Ilyich Tchaikovsky",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "tchaikovsky",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "tchaikovsky-5",
+          composerId: "tchaikovsky",
+          groupIds: ["group-symphony"],
+          slug: "tchaikovsky-5",
+          title: "第五交响曲",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0010",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    const fetchImpl: typeof fetch = async (url, init) => {
+      const value = String(url);
+      if (value.includes("w/api.php")) {
+        return new Response(JSON.stringify({ query: { search: [] } }), { status: 200 });
+      }
+      if (value.includes("baidu.com/s?")) {
+        return new Response(
+          '<html><body><h3><a href="https://example.com/beethoven-5">贝多芬第五交响曲</a></h3><div class="c-abstract">《第五交响曲》是贝多芬创作的交响曲，作品号67。</div></body></html>',
+          { status: 200 },
+        );
+      }
+      if (value.includes("/chat/completions")) {
+        return new Response(
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: JSON.stringify({
+                    titleLatin: "Symphony No. 5 in E minor, Op. 64",
+                    catalogue: "Op. 64",
+                    summary: "柴可夫斯基后期代表性交响曲之一，以贯穿全曲的命运主题著称。",
+                    aliases: ["e小调第五交响曲"],
+                    confidence: 0.74,
+                    rationale: "作品标题与作曲家信息明确，可稳定补出常用英文名与作品号。",
+                  }),
+                },
+              },
+            ],
+          }),
+          { status: 200 },
+        ) as Response;
+      }
+      throw new Error(`unexpected fetch: ${value}`);
+    };
+
+    const run = await runAutomationChecks(
+      workLibrary,
+      { categories: ["work"], workIds: ["tchaikovsky-5"] },
+      fetchImpl,
+      llmConfig,
+    );
+    const proposal = run.proposals[0];
+
+    expect(proposal?.entityType).toBe("work");
+    expect(proposal?.risk).toBe("medium");
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "titleLatin", after: "Symphony No. 5 in E minor, Op. 64" }),
+        expect.objectContaining({ path: "catalogue", after: "Op. 64" }),
+      ]),
+    );
+    expect(proposal?.evidence?.some((item) => item.sourceLabel === "LLM")).toBe(true);
+  });
+
+  it("ignores blocked Baidu captcha pages for works and keeps the summary grounded in usable knowledge", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "tchaikovsky",
+          slug: "tchaikovsky",
+          name: "鏌村彲澶柉鍩?",
+          fullName: "褰煎緱路浼婇噷濂嚶锋煷鍙か鏂熀",
+          nameLatin: "Pyotr Ilyich Tchaikovsky",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "tchaikovsky",
+          title: "浜ゅ搷鏇?",
+          slug: "symphony",
+          path: ["浜ゅ搷鏇?"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "tchaikovsky-5",
+          composerId: "tchaikovsky",
+          groupIds: ["group-symphony"],
+          slug: "tchaikovsky-5",
+          title: "绗簲浜ゅ搷鏇?",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0010",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    let chatCalls = 0;
+    const fetchImpl: typeof fetch = async (url, init) => {
+      const value = String(url);
+      if (value.includes("w/api.php")) {
+        return new Response(JSON.stringify({ query: { search: [{ title: "Symphony No. 5" }] } }), { status: 200 });
+      }
+      if (value.includes("/page/summary/")) {
+        return new Response(
+          JSON.stringify({
+            title: "Symphony No. 5",
+            extract: "This is a disambiguation page.",
+            content_urls: {
+              desktop: {
+                page: "https://en.wikipedia.org/wiki/Symphony_No._5",
+              },
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      if (value.includes("baidu.com/s?")) {
+        return {
+          ok: true,
+          status: 200,
+          url: "https://wappass.baidu.com/static/captcha/tuxing_v2.html",
+          text: async () => "<html><head><title>百度安全验证</title></head><body>请完成验证后继续访问</body></html>",
+        } as Response;
+      }
+      if (value.includes("/chat/completions")) {
+        chatCalls += 1;
+        if (chatCalls === 1) {
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      titleLatin: "Symphony No. 5 in E minor, Op. 64",
+                      catalogue: "Op. 64",
+                      summary: "柴可夫斯基后期代表性交响曲之一，以贯穿全曲的命运主题著称。",
+                      aliases: ["e小调第五交响曲"],
+                      confidence: 0.76,
+                      rationale: "作曲家与作品序号明确，可稳定补出英文标题、作品号与简介。",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          ) as Response;
+        }
+        return new Response(
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: "第五交响曲是贝多芬创作的交响曲，作品号67，以命运动机闻名。",
+                },
+              },
+            ],
+          }),
+          { status: 200 },
+        ) as Response;
+      }
+      throw new Error(`unexpected fetch: ${value}`);
+    };
+
+    const run = await runAutomationChecks(
+      workLibrary,
+      { categories: ["work"], workIds: ["tchaikovsky-5"] },
+      fetchImpl,
+      llmConfig,
+    );
+    const proposal = run.proposals[0];
+    const summaryField = proposal?.fields.find((field) => field.path === "summary");
+    const summaryEvidence = proposal?.evidence?.find((item) => item.field === "summary");
+
+    expect(proposal?.entityType).toBe("work");
+    expect(summaryField?.after).toContain("柴可夫斯基");
+    expect(String(summaryField?.after || "")).not.toContain("贝多芬");
+    expect(summaryEvidence?.sourceLabel).toBe("LLM");
   });
 });

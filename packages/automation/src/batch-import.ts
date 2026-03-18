@@ -134,6 +134,33 @@ function strictTemplateFieldCount(workTypeHint: string) {
   return 4;
 }
 
+function normalizeLooseBatchSeparator(line: string) {
+  return String(line ?? "")
+    .normalize("NFKC")
+    .replace(/[｜￨│┃┆丨]/g, "|")
+    .replace(/\s+[~～—–－]+\s+/g, " | ")
+    .replace(/\s*\|\s*/g, " | ");
+}
+
+export function normalizeBatchImportSource(sourceText: string, workTypeHint: string) {
+  const normalizedWorkTypeHint = normalizeWorkTypeHintValue(workTypeHint);
+  const expectedFieldCount = strictTemplateFieldCount(normalizedWorkTypeHint);
+
+  return String(sourceText ?? "")
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .map((line) => compact(normalizeLooseBatchSeparator(line)))
+    .filter(Boolean)
+    .map((line) => {
+      const rawSlots = line.split("|").map((item) => compact(item));
+      if (rawSlots.length === expectedFieldCount - 1) {
+        return [...rawSlots, "-"].join(" | ");
+      }
+      return rawSlots.join(" | ");
+    })
+    .join("\n");
+}
+
 function splitStrictBatchLine(line: string) {
   return line.split("|").map((item) => compact(item));
 }
@@ -303,7 +330,7 @@ export async function analyzeBatchImport(options: AnalyzeBatchImportOptions): Pr
   }
 
   const workTypeHint = normalizeWorkTypeHintValue(options.workTypeHint);
-  const sourceText = String(options.sourceText ?? "").replace(/\r\n/g, "\n");
+  const sourceText = normalizeBatchImportSource(options.sourceText ?? "", workTypeHint);
   const lines = sourceText
     .split("\n")
     .map((line) => compact(line))

@@ -80,8 +80,10 @@
     "slug": "乔治赛尔",
     "name": "乔治·赛尔",
     "nameLatin": "George Szell",
-    "country": "",
+    "country": "Germany",
     "avatarSrc": "",
+    "birthYear": 1897,
+    "deathYear": 1970,
     "aliases": [
       "赛尔"
     ],
@@ -203,30 +205,6 @@
     ]
   },
   {
-    "id": "person-伦纳德伯恩斯坦",
-    "slug": "伦纳德伯恩斯坦",
-    "name": "伦纳德·伯恩斯坦",
-    "nameLatin": "Leonard Bernstein",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "0090",
-    "summary": "伦纳德·伯恩斯坦（Leonard Bernstein，1918年8月25日~1990年10月14日），生于美国马萨诸塞州的劳伦斯，美国指挥家、作曲家。1935年入哈佛大学，师从W.俾斯顿、EB.希尔学习作曲，1939年毕业。后入费城柯蒂斯音乐学院学习指挥。1941年任波士顿交响乐团助理指挥。师从布鲁诺·瓦尔特。荣获“桂冠指挥家”的称号。1958年成为纽约爱乐乐团有史以来第一位土生土长的音乐总监。1990年10月14日，伯恩斯坦在纽约去世。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
     "id": "person-伯纳德约翰赫尔曼海廷克",
     "slug": "伯纳德约翰赫尔曼海廷克",
     "name": "伯纳德·约翰·赫尔曼·海廷克",
@@ -313,17 +291,19 @@
     "slug": "克劳迪奥阿巴多",
     "name": "克劳迪奥·阿巴多",
     "nameLatin": "Claudio Abbado",
-    "country": "",
-    "avatarSrc": "",
+    "country": "Italy",
+    "avatarSrc": "/library-assets/managed/people/person-克劳迪奥阿巴多/person-克劳迪奥阿巴多-72d3517ac7.jpg",
+    "birthYear": 1933,
+    "deathYear": 2014,
     "aliases": [
       "阿巴多"
     ],
     "sortKey": "0130",
     "summary": "克劳迪奥·阿巴多（Claudio Abbado，1933年~2014年1月20日），当代著名的意大利指挥家，位列“20世纪十大指挥家”之列。曾任米兰斯卡拉大剧院艺术总监，维也纳国立歌剧院艺术总监以及柏林爱乐乐团艺术总监。曾罹患胃癌，但以惊人的毅力和勇气恢复健康并重登指挥台，后担任瑞士卢塞恩节日管弦乐团艺术指导，2014年1月20日逝世，享年80岁。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Claudio_Abbado",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Claudio Abbado",
+    "imageUpdatedAt": "2026-03-18T01:53:09.054Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -337,19 +317,22 @@
   {
     "id": "person-列奥波德斯托科夫斯基",
     "slug": "列奥波德斯托科夫斯基",
-    "name": "列奥波德·斯托科夫斯基",
+    "name": "莱奥波德·斯托科夫斯基",
     "nameLatin": "Leopold Stokowski",
-    "country": "",
-    "avatarSrc": "",
+    "country": "United States",
+    "avatarSrc": "/library-assets/managed/people/person-列奥波德斯托科夫斯基/person-列奥波德斯托科夫斯基-e71d16135c.jpg",
+    "birthYear": 1882,
+    "deathYear": 1977,
     "aliases": [
-      "斯托科夫斯基"
+      "斯托科夫斯基",
+      "莱奥波德·斯托科夫斯基"
     ],
     "sortKey": "0140",
     "summary": "列奥波德·斯托科夫斯基（Leopold Stokowski，1882年4月18日－1977年9月13日）；美籍波兰指挥家；在牛津大学皇后学院毕业后，入伦敦音乐学院；1905年去美国任管风琴手兼合唱指挥；1908年在辛辛那提交响乐团任音乐指导；1912年任费城管弦乐团指挥，将该团训练成为以音响绚烂华丽、效果丰富多采而著称的乐队；组织全美青年交响乐团、纽约市交响乐团和美国交响乐团。他从1917年开始录制唱片，1929年开始作广播演出，并作有巴赫、德彪西等作品的乐队改编曲；斯托科夫斯基的指挥风格豪华壮丽，对比强烈，充分发挥了乐队的表现力，令人叹为观止。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Leopold_Stokowski",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Leopold Stokowski",
+    "imageUpdatedAt": "2026-03-18T02:01:24.086Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -978,17 +961,19 @@
     "slug": "德米特里米特罗普洛斯",
     "name": "德米特里·米特罗普洛斯",
     "nameLatin": "Dimitri Mitropoulos",
-    "country": "",
-    "avatarSrc": "",
+    "country": "United States",
+    "avatarSrc": "/library-assets/managed/people/person-德米特里米特罗普洛斯/person-德米特里米特罗普洛斯-ab6423503a.jpg",
+    "birthYear": 1895,
+    "deathYear": 1960,
     "aliases": [
       "米特罗普洛斯"
     ],
     "sortKey": "0390",
     "summary": "德米特里·米特罗普洛斯（1895年—1960年），希腊雅典人，钢琴家、作曲家、指挥家。早年就读雅典音乐学院，后赴欧洲师从钢琴家布索尼。历任雅典交响乐团指挥、柏林国立歌剧院副指挥、明尼阿波利斯交响乐团常任指挥、纽约爱乐乐团常任指挥及纽约大都会歌剧院指挥。1924年起开启指挥生涯，以背谱指挥闻名，推广马勒、勋伯格及贝尔格作品，1940年获美国马勒协会嘉奖。代表指挥曲目包括马勒《D大调第一交响曲\"巨人\"》、贝多芬《第二交响曲》、布鲁克纳《第六交响曲》及歌剧《沃切克》。创作领域涉及歌剧与交响曲，代表作为歌剧《修女比阿特丽斯》。1960年在斯卡拉歌剧院指挥时逝世，1961年纽约设立\"德米特里·米特罗普洛斯国际指挥比赛\"。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Dimitri_Mitropoulos",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Dimitri Mitropoulos",
+    "imageUpdatedAt": "2026-03-18T02:01:11.952Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -1005,17 +990,19 @@
     "slug": "托马斯比彻姆",
     "name": "托马斯·比彻姆",
     "nameLatin": "Thomas Beecham",
-    "country": "",
-    "avatarSrc": "",
+    "country": "Germany",
+    "avatarSrc": "/library-assets/managed/people/person-托马斯比彻姆/person-托马斯比彻姆-9caa137a5b.jpg",
+    "birthYear": 1879,
+    "deathYear": 1961,
     "aliases": [
       "比彻姆"
     ],
     "sortKey": "0400",
     "summary": "托马斯·比彻姆（Thomas Beecham, 1879-1961）英国指挥家。自幼喜爱音乐，自学成才，在牛津大学求学时期曾溜到德国去观摩歌剧。十九岁代替临时病倒的大指挥家里希塔指挥哈雷管弦乐团登上乐坛。三十岁创立比彻姆交响乐团，向英国听众大力介绍理查德·施特劳斯等人的歌剧作品，比才的《C大调交响曲》等。后来他还自费创办伦敦爱乐管弦乐和皇家爱乐管弦乐团，并长期担任指挥。他指挥的海顿交响曲别具一格。在他诞生一百周年时，重新复录了他早期灌制的许多唱片。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Thomas_Beecham",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Thomas Beecham",
+    "imageUpdatedAt": "2026-03-18T02:00:50.425Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -1461,17 +1448,18 @@
     "slug": "科林戴维斯",
     "name": "科林·戴维斯",
     "nameLatin": "Colin Davis",
-    "country": "",
-    "avatarSrc": "",
+    "country": "United Kingdom",
+    "avatarSrc": "/library-assets/managed/people/person-科林戴维斯/person-科林戴维斯-178e656597.jpg",
+    "deathYear": 2013,
     "aliases": [
       "戴维斯"
     ],
     "sortKey": "0580",
     "summary": "科林·戴维斯爵士(1927年9月25日——2013年4月14日)是一位著名英国指挥家。刚开始的时候他在伦敦学习单簧管。1983年到1992年他指导巴伐利亚广播交响乐团。1983年他获得卡尔·阿玛丢斯·哈特曼奖牌。自1995年他是伦敦交响乐团的首席指挥。另外他也是德累斯顿国立乐团的荣誉指挥。戴维斯擅长指挥的是柏辽兹和西贝柳斯的作品。他的演出范畴不但包括了歌剧与自家人的音乐，尚也涵盖不少重要德奥曲目与民族乐派音乐，当然绝对令人无法忘怀的是他在柏辽兹音乐上所作的努力。萧提让柯芬园得到难以辩驳的地位，戴维斯则不但力保住萧提的「战果」，同时将柯芬园的艺术水准带入另一个高峰，因此在1980年受封爵位。中国小提琴演奏家胡坤也曾师从于他，学习指挥。2013年4月14日，科林·戴维斯在英国去世，享年85岁。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Colin_Davis",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Colin Davis",
+    "imageUpdatedAt": "2026-03-18T02:01:28.293Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -1918,19 +1906,22 @@
   {
     "id": "person-马里斯杨松斯",
     "slug": "马里斯杨松斯",
-    "name": "马里斯·杨松斯",
+    "name": "马里斯·扬颂斯",
     "nameLatin": "Mariss Ivars Georgs Jansons",
-    "country": "",
-    "avatarSrc": "",
+    "country": "Russia",
+    "avatarSrc": "/library-assets/managed/people/person-马里斯杨松斯/person-马里斯杨松斯-13f6f15613.jpg",
+    "birthYear": 1943,
+    "deathYear": 2019,
     "aliases": [
-      "杨松斯"
+      "杨松斯",
+      "马里斯·扬颂斯"
     ],
     "sortKey": "0760",
     "summary": "马里斯·杨松斯（拉脱维亚语：Mariss Ivars Georgs Jansons，1943年1月14日-2019年11月30日），出生于拉脱维亚里加，拉脱维亚指挥家。2019年11月30日，马里斯·扬颂斯在俄罗斯圣彼得堡离世，终年76岁。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Mariss_Jansons",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Mariss Jansons",
+    "imageUpdatedAt": "2026-03-18T02:00:40.181Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -3623,54 +3614,6 @@
     ]
   },
   {
-    "id": "person-berliner-philharmoniker",
-    "slug": "berliner-philharmoniker",
-    "name": "Berliner Philharmoniker",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1440",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-berlin-philharmonic-orchestra",
-    "slug": "berlin-philharmonic-orchestra",
-    "name": "Berlin Philharmonic Orchestra",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1450",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
     "id": "person-symphonieorchester-des-bayerischen-rundfunks",
     "slug": "symphonieorchester-des-bayerischen-rundfunks",
     "name": "Symphonieorchester des Bayerischen Rundfunks",
@@ -3697,13 +3640,20 @@
   {
     "id": "person-konzerthausorchester-berlin",
     "slug": "konzerthausorchester-berlin",
-    "name": "Konzerthausorchester Berlin",
-    "nameLatin": "",
-    "country": "",
+    "name": "柏林音乐厅管弦乐团",
+    "nameLatin": "Konzerthausorchester Berlin",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "birthYear": 1979,
+    "deathYear": 1984,
+    "aliases": [
+      "柏林音乐厅乐团",
+      "柏林音乐厅交响乐团",
+      "KOB",
+      "柏林音乐厅管弦乐团"
+    ],
     "sortKey": "1470",
-    "summary": "",
+    "summary": "柏林音乐厅管弦乐团是驻场于柏林音乐厅的德国交响乐团。该音乐厅由申克尔设计，二战损毁后于1979至1984年间重建。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -3848,13 +3798,18 @@
   {
     "id": "person-rundfunk-sinfonieorchester-berlin",
     "slug": "rundfunk-sinfonieorchester-berlin",
-    "name": "Rundfunk-Sinfonieorchester Berlin",
-    "nameLatin": "",
-    "country": "",
+    "name": "柏林广播交响乐团",
+    "nameLatin": "Berlin Radio Symphony Orchestra",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "birthYear": 1923,
+    "aliases": [
+      "柏林广播乐团",
+      "柏林广播交响乐团",
+      "RSB"
+    ],
     "sortKey": "1530",
-    "summary": "",
+    "summary": "柏林广播交响乐团是德国柏林的一支交响乐团，拥有114名乐手，是德国历史第二悠久的广播乐团。乐团主要在柏林音乐厅和柏林爱乐音乐厅演出，也在德国其他城市举办音乐会。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -3996,17 +3951,21 @@
   {
     "id": "person-伯恩斯坦1977",
     "slug": "伯恩斯坦1977",
-    "name": "伯恩斯坦1977",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
+    "name": "伦纳德·伯恩斯坦",
+    "nameLatin": "Leonard Bernstein",
+    "country": "United States",
+    "avatarSrc": "/library-assets/managed/people/person-伯恩斯坦1977/person-伯恩斯坦1977-c66c05323f.jpg",
+    "birthYear": 1918,
+    "deathYear": 1990,
+    "aliases": [
+      "伯恩斯坦"
+    ],
     "sortKey": "1590",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
+    "summary": "美国指挥家、作曲家、钢琴家，以指挥纽约爱乐乐团和创作《西区故事》闻名",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Leonard_Bernstein",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Leonard Bernstein",
+    "imageUpdatedAt": "2026-03-18T02:02:35.107Z",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -4452,30 +4411,6 @@
     },
     "roles": [
       "soloist"
-    ]
-  },
-  {
-    "id": "person-symphony-orchestra-berlin",
-    "slug": "symphony-orchestra-berlin",
-    "name": "Symphony Orchestra Berlin",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1780",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
     ]
   },
   {
@@ -5275,13 +5210,23 @@
   {
     "id": "person-berliner-philahrmoniker",
     "slug": "berliner-philahrmoniker",
-    "name": "Berliner Philahrmoniker",
-    "nameLatin": "",
-    "country": "",
+    "name": "柏林爱乐乐团",
+    "nameLatin": "Berliner Philharmoniker",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "birthYear": 1882,
+    "aliases": [
+      "柏林爱乐管弦乐团",
+      "柏林爱乐交响乐团",
+      "BPO",
+      "BP",
+      "柏林爱乐",
+      "Berlin Philharmonic",
+      "Berlin Philharmonic Orchestra",
+      "Symphony Orchestra Berlin"
+    ],
     "sortKey": "2120",
-    "summary": "",
+    "summary": "德国柏林的主要交响乐团，成立于1882年，以卓越的艺术水准闻名世界。柏林爱乐乐团成立于1882年，是德国管弦乐团。彪罗、尼基什、富特文格勒等历任指挥为其奠定风格基础。卡拉扬执掌34年，极大提升了乐团的艺术水准与国际影响力，并迁入柏林爱乐音乐厅。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -5593,30 +5538,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "2250",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-伯恩斯坦",
-    "slug": "伯恩斯坦",
-    "name": "伯恩斯坦",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2260",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",

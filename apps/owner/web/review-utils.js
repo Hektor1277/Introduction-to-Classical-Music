@@ -55,6 +55,9 @@ export const getProposalsForReviewAction = (proposals, action, options = {}) => 
   return [];
 };
 
+export const filterPendingProposalsForDisplay = (proposals) =>
+  (proposals || []).filter((proposal) => proposal?.status === "pending");
+
 export const hasProposalDraftChanges = (proposal, draft = {}) => {
   if (!proposal) {
     return false;

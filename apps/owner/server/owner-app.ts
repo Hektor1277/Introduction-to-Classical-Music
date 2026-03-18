@@ -28,7 +28,6 @@ import {
 } from "../../../packages/automation/src/automation-store.js";
 import {
   analyzeBatchImport,
-  buildConfirmedBatchSelection,
   loadOrchestraAbbreviationMap,
   type BatchDraftEntities,
 } from "../../../packages/automation/src/batch-import.js";
@@ -42,7 +41,7 @@ import { collectLibraryDataIssues, getDisplayData, getWebsiteDisplay } from "../
 import { defaultLlmConfig, mergeLlmConfigPatch, sanitizeLlmConfig, testOpenAiCompatibleConfig } from "../../../packages/automation/src/llm.js";
 import { fetchWithWindowsFallback } from "../../../packages/automation/src/external-fetch.js";
 import { resolveLibraryAssetPath } from "../../../packages/data-core/src/owner-assets.js";
-import { getAffectedPaths } from "../../../packages/automation/src/owner-tools.js";
+import { getAffectedPaths, mergeLibraryEntities } from "../../../packages/automation/src/owner-tools.js";
 import {
   loadArticlesFromDisk,
   loadLibraryFromDisk,
@@ -58,6 +57,8 @@ import { createEntityId, createSlug, createSortKey } from "../../../packages/sha
 import { mergeSiteConfigPatch } from "../../../packages/data-core/src/site-content.js";
 import { runAutomationChecks } from "../../../packages/automation/src/automation-checks.js";
 import { createHttpRecordingRetrievalProvider } from "../../../packages/automation/src/recording-retrieval.js";
+import { mergeBatchSessionIntoLibrary, replaceBatchDraftEntities, resolveConfirmedBatchSelection } from "./batch-session-utils.js";
+import { sanitizeAutomationRunProposalFields, sanitizeProposalPatchMap } from "./proposal-patch-utils.js";
 
 const app = express();
 const port = Number(process.env.OWNER_PORT || 4322);
@@ -385,34 +386,6 @@ async function previewOrSave(entityType, payload, shouldSave) {
   };
 }
 
-function replaceBatchDraftEntities(session, nextDraftEntities) {
-  const nextLibrary = structuredClone(session.draftLibrary);
-
-  for (const entry of nextDraftEntities.composers || []) {
-    upsertCollection(nextLibrary.composers, entry.entity);
-  }
-  for (const entry of nextDraftEntities.people || []) {
-    upsertCollection(nextLibrary.people, entry.entity);
-  }
-  for (const entry of nextDraftEntities.works || []) {
-    upsertCollection(nextLibrary.works, entry.entity);
-  }
-  for (const entry of nextDraftEntities.recordings || []) {
-    upsertCollection(nextLibrary.recordings, entry.entity);
-  }
-
-  return {
-    ...session,
-    updatedAt: new Date().toISOString(),
-    draftLibrary: validateLibrary(nextLibrary),
-    draftEntities: nextDraftEntities,
-  };
-}
-
-function resolveConfirmedBatchSelection(session) {
-  return buildConfirmedBatchSelection(session.baseLibrary, session.draftLibrary, session.draftEntities);
-}
-
 function buildBatchCheckRequest(session) {
   const selection = resolveConfirmedBatchSelection(session);
   const request = {
@@ -437,41 +410,6 @@ function buildBatchRecordingOverrides(session) {
       },
     ]),
   );
-}
-
-function mergeBatchSessionIntoLibrary(library, session) {
-  const selection = resolveConfirmedBatchSelection(session);
-  for (const groupId of selection.createdEntityRefs.workGroups) {
-    const group = selection.draftLibrary.workGroups.find((item) => item.id === groupId);
-    if (group) {
-      upsertCollection(library.workGroups, group);
-    }
-  }
-  for (const composerId of selection.createdEntityRefs.composers) {
-    const composer = selection.draftLibrary.composers.find((item) => item.id === composerId);
-    if (composer) {
-      upsertCollection(library.composers, composer);
-    }
-  }
-  for (const personId of selection.createdEntityRefs.people) {
-    const person = selection.draftLibrary.people.find((item) => item.id === personId);
-    if (person) {
-      upsertCollection(library.people, person);
-    }
-  }
-  for (const workId of selection.createdEntityRefs.works) {
-    const work = selection.draftLibrary.works.find((item) => item.id === workId);
-    if (work) {
-      upsertCollection(library.works, work);
-    }
-  }
-  for (const recordingId of selection.createdEntityRefs.recordings) {
-    const recording = selection.draftLibrary.recordings.find((item) => item.id === recordingId);
-    if (recording) {
-      upsertCollection(library.recordings, recording);
-    }
-  }
-  return validateLibrary(library);
 }
 
 function entityCollectionByType(library, entityType) {
@@ -500,6 +438,7 @@ function buildSearchResults(library, site, query, type) {
           title: websiteDisplay.heading,
           subtitle: [websiteDisplay.short, websiteDisplay.latin].filter(Boolean).join(" / "),
           type: "composer",
+          roles: [],
           keywords: makeKeywords([
             display.primary,
             display.full,
@@ -525,6 +464,7 @@ function buildSearchResults(library, site, query, type) {
             .filter(Boolean)
             .join(" / "),
           type: "person",
+          roles: item.roles,
           keywords: makeKeywords([
             display.primary,
             display.full,
@@ -541,13 +481,18 @@ function buildSearchResults(library, site, query, type) {
       ],
       [
         "work",
-        library.works.map((item) => ({
-          id: item.id,
-          title: item.title,
-          subtitle: item.catalogue || item.titleLatin || "",
-          type: "work",
-          keywords: makeKeywords([item.title, item.titleLatin, item.catalogue, item.aliases]),
-        })),
+        library.works.map((item) => {
+          const composer = library.composers.find((composerItem) => composerItem.id === item.composerId);
+          const composerDisplay = composer ? getWebsiteDisplay(composer).heading : "";
+          return {
+            id: item.id,
+            title: item.title,
+            subtitle: [composerDisplay, item.titleLatin, item.catalogue].filter(Boolean).join(" / "),
+            type: "work",
+            roles: [],
+            keywords: makeKeywords([item.title, item.titleLatin, item.catalogue, item.aliases, composerDisplay]),
+          };
+        }),
       ],
       [
         "recording",
@@ -556,6 +501,7 @@ function buildSearchResults(library, site, query, type) {
           title: item.title,
           subtitle: item.albumTitle || item.performanceDateText || "",
           type: "recording",
+          roles: [],
           keywords: makeKeywords([item.title, item.albumTitle, item.performanceDateText, item.venueText]),
         })),
       ],
@@ -826,6 +772,35 @@ app.delete("/api/entity/:entityType/:id", async (request, response) => {
   }
 });
 
+app.post("/api/entity/:entityType/:id/merge", async (request, response) => {
+  try {
+    const entityType = String(request.params.entityType || "");
+    const duplicateId = String(request.params.id || "");
+    const primaryId = String(request.body?.targetId || "").trim();
+    if (!primaryId) {
+      response.status(400).json({ error: "Missing merge target id" });
+      return;
+    }
+    if (!["composer", "person", "work"].includes(entityType)) {
+      response.status(400).json({ error: "This entity type does not support manual merge." });
+      return;
+    }
+
+    const library = await loadLibraryFromDisk();
+    const mergedLibrary = mergeLibraryEntities(library, entityType as "composer" | "person" | "work", primaryId, duplicateId);
+    const validated = await saveValidatedLibrary(mergedLibrary);
+    response.json({
+      merged: true,
+      entityType,
+      primaryId,
+      duplicateId,
+      affectedPaths: [...new Set(getAffectedPaths(validated, entityType as EditableEntityType, primaryId))],
+    });
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
 app.get("/api/automation/runs", async (_request, response) => {
   try {
     const runs = await listAutomationRuns();
@@ -919,12 +894,19 @@ app.post("/api/batch-import/:sessionId/confirm-create", async (request, response
     const session = await loadBatchImportSession(request.params.sessionId);
     const replacedSession = replaceBatchDraftEntities(session, request.body?.draftEntities || session.draftEntities);
     const selection = resolveConfirmedBatchSelection(replacedSession);
+    const library = await loadLibraryFromDisk();
+    await saveValidatedLibrary(
+      mergeBatchSessionIntoLibrary(library, {
+        draftLibrary: selection.draftLibrary,
+        createdEntityRefs: selection.createdEntityRefs,
+      }),
+    );
     const nextSession = await saveBatchImportSession({
       ...replacedSession,
       status: "created",
       createdEntityRefs: selection.createdEntityRefs,
     });
-    response.json({ session: nextSession });
+    response.json({ session: nextSession, createdEntityRefs: selection.createdEntityRefs });
   } catch (error) {
     response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -1342,7 +1324,10 @@ app.post("/api/automation/proposals/:proposalId/edit", async (request, response)
       return;
     }
 
-    const patchMap = request.body?.fieldsPatchMap && typeof request.body.fieldsPatchMap === "object" ? request.body.fieldsPatchMap : {};
+    const patchMap = sanitizeProposalPatchMap(
+      proposal.entityType,
+      request.body?.fieldsPatchMap && typeof request.body.fieldsPatchMap === "object" ? request.body.fieldsPatchMap : {},
+    );
     const selectedImageCandidateId = typeof request.body?.selectedImageCandidateId === "string" ? request.body.selectedImageCandidateId : proposal.selectedImageCandidateId || "";
     const library = await loadLibraryFromDisk();
     const entity = entityCollectionByType(library, proposal.entityType).find((item) => item.id === proposal.entityId);
@@ -1459,6 +1444,7 @@ app.post("/api/automation/proposals/:proposalId/apply", async (request, response
     });
 
     preparedRun = await prepareProposalRunForApply(preparedRun, proposal.id, automationFetch);
+    preparedRun = sanitizeAutomationRunProposalFields(preparedRun);
     const applied = applyAutomationProposal(library, preparedRun, proposal.id);
     await saveValidatedLibrary(applied.library);
     await saveAutomationRun(applied.run);
@@ -1498,12 +1484,12 @@ app.post("/api/automation/runs/:runId/apply-confirmed", async (_request, respons
       preparedRun = await prepareProposalRunForApply(preparedRun, proposal.id, automationFetch);
     }
 
-    const confirmReadyRun = summarizeAutomationRun({
+    const confirmReadyRun = sanitizeAutomationRunProposalFields(summarizeAutomationRun({
       ...preparedRun,
       proposals: preparedRun.proposals.map((proposal) =>
         proposal.status === "pending" && proposal.reviewState !== "confirmed" ? { ...proposal, status: "ignored" } : proposal,
       ),
-    });
+    }));
 
     const applied = applyPendingAutomationProposals(library, confirmReadyRun);
     await saveValidatedLibrary(applied.library);

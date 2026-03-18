@@ -5,11 +5,13 @@ import {
   type AutomationCheckCategory,
   type AutomationImageCandidate,
   type AutomationProposal,
+  type AutomationProposalEvidence,
   type AutomationRun,
 } from "./automation.js";
 import {
   generateConciseChineseSummary,
   generateEntityKnowledgeCandidate,
+  generateWorkKnowledgeCandidate,
   isLlmConfigured,
   type LlmConfig,
 } from "./llm.js";
@@ -128,6 +130,9 @@ function extractYearPair(value: string) {
 
 function extractCountry(value: string) {
   const text = String(value || "");
+  if (/Argentine/i.test(text)) {
+    return "Argentina";
+  }
   return countryPatterns.find((item) => item.tokens.some((token) => text.includes(token)))?.value ?? "";
 }
 
@@ -140,6 +145,21 @@ function normalizeWhitespace(value: string) {
     .replace(/\s+/g, " ")
     .replace(/[‐‑‒–—]+/g, "-")
     .trim();
+}
+
+function isBlockedBaiduResultPage(responseUrl: string, title: string, html: string) {
+  const normalizedUrl = String(responseUrl || "").toLowerCase();
+  const normalizedTitle = normalizeWhitespace(stripHtml(title)).toLowerCase();
+  const normalizedHtml = normalizeWhitespace(stripHtml(html)).toLowerCase();
+  return (
+    normalizedUrl.includes("wappass.baidu.com") ||
+    normalizedUrl.includes("captcha") ||
+    normalizedTitle.includes("安全验证") ||
+    normalizedTitle.includes("captcha") ||
+    normalizedHtml.includes("安全验证") ||
+    normalizedHtml.includes("请完成验证") ||
+    normalizedHtml.includes("captcha")
+  );
 }
 
 function sanitizeLatinDisplayName(value: string) {
@@ -269,9 +289,73 @@ function uniqueStrings(values: Array<string | undefined>) {
   return [...new Set(values.map((value) => String(value ?? "").trim()).filter(Boolean))];
 }
 
+function deriveInstitutionAbbreviations(...values: Array<string | undefined>) {
+  const stopwords = new Set([
+    "the",
+    "of",
+    "and",
+    "for",
+    "des",
+    "de",
+    "del",
+    "der",
+    "die",
+    "das",
+    "du",
+    "le",
+    "la",
+    "les",
+    "los",
+    "las",
+    "und",
+  ]);
+  const abbreviations = new Set<string>();
+
+  for (const value of values) {
+    const normalized = normalizeWhitespace(value || "");
+    if (!normalized || !looksLikeInstitutionAlias(normalized)) {
+      continue;
+    }
+    const ascii = normalized
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^A-Za-z0-9/& -]/g, " ");
+    const tokens = ascii
+      .split(/[\s/&-]+/)
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0)
+      .filter((token) => !stopwords.has(token.toLowerCase()));
+    if (tokens.length < 2) {
+      continue;
+    }
+    const abbreviation = tokens
+      .map((token) => token[0]?.toUpperCase() || "")
+      .join("")
+      .replace(/[^A-Z0-9]/g, "");
+    if (abbreviation.length >= 2 && abbreviation.length <= 6) {
+      abbreviations.add(abbreviation);
+    }
+  }
+
+  return [...abbreviations];
+}
+
+function getCandidateAbbreviations(candidate: EntitySourceCandidate) {
+  return uniqueStrings([
+    ...(candidate.abbreviations || []),
+    ...deriveInstitutionAbbreviations(
+      candidate.displayLatinName,
+      candidate.displayName,
+      candidate.displayFullName,
+      ...(candidate.aliases || []),
+    ),
+  ]);
+}
+
 function scoreEntityCandidate(candidate: EntitySourceCandidate) {
   const imageBoost = candidate.imageUrl ? 20 : 0;
   const summaryBoost = candidate.summary ? Math.min(candidate.summary.length / 6, 15) : 0;
+  const abbreviations = getCandidateAbbreviations(candidate);
   const fieldBoost = [
     candidate.country,
     candidate.birthYear,
@@ -280,7 +364,7 @@ function scoreEntityCandidate(candidate: EntitySourceCandidate) {
     candidate.displayFullName,
     candidate.displayLatinName,
     candidate.aliases?.length,
-    candidate.abbreviations?.length,
+    abbreviations.length,
   ].filter(Boolean).length * 6;
   const sourceBoost =
     candidate.sourceKind === "wikimedia-commons"
@@ -346,8 +430,8 @@ async function fetchWikipediaEntityCandidate(name: string, fetchImpl: typeof fet
     summary: summaryPayload.extract ?? "",
     imageUrl: summaryPayload.originalimage?.source || summaryPayload.thumbnail?.source || "",
     imageAttribution: summaryPayload.title ? `Wikipedia: ${summaryPayload.title}` : "Wikipedia",
-    birthYear: years.birthYear,
-    deathYear: years.deathYear,
+    birthYear: years.birthYear ?? extractBirthYearFromSummary(text),
+    deathYear: years.deathYear ?? extractDeathYearFromSummary(text),
     country,
     displayLatinName: sanitizeLatinDisplayName(summaryPayload.title || title || name),
     confidence: 0.82,
@@ -397,8 +481,8 @@ async function fetchBaiduBaikeCandidate(name: string, fetchImpl: typeof fetch): 
       summary,
       imageUrl,
       imageAttribution: title ? `Baidu Baike: ${stripHtml(title)}` : "Baidu Baike",
-      birthYear: years.birthYear,
-      deathYear: years.deathYear,
+      birthYear: years.birthYear ?? extractBirthYearFromSummary(text),
+      deathYear: years.deathYear ?? extractDeathYearFromSummary(text),
       country,
       displayName,
       displayFullName,
@@ -431,6 +515,9 @@ async function fetchBaiduSearchSnippetCandidate(name: string, fetchImpl: typeof 
     html.match(/class=["']c-title["'][^>]*>\s*<a[^>]*>([^<]+)<\/a>/i)?.[1] ||
     html.match(/<title>([^<]+)<\/title>/i)?.[1] ||
     "";
+  if (isBlockedBaiduResultPage(response.url || url, rawTitle, html)) {
+    return null;
+  }
   const title = sanitizeBaiduTitle(stripHtml(rawTitle));
   const summary =
     html.match(/class=["']c-abstract["'][^>]*>([\s\S]*?)<\/div>/i)?.[1] ||
@@ -442,7 +529,7 @@ async function fetchBaiduSearchSnippetCandidate(name: string, fetchImpl: typeof 
   const country = extractCountry(text);
   const displayLatinName = extractLatinNameFromMixedText(text);
   const displayFullName = extractChineseLead(title) || extractChineseLead(text);
-  const displayName = normalizeWhitespace(name) || displayFullName;
+  const displayName = displayFullName || extractChineseLead(text) || title;
 
   if (!text) {
     return null;
@@ -455,8 +542,8 @@ async function fetchBaiduSearchSnippetCandidate(name: string, fetchImpl: typeof 
     summary: text,
     imageUrl: "",
     imageAttribution: title ? `Baidu Search: ${stripHtml(title)}` : "Baidu Search",
-    birthYear: years.birthYear,
-    deathYear: years.deathYear,
+    birthYear: years.birthYear ?? extractBirthYearFromSummary(text),
+    deathYear: years.deathYear ?? extractDeathYearFromSummary(text),
     country,
     displayName,
     displayFullName,
@@ -691,10 +778,181 @@ function buildEntityImageCandidates(entity: Composer | Person, candidates: Entit
   );
 }
 
-function chooseBestFieldCandidate(candidates: EntitySourceCandidate[], selector: (candidate: EntitySourceCandidate) => unknown) {
-  return [...candidates]
+type NamedEntityFieldPath =
+  | "summary"
+  | "country"
+  | "birthYear"
+  | "deathYear"
+  | "displayName"
+  | "displayFullName"
+  | "displayLatinName"
+  | "abbreviations"
+  | "aliases";
+
+function scoreEntityCandidateForField(entity: Composer | Person, candidate: EntitySourceCandidate, field: NamedEntityFieldPath) {
+  const family = classifyNamedEntityFamily(entity);
+  const sourceKind = candidate.sourceKind;
+  const sourceLabel = candidate.sourceLabel;
+  const abbreviations = getCandidateAbbreviations(candidate);
+  const isGroundedReference = sourceLabel === "Wikipedia" || sourceLabel === "Baidu Baike" || sourceLabel === "Baidu Search";
+  const summaryCountry = candidate.summary ? extractCountry(candidate.summary) : "";
+  const summaryBirthYear = candidate.summary ? extractBirthYearFromSummary(candidate.summary) : undefined;
+  const summaryDeathYear = candidate.summary ? extractDeathYearFromSummary(candidate.summary) : undefined;
+  const hasInstitutionSignals = Boolean(
+    looksLikeInstitutionAlias(candidate.displayLatinName || "") ||
+      looksLikeInstitutionAlias(candidate.displayFullName || "") ||
+      looksLikeInstitutionAlias(candidate.displayName || "") ||
+      looksLikeInstitutionAlias(candidate.summary || ""),
+  );
+  const hasBiographySignals = Boolean(candidate.birthYear || candidate.deathYear || summaryBirthYear || summaryDeathYear);
+  let score = scoreEntityCandidate(candidate);
+
+  if (field === "birthYear" || field === "deathYear") {
+    if (family === "orchestra") {
+      return Number.NEGATIVE_INFINITY;
+    }
+    if (field === "deathYear" && (sourceKind === "llm" || sourceLabel === "LLM") && !summaryDeathYear) {
+      return Number.NEGATIVE_INFINITY;
+    }
+    if (sourceKind === "llm" || sourceLabel === "LLM") {
+      score -= 18;
+    }
+    if (isGroundedReference) {
+      score += 24;
+    }
+    if (field === "birthYear" && summaryBirthYear && candidate.birthYear && summaryBirthYear !== candidate.birthYear) {
+      score -= 80;
+    }
+    if (field === "deathYear" && summaryDeathYear && candidate.deathYear && summaryDeathYear !== candidate.deathYear) {
+      score -= 80;
+    }
+    return score;
+  }
+
+  if (field === "country") {
+    if (sourceKind === "llm" || sourceLabel === "LLM") {
+      score -= 8;
+    }
+    if (isGroundedReference) {
+      score += 14;
+    }
+    if (family === "orchestra" && hasInstitutionSignals) {
+      score += 18;
+    }
+    if (family !== "orchestra" && hasBiographySignals) {
+      score += 10;
+    }
+    if (summaryCountry && candidate.country && summaryCountry !== candidate.country) {
+      score -= 80;
+    }
+    return score;
+  }
+
+  if (field === "abbreviations") {
+    if (family !== "orchestra") {
+      return Number.NEGATIVE_INFINITY;
+    }
+    if (abbreviations.length) {
+      score += 35;
+    }
+    if (!hasInstitutionSignals) {
+      score -= 30;
+    }
+    return score;
+  }
+
+  if (field === "aliases") {
+    if (family === "orchestra" && abbreviations.length) {
+      score += 16;
+    }
+    if (family !== "orchestra" && abbreviations.length) {
+      score -= 16;
+    }
+    return score;
+  }
+
+  if (field === "summary") {
+    if (family === "orchestra") {
+      score += hasInstitutionSignals ? 18 : -25;
+      if (hasBiographySignals) {
+        score -= 40;
+      }
+    }
+    if (family === "conductor" && /conductor|指挥/i.test(candidate.summary || "")) {
+      score += 18;
+    }
+    if (family === "artist" && /soloist|singer|instrumentalist|pianist|violinist|cellist|tenor|soprano|钢琴|小提琴|大提琴|女高音|男高音|独奏|歌唱|演奏/i.test(candidate.summary || "")) {
+      score += 14;
+    }
+    if (family === "composer" && /composer|作曲/i.test(candidate.summary || "")) {
+      score += 14;
+    }
+    return score;
+  }
+
+  if ((field === "displayName" || field === "displayFullName") && family === "orchestra" && hasInstitutionSignals) {
+    score += 10;
+  }
+
+  return score;
+}
+
+function chooseBestFieldCandidate(
+  entity: Composer | Person,
+  candidates: EntitySourceCandidate[],
+  field: NamedEntityFieldPath,
+  selector: (candidate: EntitySourceCandidate) => unknown,
+) {
+  const ranked = [...candidates]
     .filter((candidate) => selector(candidate))
-    .sort((left, right) => scoreEntityCandidate(right) - scoreEntityCandidate(left))[0];
+    .map((candidate) => ({
+      candidate,
+      score: scoreEntityCandidateForField(entity, candidate, field),
+    }))
+    .filter((entry) => Number.isFinite(entry.score))
+    .sort((left, right) => right.score - left.score);
+  return ranked[0]?.candidate;
+}
+
+function summarySuggestsLivingPerson(value: string) {
+  const summary = normalizeWhitespace(value);
+  if (!summary) {
+    return false;
+  }
+  return Boolean(extractBirthYearFromSummary(summary) && !extractDeathYearFromSummary(summary));
+}
+
+function filterEntityCandidatesByReferenceSummary(
+  entity: Composer | Person,
+  candidates: EntitySourceCandidate[],
+  field: Extract<NamedEntityFieldPath, "birthYear" | "deathYear" | "country">,
+  referenceSummary: string,
+) {
+  const summary = normalizeWhitespace(referenceSummary);
+  if (!summary) {
+    return candidates;
+  }
+
+  const referenceBirthYear = extractBirthYearFromSummary(summary);
+  const referenceDeathYear = extractDeathYearFromSummary(summary);
+  const referenceCountry = extractCountry(summary);
+  const family = classifyNamedEntityFamily(entity);
+
+  return candidates.filter((candidate) => {
+    if (field === "birthYear") {
+      return !(referenceBirthYear && candidate.birthYear && candidate.birthYear !== referenceBirthYear);
+    }
+    if (field === "deathYear") {
+      if (summarySuggestsLivingPerson(summary) && candidate.deathYear) {
+        return false;
+      }
+      return !(referenceDeathYear && candidate.deathYear && candidate.deathYear !== referenceDeathYear);
+    }
+    if (field === "country" && family === "orchestra") {
+      return !(referenceCountry && candidate.country && candidate.country !== referenceCountry);
+    }
+    return true;
+  });
 }
 
 function looksLikeInstitutionAlias(value: string) {
@@ -799,6 +1057,40 @@ function shouldRefreshEntityImage(entity: Composer | Person) {
   }) || /baidu|baike|logo|favicon|placeholder|sprite|default/i.test(haystack);
 }
 
+function classifyNamedEntityFamily(entity: Composer | Person) {
+  if (!("roles" in entity)) {
+    return "composer" as const;
+  }
+  if (entity.roles.some((role) => ["orchestra", "ensemble", "chorus"].includes(role))) {
+    return "orchestra" as const;
+  }
+  if (entity.roles.includes("conductor")) {
+    return "conductor" as const;
+  }
+  if (entity.roles.some((role) => artistRoles.includes(role))) {
+    return "artist" as const;
+  }
+  return "person" as const;
+}
+
+function extractBirthYearFromSummary(value: string) {
+  const text = normalizeWhitespace(value);
+  return (
+    Number(text.match(/(1[6-9]\d{2}|20\d{2})年[^。；;]{0,16}(?:出生|生于|诞生)/)?.[1]) ||
+    Number(text.match(/born[^0-9]{0,8}(1[6-9]\d{2}|20\d{2})/i)?.[1]) ||
+    undefined
+  );
+}
+
+function extractDeathYearFromSummary(value: string) {
+  const text = normalizeWhitespace(value);
+  return (
+    Number(text.match(/(1[6-9]\d{2}|20\d{2})年[^。；;]{0,16}(?:去世|逝世|病逝|卒于)/)?.[1]) ||
+    Number(text.match(/died[^0-9]{0,8}(1[6-9]\d{2}|20\d{2})/i)?.[1]) ||
+    undefined
+  );
+}
+
 function collectEntityCompletionIssues(entity: Composer | Person) {
   const issues: string[] = [];
   if (!String(entity.name || "").trim()) {
@@ -823,12 +1115,66 @@ export function reviewAutomationProposalQuality(entity: Composer | Person, propo
   const mergedPreview = applyFieldPreview(entity as Record<string, unknown>, proposals.flatMap((proposal) => proposal.fields || [])) as Composer | Person;
   const issues = collectEntityCompletionIssues(mergedPreview);
   const imageCandidates = proposals.flatMap((proposal) => proposal.imageCandidates || []);
+  const hasUsableImageCandidate = imageCandidates.some((candidate) => !isSuspiciousImageCandidate(candidate));
+  if (hasUsableImageCandidate && shouldRefreshEntityImage(mergedPreview)) {
+    const imageIssue = "当前图片缺失或疑似为无效图片，仍需刷新以满足规范。";
+    const issueIndex = issues.indexOf(imageIssue);
+    if (issueIndex >= 0) {
+      issues.splice(issueIndex, 1);
+    }
+  }
   if (imageCandidates.some((candidate) => isSuspiciousImageCandidate(candidate))) {
     issues.push("图片候选疑似为站点 logo 或占位图。");
+  }
+  const summary = String(mergedPreview.summary || "").trim();
+  if (summary) {
+    const summaryBirthYear = extractBirthYearFromSummary(summary);
+    const summaryDeathYear = extractDeathYearFromSummary(summary);
+    if (summaryBirthYear && mergedPreview.birthYear && summaryBirthYear !== mergedPreview.birthYear) {
+      issues.push("生卒年份与当前摘要内容冲突，疑似提取错误。");
+    }
+    if (summaryDeathYear && mergedPreview.deathYear && summaryDeathYear !== mergedPreview.deathYear) {
+      issues.push("生卒年份与当前摘要内容冲突，疑似提取错误。");
+    }
+    if (classifyNamedEntityFamily(mergedPreview) === "orchestra") {
+      const summaryCountry = extractCountry(summary);
+      if (summaryCountry && mergedPreview.country && summaryCountry !== mergedPreview.country) {
+        issues.push("国家字段与当前摘要内容冲突，疑似提取错误。");
+      }
+    }
   }
   const hasChanges = proposals.some(
     (proposal) => (proposal.fields?.length ?? 0) > 0 || (proposal.imageCandidates?.length ?? 0) > 0 || (proposal.mergeCandidates?.length ?? 0) > 0,
   );
+  const status = hasChanges ? (issues.length === 0 ? "ok" : "needs-attention") : issues.length === 0 ? "already-complete" : "needs-attention";
+  return {
+    ok: status === "ok",
+    status,
+    issues,
+    preview: mergedPreview,
+    hasChanges,
+  };
+}
+
+export function reviewWorkAutomationProposalQuality(work: Work, composer: Composer | undefined, proposals: AutomationProposal[]) {
+  const mergedPreview = applyFieldPreview(work as Record<string, unknown>, proposals.flatMap((proposal) => proposal.fields || [])) as Work;
+  const issues: string[] = [];
+  const summary = String(mergedPreview.summary || "").trim();
+  const hasChanges = proposals.some(
+    (proposal) => (proposal.fields?.length ?? 0) > 0 || (proposal.imageCandidates?.length ?? 0) > 0 || (proposal.mergeCandidates?.length ?? 0) > 0,
+  );
+
+  if (!mergedPreview.titleLatin && !mergedPreview.catalogue && !summary) {
+    issues.push("作品基础信息仍为空，未形成可审查的补全结果。");
+  }
+
+  if (summary && composer) {
+    const composerHints = [composer.name, composer.fullName, composer.nameLatin].filter(Boolean);
+    if (composerHints.length > 0 && !composerHints.some((hint) => summary.includes(String(hint)))) {
+      issues.push("作品摘要缺少作曲家上下文，仍需人工复核。");
+    }
+  }
+
   const status = hasChanges ? (issues.length === 0 ? "ok" : "needs-attention") : issues.length === 0 ? "already-complete" : "needs-attention";
   return {
     ok: status === "ok",
@@ -876,7 +1222,7 @@ async function inspectNamedEntity(
   const chineseFullName = pickBestChineseFullName(entity, candidates);
   const chineseShortName = pickBestChineseShortName(entity, candidates, chineseFullName || entity.name);
 
-  const summaryCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.summary);
+  const summaryCandidate = chooseBestFieldCandidate(entity, candidates, "summary", (candidate) => candidate.summary);
   if (!entity.summary && summaryCandidate?.summary) {
     const llmSummary =
       llmConfig && summaryCandidate.sourceKind !== "llm"
@@ -890,28 +1236,44 @@ async function inspectNamedEntity(
     fields.push({ path: "summary", before: entity.summary, after: llmSummary || summaryCandidate.summary });
   }
 
-  const countryCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.country);
+  const referenceSummary = summaryCandidate?.summary || "";
+  const countryCandidate = chooseBestFieldCandidate(
+    entity,
+    filterEntityCandidatesByReferenceSummary(entity, candidates, "country", referenceSummary),
+    "country",
+    (candidate) => candidate.country,
+  );
   if (!entity.country && countryCandidate?.country) {
     fields.push({ path: "country", before: entity.country, after: countryCandidate.country });
   }
 
-  const birthYearCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.birthYear);
+  const birthYearCandidate = chooseBestFieldCandidate(
+    entity,
+    filterEntityCandidatesByReferenceSummary(entity, candidates, "birthYear", referenceSummary),
+    "birthYear",
+    (candidate) => candidate.birthYear,
+  );
   if (!entity.birthYear && birthYearCandidate?.birthYear) {
     fields.push({ path: "birthYear", before: entity.birthYear, after: birthYearCandidate.birthYear });
   }
 
-  const deathYearCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.deathYear);
+  const deathYearCandidate = chooseBestFieldCandidate(
+    entity,
+    filterEntityCandidatesByReferenceSummary(entity, candidates, "deathYear", referenceSummary),
+    "deathYear",
+    (candidate) => candidate.deathYear,
+  );
   if (!entity.deathYear && deathYearCandidate?.deathYear) {
     fields.push({ path: "deathYear", before: entity.deathYear, after: deathYearCandidate.deathYear });
   }
 
-  const displayNameCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.displayName);
+  const displayNameCandidate = chooseBestFieldCandidate(entity, candidates, "displayName", (candidate) => candidate.displayName);
   const nextDisplayName =
     chineseShortName ||
     sanitizeChineseName(displayNameCandidate?.displayName || "") ||
     sanitizeChineseName(getEntityShortChineseName(entity) || entity.name || "");
 
-  const displayFullNameCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.displayFullName);
+  const displayFullNameCandidate = chooseBestFieldCandidate(entity, candidates, "displayFullName", (candidate) => candidate.displayFullName);
   const nextFullName =
     chineseFullName ||
     sanitizeChineseName(displayFullNameCandidate?.displayFullName || "") ||
@@ -920,15 +1282,15 @@ async function inspectNamedEntity(
     fields.push({ path: "name", before: entity.name, after: nextFullName });
   }
 
-  const displayLatinNameCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.displayLatinName);
+  const displayLatinNameCandidate = chooseBestFieldCandidate(entity, candidates, "displayLatinName", (candidate) => candidate.displayLatinName);
   if (!entity.nameLatin && displayLatinNameCandidate?.displayLatinName) {
     fields.push({ path: "nameLatin", before: entity.nameLatin, after: displayLatinNameCandidate.displayLatinName });
   }
 
-  const abbreviationsCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.abbreviations?.length);
-  const aliasesCandidate = chooseBestFieldCandidate(candidates, (candidate) => candidate.aliases?.length);
+  const abbreviationsCandidate = chooseBestFieldCandidate(entity, candidates, "abbreviations", (candidate) => getCandidateAbbreviations(candidate).length);
+  const aliasesCandidate = chooseBestFieldCandidate(entity, candidates, "aliases", (candidate) => candidate.aliases?.length);
   const aliasIncoming = mergeAliases(entity, aliasesCandidate?.aliases || [], [
-    ...(abbreviationsCandidate?.abbreviations || []),
+    ...(abbreviationsCandidate ? getCandidateAbbreviations(abbreviationsCandidate) : []),
     nextFullName,
     nextDisplayName,
   ]);
@@ -1107,7 +1469,7 @@ function buildWorkSearchQueries(work: Work, library: LibraryData) {
 function extractCatalogueFromText(value: string) {
   return (
     String(value || "").match(
-      /\b(?:Op\.?\s*\d+[a-z0-9-]*|BWV\s*\d+[a-z0-9-]*|K(?:V)?\.?\s*\d+[a-z0-9-]*|D\.?\s*\d+[a-z0-9-]*|S\.?\s*\d+[a-z0-9-]*|Hob\.?\s*[A-Z0-9:. -]+)\b/i,
+      /(?:Op\.?\s*\d+[a-z0-9-]*|BWV\s*\d+[a-z0-9-]*|K(?:V)?\.?\s*\d+[a-z0-9-]*|D\.?\s*\d+[a-z0-9-]*|S\.?\s*\d+[a-z0-9-]*|Hob\.?\s*[A-Z0-9:. -]+|GMW\s*\d+[a-z0-9-]*|作品\s*\d+[a-z0-9-]*)/i,
     )?.[0] || ""
   ).trim();
 }
@@ -1123,14 +1485,82 @@ function selectWorkLatinTitle(candidateTitle: string, work: Work) {
   return normalizedCandidate;
 }
 
+function parseChineseOrdinal(value: string) {
+  const numerals: Record<string, number> = {
+    零: 0,
+    〇: 0,
+    一: 1,
+    二: 2,
+    两: 2,
+    三: 3,
+    四: 4,
+    五: 5,
+    六: 6,
+    七: 7,
+    八: 8,
+    九: 9,
+  };
+  let total = 0;
+  let current = 0;
+  for (const char of String(value || "")) {
+    if (char === "十") {
+      total += (current || 1) * 10;
+      current = 0;
+      continue;
+    }
+    current = numerals[char] ?? current;
+  }
+  return total + current;
+}
+
+function extractWorkHintTokens(work: Work) {
+  const sourceText = [work.title, work.titleLatin, ...(work.aliases || [])].filter(Boolean).join(" ");
+  const hints = new Set<string>();
+  const normalized = normalizeComparableText(sourceText);
+  normalized
+    .split(" ")
+    .filter(Boolean)
+    .forEach((token) => hints.add(token));
+
+  const ordinal = sourceText.match(/第([零〇一二两三四五六七八九十百]+)(?:号)?/);
+  const arabicNumber = ordinal ? parseChineseOrdinal(ordinal[1]) : 0;
+  if (arabicNumber > 0) {
+    hints.add(String(arabicNumber));
+    hints.add(`no ${arabicNumber}`);
+  }
+  if (/交响曲/.test(sourceText)) {
+    hints.add("symphony");
+  }
+  if (/协奏曲/.test(sourceText)) {
+    hints.add("concerto");
+  }
+  if (/奏鸣曲/.test(sourceText)) {
+    hints.add("sonata");
+  }
+  if (/小提琴/.test(sourceText)) {
+    hints.add("violin");
+  }
+  if (/钢琴/.test(sourceText)) {
+    hints.add("piano");
+  }
+  if (/大提琴/.test(sourceText)) {
+    hints.add("cello");
+  }
+  if (/歌剧/.test(sourceText)) {
+    hints.add("opera");
+  }
+  if (/序曲/.test(sourceText)) {
+    hints.add("overture");
+  }
+  return [...hints].filter((token) => token && (token.length >= 2 || /^\d+$/.test(token)));
+}
+
 function matchesWorkCandidate(work: Work, composer: Composer | undefined, ...values: string[]) {
   const haystack = normalizeComparableText(values.join(" "));
   if (!haystack) {
     return false;
   }
-  const workTokens = [work.title, work.titleLatin, ...(work.aliases || [])]
-    .flatMap((value) => normalizeComparableText(value).split(" "))
-    .filter((token) => token.length >= 2);
+  const workTokens = extractWorkHintTokens(work);
   const composerTokens = [composer?.name || "", composer?.nameLatin || ""]
     .flatMap((value) => normalizeComparableText(value).split(" "))
     .filter((token) => token.length >= 2);
@@ -1143,7 +1573,7 @@ async function fetchWikipediaWorkCandidate(work: Work, library: LibraryData, fet
   const queries = buildWorkSearchQueries(work, library);
   for (const query of queries) {
     try {
-      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=1&srsearch=${encodeURIComponent(query)}`;
+      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=5&srsearch=${encodeURIComponent(query)}`;
       const searchResponse = await fetchImpl(searchUrl);
       if (!searchResponse.ok) {
         continue;
@@ -1151,39 +1581,110 @@ async function fetchWikipediaWorkCandidate(work: Work, library: LibraryData, fet
       const searchPayload = (await searchResponse.json().catch(() => ({}))) as {
         query?: { search?: Array<{ title?: string }> };
       };
-      const title = normalizeWhitespace(searchPayload.query?.search?.[0]?.title || "");
-      if (!title) {
-        continue;
-      }
-      const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-      const summaryResponse = await fetchImpl(summaryUrl);
-      if (!summaryResponse.ok) {
-        continue;
-      }
-      const summaryPayload = (await summaryResponse.json().catch(() => ({}))) as {
-        title?: string;
-        extract?: string;
-        content_urls?: { desktop?: { page?: string } };
-      };
-      const summary = stripHtml(summaryPayload.extract || "");
-      const sourceUrl = summaryPayload.content_urls?.desktop?.page || summaryUrl;
       const composer = library.composers.find((item) => item.id === work.composerId);
-      if (!matchesWorkCandidate(work, composer, title, summary, query)) {
+      for (const searchResult of searchPayload.query?.search || []) {
+        const title = normalizeWhitespace(searchResult.title || "");
+        if (!title) {
+          continue;
+        }
+        const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+        const summaryResponse = await fetchImpl(summaryUrl);
+        if (!summaryResponse.ok) {
+          continue;
+        }
+        const summaryPayload = (await summaryResponse.json().catch(() => ({}))) as {
+          title?: string;
+          description?: string;
+          extract?: string;
+          content_urls?: { desktop?: { page?: string } };
+        };
+        const description = stripHtml(summaryPayload.description || "");
+        const summary = stripHtml(summaryPayload.extract || "");
+        const combinedText = `${summaryPayload.title || ""} ${description} ${summary}`;
+        if (/disambiguation|may refer to/i.test(combinedText)) {
+          continue;
+        }
+        if (!matchesWorkCandidate(work, composer, title, description, summary)) {
+          continue;
+        }
+        return {
+          sourceUrl: summaryPayload.content_urls?.desktop?.page || summaryUrl,
+          sourceLabel: "Wikipedia",
+          titleLatin: selectWorkLatinTitle(summaryPayload.title || title, work),
+          catalogue: extractCatalogueFromText(combinedText),
+          summary,
+          confidence: 0.86,
+        };
+      }
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+async function fetchBaiduWorkCandidate(work: Work, library: LibraryData, fetchImpl: typeof fetch) {
+  const composer = library.composers.find((item) => item.id === work.composerId);
+  for (const query of buildWorkSearchQueries(work, library)) {
+    try {
+      const candidate = await fetchBaiduSearchSnippetCandidate(query, fetchImpl);
+      if (!candidate) {
+        continue;
+      }
+      if (!matchesWorkCandidate(work, composer, candidate.summary, candidate.displayName || "", candidate.displayFullName || "")) {
         continue;
       }
       return {
-        sourceUrl,
-        sourceLabel: "Wikipedia",
-        titleLatin: selectWorkLatinTitle(summaryPayload.title || title, work),
-        catalogue: extractCatalogueFromText(`${summaryPayload.title || ""} ${summary}`),
-        summary,
-        confidence: 0.86,
+        sourceUrl: candidate.sourceUrl,
+        sourceLabel: candidate.sourceLabel,
+        titleLatin: "",
+        catalogue: extractCatalogueFromText(candidate.summary),
+        summary: normalizeWhitespace(candidate.summary),
+        confidence: candidate.confidence ?? 0.58,
       };
     } catch {
       continue;
     }
   }
   return null;
+}
+
+function isUsableWorkSummaryCandidate(
+  candidate: { sourceLabel?: string; sourceUrl?: string; summary?: string } | null | undefined,
+  work: Work,
+  composer: Composer | undefined,
+) {
+  if (!candidate?.summary) {
+    return false;
+  }
+  const summaryText = normalizeWhitespace(candidate.summary);
+  if (!summaryText) {
+    return false;
+  }
+  if (candidate.sourceLabel === "Baidu Search" && isBlockedBaiduResultPage(candidate.sourceUrl || "", candidate.sourceLabel || "", summaryText)) {
+    return false;
+  }
+  return matchesWorkCandidate(work, composer, summaryText);
+}
+
+function ensureWorkSummaryHasComposerContext(work: Work, composer: Composer | undefined, summary: string) {
+  const normalizedSummary = normalizeWhitespace(summary);
+  if (!normalizedSummary) {
+    return "";
+  }
+  const composerHints = uniqueStrings([composer?.name, composer?.fullName, composer?.nameLatin]);
+  if (composerHints.some((hint) => normalizedSummary.includes(hint))) {
+    return normalizedSummary;
+  }
+  const composerLabel = composer?.name || composer?.nameLatin || "";
+  if (!composerLabel) {
+    return normalizedSummary;
+  }
+  const workHints = uniqueStrings([work.title, work.titleLatin, ...work.aliases]);
+  if (workHints.some((hint) => normalizedSummary.includes(hint))) {
+    return `${composerLabel}：${normalizedSummary}`;
+  }
+  return `${composerLabel}${work.title}，${normalizedSummary}`;
 }
 
 function filterWorks(library: LibraryData, request: AutomationCheckRequest) {
@@ -1220,29 +1721,69 @@ async function inspectWorkEnhanced(
   fetchImpl: typeof fetch,
   llmConfig?: LlmConfig,
 ): Promise<AutomationProposal | null> {
-  const candidate = await fetchWikipediaWorkCandidate(work, library, fetchImpl);
-  if (!candidate) {
+  const composer = library.composers.find((item) => item.id === work.composerId);
+  const candidates = [await fetchWikipediaWorkCandidate(work, library, fetchImpl), await fetchBaiduWorkCandidate(work, library, fetchImpl)].filter(
+    Boolean,
+  );
+  if (llmConfig && isLlmConfigured(llmConfig)) {
+    const llmCandidate = await generateWorkKnowledgeCandidate({
+      config: llmConfig,
+      title: work.title,
+      composerName: composer?.name || "",
+      composerLatinName: composer?.nameLatin || "",
+      groupPath:
+        (work.groupIds || [])
+          .map((groupId) => library.workGroups.find((group) => group.id === groupId)?.path || [])
+          .sort((left, right) => left.length - right.length)
+          .at(-1) || [],
+      knownTitleLatin: work.titleLatin,
+      knownCatalogue: work.catalogue,
+      knownSummary: work.summary,
+      knownAliases: work.aliases,
+      fetchImpl,
+    });
+    if (llmCandidate && (llmCandidate.titleLatin || llmCandidate.catalogue || llmCandidate.summary)) {
+      candidates.push({
+        sourceUrl: llmConfig.baseUrl,
+        sourceLabel: "LLM",
+        titleLatin: llmCandidate.titleLatin || "",
+        catalogue: llmCandidate.catalogue || "",
+        summary: llmCandidate.summary || "",
+        confidence: llmCandidate.confidence ?? 0.62,
+      });
+    }
+  }
+  if (!candidates.length) {
     return null;
   }
 
+  const latinCandidate = candidates.find((candidate) => candidate?.titleLatin);
+  const catalogueCandidate = candidates.find((candidate) => candidate?.catalogue);
+  const summaryCandidate =
+    candidates.find((candidate) => candidate?.sourceLabel !== "LLM" && isUsableWorkSummaryCandidate(candidate, work, composer)) ||
+    candidates.find((candidate) => candidate?.sourceLabel === "LLM" && candidate.summary);
   const fields: AutomationProposal["fields"] = [];
-  if (!work.titleLatin && candidate.titleLatin) {
-    fields.push({ path: "titleLatin", before: work.titleLatin, after: candidate.titleLatin });
+  if (!work.titleLatin && latinCandidate?.titleLatin) {
+    fields.push({ path: "titleLatin", before: work.titleLatin, after: latinCandidate.titleLatin });
   }
-  if (!work.catalogue && candidate.catalogue) {
-    fields.push({ path: "catalogue", before: work.catalogue, after: candidate.catalogue });
+  if (!work.catalogue && catalogueCandidate?.catalogue) {
+    fields.push({ path: "catalogue", before: work.catalogue, after: catalogueCandidate.catalogue });
   }
-  if (!work.summary && candidate.summary) {
+  if (!work.summary && summaryCandidate?.summary) {
     const llmSummary =
-      llmConfig && isLlmConfigured(llmConfig)
+      summaryCandidate.sourceLabel !== "LLM" && llmConfig && isLlmConfigured(llmConfig)
         ? await generateConciseChineseSummary({
             config: llmConfig,
             title: work.titleLatin || work.title,
-            sourceText: candidate.summary,
+            sourceText: summaryCandidate.summary,
             fetchImpl,
           })
         : "";
-    fields.push({ path: "summary", before: work.summary, after: llmSummary || candidate.summary });
+    fields.push({
+      path: "summary",
+      before: work.summary,
+      after: ensureWorkSummaryHasComposerContext(work, composer, llmSummary || summaryCandidate.summary),
+    });
   }
 
   if (!fields.length) {
@@ -1254,17 +1795,30 @@ async function inspectWorkEnhanced(
     kind: "update",
     entityType: "work",
     entityId: work.id,
-    summary: `自动检查：${work.title}`,
-    risk: "low",
+    summary: `自动检查：${[composer?.name || composer?.nameLatin || "", work.title, catalogueCandidate?.catalogue || ""].filter(Boolean).join(" / ")}`,
+    risk: candidates.every((candidate) => candidate?.sourceLabel === "LLM") ? "medium" : "low",
     status: "pending",
-    sources: [candidate.sourceUrl],
+    sources: [...new Set(candidates.map((candidate) => candidate?.sourceUrl || "").filter(Boolean))],
     fields,
-    evidence: fields.map((field) => ({
-      field: field.path,
-      sourceUrl: candidate.sourceUrl,
-      sourceLabel: candidate.sourceLabel,
-      confidence: candidate.confidence,
-    })),
+    evidence: fields
+      .map((field) => {
+        const matchedCandidate =
+          field.path === "titleLatin"
+            ? latinCandidate
+            : field.path === "catalogue"
+              ? catalogueCandidate
+              : summaryCandidate;
+        if (!matchedCandidate) {
+          return null;
+        }
+        return {
+          field: field.path,
+          sourceUrl: matchedCandidate.sourceUrl,
+          sourceLabel: matchedCandidate.sourceLabel,
+          confidence: matchedCandidate.confidence,
+        };
+      })
+      .filter((item): item is AutomationProposalEvidence => Boolean(item)),
     warnings: [],
   };
 }

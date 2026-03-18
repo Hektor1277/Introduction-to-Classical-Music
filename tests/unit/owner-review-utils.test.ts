@@ -5,6 +5,7 @@ import {
   applyProposalDraft,
   buildDataAttributeSelector,
   buildExcerpt,
+  filterPendingProposalsForDisplay,
   getProposalsForReviewAction,
   hasProposalDraftChanges,
   paginateItems,
@@ -186,6 +187,17 @@ describe("owner review utils", () => {
         scopeIds: ["p-1"],
       }).map((proposal) => proposal.id),
     ).toEqual(["p-1", "p-2", "p-3"]);
+  });
+
+  it("hides already applied or discarded proposals from active review lists", () => {
+    const proposals = [
+      { id: "p-1", reviewState: "confirmed", status: "pending" },
+      { id: "p-2", reviewState: "discarded", status: "ignored" },
+      { id: "p-3", reviewState: "confirmed", status: "applied" },
+      { id: "p-4", reviewState: "viewed", status: "pending" },
+    ];
+
+    expect(filterPendingProposalsForDisplay(proposals).map((proposal) => proposal.id)).toEqual(["p-1", "p-4"]);
   });
 });
 

@@ -1,10 +1,10 @@
 # Recording Retrieval Service
 
-本目录用于安装外部本地服务 `Recording Retrieval Service`，中文名统一为“版本自动检索工具”。
+本目录用于承载 `Recording Retrieval Service`，中文名统一为“版本自动检索工具”。
 
 ## 目录用途
-- 存放外部工具自己的代码、依赖、缓存、日志和下载产物。
-- 不得直接读写主项目的 `apps/`、`packages/`、`data/` 或 `apps/site/public/`。
+- 父仓库在这里保留协议、背景和集成说明。
+- 独立工具的真实实现位于 `tools/recording-retrieval-service/app/`，并使用独立 Git 管理。
 - owner 与该工具的唯一正式集成面是本地 HTTP 协议，见 [`PROTOCOL.md`](/E:/Workspace/codex/Introduction%20to%20Classical%20Music/tools/recording-retrieval-service/PROTOCOL.md)。
 
 ## 阅读顺序
@@ -18,17 +18,25 @@
 - 默认地址：`http://127.0.0.1:4780`
 - 协议版本：`v1`
 
-## 推荐目录结构
+## 当前工作区结构
 ```text
 tools/recording-retrieval-service/
   README.md
   PROJECT_CONTEXT.md
   PROTOCOL.md
-  app/
-  cache/
-  logs/
-  downloads/
+  GIT_AND_WORKSPACE.md
+  app/                 # 独立工具仓库根目录
+    README.md
+    start-ui.cmd
+    start-service.cmd
+    install-windows.cmd
+    dist/portable/
 ```
+
+## 如何启动独立工具
+- 源码运行：双击或执行 `tools/recording-retrieval-service/app/start-ui.cmd`
+- 服务模式：双击或执行 `tools/recording-retrieval-service/app/start-service.cmd`
+- 便携包入口：`tools/recording-retrieval-service/app/dist/releases/<timestamp>/start-ui.cmd`
 
 ## owner 调用前提
 - 目录存在。
