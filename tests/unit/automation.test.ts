@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
   applyAutomationProposal,
@@ -1154,7 +1154,7 @@ describe("automation checks", () => {
     expect(proposal?.summary).toContain("第五交响曲");
     expect(proposal?.fields).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ path: "catalogue", after: "作品64" }),
+        expect.objectContaining({ path: "catalogue", after: "Op. 64" }),
         expect.objectContaining({ path: "summary", after: expect.stringContaining("柴可夫斯基") }),
       ]),
     );
@@ -1288,6 +1288,96 @@ describe("automation checks", () => {
     const summaryField = proposal?.fields.find((field) => field.path === "summary");
     expect(summaryField?.after).toContain("贝多芬");
     expect(String(summaryField?.after || "")).toContain("田园");
+  });
+
+  it("prefers structured catalogue patterns for works and does not turn years into Deutsch numbers", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "bruckner",
+          slug: "bruckner",
+          name: "布鲁克纳",
+          fullName: "安东·布鲁克纳",
+          nameLatin: "Anton Bruckner",
+          country: "Austria",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "bruckner",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "bruckner-7",
+          composerId: "bruckner",
+          groupIds: ["group-symphony"],
+          slug: "bruckner-7",
+          title: "第七交响曲",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0010",
+          updatedAt: "2026-03-18T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const fetchImpl: typeof fetch = async (url) => {
+      const value = String(url);
+      if (value.includes("w/api.php")) {
+        return new Response(
+          JSON.stringify({
+            query: {
+              search: [{ title: "Symphony No. 7 (Bruckner)" }],
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      if (value.includes("/page/summary/")) {
+        return new Response(
+          JSON.stringify({
+            title: "Symphony No. 7 (Bruckner)",
+            extract:
+              "Symphony No. 7 in E major, WAB 107 is a symphony by Anton Bruckner. It was composed between 1881 and 1883 and premiered in 1884.",
+            content_urls: {
+              desktop: {
+                page: "https://en.wikipedia.org/wiki/Symphony_No._7_(Bruckner)",
+              },
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      if (value.includes("baidu.com/s?")) {
+        return new Response("<html><body>no result</body></html>", { status: 200 });
+      }
+      throw new Error(`unexpected fetch: ${value}`);
+    };
+
+    const run = await runAutomationChecks(workLibrary, { categories: ["work"], workIds: ["bruckner-7"] }, fetchImpl);
+    const proposal = run.proposals[0];
+
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([expect.objectContaining({ path: "catalogue", after: "WAB 107" })]),
+    );
+    expect(proposal?.fields).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ path: "catalogue", after: "D 1883" })]),
+    );
   });
 
   it("falls back to structured LLM work knowledge when web sources produce no usable fields", async () => {
@@ -1533,5 +1623,64 @@ describe("automation checks", () => {
     expect(summaryField?.after).toContain("柴可夫斯基");
     expect(String(summaryField?.after || "")).not.toContain("贝多芬");
     expect(summaryEvidence?.sourceLabel).toBe("LLM");
+  });
+
+  it("rejects Baidu boilerplate titles when proposing Chinese full names for orchestras", async () => {
+    const orchestraLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "munich-philharmonic",
+          slug: "munich-philharmonic",
+          name: "Munich Philharmonic Orchestra",
+          fullName: "",
+          nameLatin: "",
+          displayName: "Munich Philharmonic Orchestra",
+          displayFullName: "",
+          displayLatinName: "",
+          country: "",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: ["MPO"],
+          abbreviations: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const run = await runAutomationChecks(
+      orchestraLibrary,
+      { categories: ["orchestra"], orchestraIds: ["munich-philharmonic"] },
+      async (url) => {
+        const value = String(url);
+        if (value.includes("wikipedia.org")) {
+          throw new Error("blocked");
+        }
+        if (value.includes("baike.baidu.com")) {
+          return new Response(
+            '<html><head><meta property="og:title" content="百度百科是一部内容开放、自由的网络百科全书"><meta name="description" content="慕尼黑爱乐乐团是德国主要交响乐团之一，以深厚的艺术传统和高水准演奏闻名。"></head></html>',
+            { status: 200 },
+          );
+        }
+        if (value.includes("www.baidu.com/s?")) {
+          return new Response(
+            '<html><body><h3><a href="https://example.com">慕尼黑爱乐乐团</a></h3><div class="c-abstract">慕尼黑爱乐乐团是德国主要交响乐团之一。</div></body></html>',
+            { status: 200 },
+          );
+        }
+        return new Response("<html></html>", { status: 200 });
+      },
+    );
+
+    const proposal = run.proposals[0];
+    const nameField = proposal?.fields.find((field) => field.path === "name");
+
+    expect(proposal?.entityType).toBe("person");
+    expect(nameField?.after).toBe("慕尼黑爱乐乐团");
+    expect(String(nameField?.after || "")).not.toContain("百度百科是一部内容开放");
   });
 });

@@ -1,7 +1,7 @@
 ---
 import EntityInfoPanel from "@/components/EntityInfoPanel.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getWebsiteDisplay } from "@/lib/display";
+import { buildRecordingDisplayModel, getDisplayData, getWebsiteDisplay } from "@/lib/display";
 import { readGeneratedArticles, readGeneratedIndexes, readGeneratedLibrary, readGeneratedSite } from "@/lib/library-store";
 import { getResourceLinkPresentation } from "@/lib/resource-links";
 import type { Credit, PersonRole } from "@/lib/schema";
@@ -27,6 +27,9 @@ const [site, library, indexes, articles] = await Promise.all([
 ]);
 const work = library.works.find((item) => item.id === recording.workId);
 const composer = work ? library.composers.find((item) => item.id === work.composerId) : undefined;
+const personById = new Map(library.people.map((person) => [person.id, person]));
+const displayModel = buildRecordingDisplayModel(recording, library);
+const title = displayModel.title;
 const linkedArticle = articles.find((article) => article.id === recording.infoPanel?.articleId);
 const groupedCredits = recording.credits.reduce<Partial<Record<PersonRole, Credit[]>>>((accumulator, credit) => {
   const bucket = accumulator[credit.role] ?? [];
@@ -46,13 +49,30 @@ const creditLabels: Record<PersonRole, string> = {
 };
 const creditEntries = Object.entries(groupedCredits) as Array<[PersonRole, Credit[]]>;
 const presentedLinks = recording.links.map(getResourceLinkPresentation);
+
+const resolveCreditPerson = (credit: Credit) => {
+  const canonicalId = credit.personId ? indexes.canonicalPeople[credit.personId] || credit.personId : "";
+  return canonicalId ? personById.get(canonicalId) : undefined;
+};
+
+const renderCreditLabel = (credit: Credit) => {
+  const person = resolveCreditPerson(credit);
+  if (!person) {
+    return credit.displayName;
+  }
+  if (credit.role === "orchestra" || credit.role === "ensemble" || credit.role === "chorus") {
+    return getWebsiteDisplay(person).heading;
+  }
+  return getDisplayData(person).primary || getWebsiteDisplay(person).heading;
+};
 ---
 
-<BaseLayout title={`${site.title} | ${recording.title}`} description={`${recording.title} 的演出信息与外部资源链接。`}>
+<BaseLayout title={`${site.title} | ${title}`} description={`${title} 的演出信息与外部资源链接。`}>
   <div class="container page-section recording-page">
     <div class="section-heading">
       <p class="section-heading__eyebrow">Recording</p>
-      <h1>{recording.title}</h1>
+      <h1>{title}</h1>
+      {displayModel.subtitle && displayModel.subtitle !== title && <p class="page-lead">{displayModel.subtitle}</p>}
       <p class="page-note">
         <a href={work ? `/works/${work.id}/` : "#"}>{work?.title ?? "未知作品"}</a>
         {composer ? ` / ${getWebsiteDisplay(composer).heading}` : ""}
@@ -65,7 +85,7 @@ const presentedLinks = recording.links.map(getResourceLinkPresentation);
       <div class="recording-page__gallery">
         {recording.images.length > 0 ? (
           recording.images.map((image) => (
-            <img src={image.src} alt={image.alt || recording.title} loading="lazy" />
+            <img src={image.src} alt={image.alt || title} loading="lazy" />
           ))
         ) : (
           <div class="recording-page__placeholder">暂无图片</div>
@@ -79,8 +99,10 @@ const presentedLinks = recording.links.map(getResourceLinkPresentation);
               <dt>{creditLabels[role] ?? role}</dt>
               <dd>
                 {credits.map((credit) => {
-                  const href = credit.personId ? indexes.personIndex[credit.personId]?.href : undefined;
-                  return href ? <a href={href}>{credit.displayName}</a> : <span>{credit.displayName}</span>;
+                  const person = resolveCreditPerson(credit);
+                  const href = person ? indexes.personIndex[person.id]?.href : undefined;
+                  const label = renderCreditLabel(credit);
+                  return href ? <a href={href}>{label}</a> : <span>{label}</span>;
                 })}
               </dd>
             </>

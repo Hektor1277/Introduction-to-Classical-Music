@@ -122,9 +122,11 @@ function upsertById<T extends { id: string }>(collection: T[], entity: T) {
   collection.push(entity);
 }
 
-function normalizeWorkTypeHintValue(value: unknown) {
+function normalizeWorkTypeHintValue(value: unknown): (typeof strictBatchWorkTypes)[number] {
   const normalized = compact(value).toLowerCase();
-  return strictBatchWorkTypes.includes(normalized as (typeof strictBatchWorkTypes)[number]) ? normalized : "unknown";
+  return strictBatchWorkTypes.includes(normalized as (typeof strictBatchWorkTypes)[number])
+    ? (normalized as (typeof strictBatchWorkTypes)[number])
+    : "unknown";
 }
 
 function strictTemplateFieldCount(workTypeHint: string) {
@@ -384,6 +386,7 @@ export async function analyzeBatchImport(options: AnalyzeBatchImportOptions): Pr
       workId: work.id,
       slug: uniqueSlug(title, recordingSlugs),
       title,
+      workTypeHint,
       sortKey: createSortKey(draftLibrary.recordings.length),
       isPrimaryRecommendation: false,
       updatedAt: new Date().toISOString(),

@@ -164,14 +164,18 @@ describe("buildIndexes", () => {
     expect(searchWorkEntry?.href).toBe("/works/beethoven-appassionata/");
   });
 
-  it("includes conductors, soloists and orchestras in search without surfacing recordings first", () => {
+  it("includes recordings in search and keeps canonical orchestra names ahead of aliases", () => {
     const indexes = buildIndexes(library, personLinks);
     const types = new Set<string>(indexes.searchIndex.map((entry) => entry.kind));
+    const orchestraEntry = indexes.searchIndex.find((entry) => entry.kind === "orchestra" && entry.id === "berlin-phil");
+    const recordingEntry = indexes.searchIndex.find((entry) => entry.kind === "recording" && entry.id === "annie-fischer-1980");
 
-    expect(types.has("recording")).toBe(false);
+    expect(types.has("recording")).toBe(true);
     expect(indexes.searchIndex.some((entry) => entry.kind === "conductor" && entry.id === "karajan")).toBe(true);
     expect(indexes.searchIndex.some((entry) => entry.kind === "person" && entry.id === "annie-fischer")).toBe(true);
     expect(indexes.searchIndex.some((entry) => entry.kind === "orchestra" && entry.id === "berlin-phil")).toBe(true);
+    expect(orchestraEntry?.primaryText).toBe("柏林爱乐乐团");
+    expect(recordingEntry?.primaryText).toBe("卡拉扬 - 柏林爱乐乐团 - 1980");
   });
 
   it("merges alias conductor credits into the canonical conductor page", () => {
@@ -185,6 +189,33 @@ describe("buildIndexes", () => {
     const indexes = buildIndexes(library, personLinks);
 
     expect(indexes.orchestraIndex["berlin-phil"]?.groups[0]?.works[0]?.recordings[0]?.id).toBe("annie-fischer-1980");
+    expect(indexes.orchestraIndex["berlin-phil"]?.groups[0]?.works[0]?.recordings[0]?.title).toBe("卡拉扬 - 柏林爱乐乐团 - 1980");
     expect(indexes.searchIndex.find((entry) => entry.id === "berlin-phil")?.href).toBe("/orchestras/berlin-phil/");
+  });
+
+  it("does not duplicate the catalogue when a work's original title already contains it", () => {
+    const enrichedLibrary = {
+      ...library,
+      works: [
+        ...library.works,
+        {
+          id: "bruckner-7",
+          composerId: "beethoven",
+          groupIds: ["beethoven-sonata"],
+          slug: "bruckner-7",
+          title: "第七交响曲",
+          titleLatin: "Symphony No.7 in E major, WAB 107",
+          aliases: [],
+          catalogue: "WAB 107",
+          summary: "",
+          sortKey: "0300",
+          updatedAt: "2026-03-18T00:00:00.000Z",
+        },
+      ],
+    };
+    const indexes = buildIndexes(enrichedLibrary, personLinks);
+    const searchWorkEntry = indexes.searchIndex.find((entry) => entry.id === "bruckner-7");
+
+    expect(searchWorkEntry?.primaryText).toBe("第七交响曲 / Symphony No.7 in E major / WAB 107");
   });
 });

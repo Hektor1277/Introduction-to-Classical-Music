@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
@@ -13,7 +13,7 @@ import {
   filterMergeTargetOptions,
   getProposalModeAttributes,
   resolveProposalActionContext,
-  buildWorkOptionLabel,
+  buildPreferredWorkLabel,
   createEmptyActiveEntity,
   selectBatchSessionAfterRefresh,
 } from "../../apps/owner/web/ui-helpers.js";
@@ -126,8 +126,8 @@ describe("owner ui helpers", () => {
     ]);
   });
 
-  it("builds work option labels with composer, catalogue and bilingual titles", () => {
-    const label = buildWorkOptionLabel(
+  it("builds preferred work labels with bilingual titles, catalogue and composer context", () => {
+    const label = buildPreferredWorkLabel(
       {
         id: "work-mahler-5",
         composerId: "composer-mahler",
@@ -138,7 +138,7 @@ describe("owner ui helpers", () => {
       [{ id: "composer-mahler", name: "Mahler", nameLatin: "Gustav Mahler" }],
     );
 
-    expect(label).toBe("Mahler / Gustav Mahler · Mahler No. 5 in C-sharp minor · Symphony No. 5 in C-sharp minor");
+    expect(label).toBe("Mahler No. 5 in C-sharp minor / Symphony No. 5 in C-sharp minor / Mahler / Gustav Mahler");
   });
   it("builds batch work labels without composer names", () => {
     const label = buildBatchWorkOptionLabel({
@@ -150,6 +150,29 @@ describe("owner ui helpers", () => {
     });
 
     expect(label).toBe("第五交响曲 / Symphony No. 5 in C minor / Op. 67");
+  });
+
+  it("deduplicates catalogue text when the original title already contains the catalogue", () => {
+    const preferredLabel = buildPreferredWorkLabel(
+      {
+        id: "bruckner-7",
+        composerId: "composer-bruckner",
+        title: "第七交响曲",
+        titleLatin: "Symphony No.7 in E major, WAB 107",
+        catalogue: "WAB 107",
+      },
+      [{ id: "composer-bruckner", name: "安东·布鲁克纳", nameLatin: "Anton Bruckner" }],
+    );
+    const batchLabel = buildBatchWorkOptionLabel({
+      id: "bruckner-7",
+      composerId: "composer-bruckner",
+      title: "第七交响曲",
+      titleLatin: "Symphony No.7 in E major, WAB 107",
+      catalogue: "WAB 107",
+    });
+
+    expect(preferredLabel).toBe("第七交响曲 / Symphony No.7 in E major / WAB 107 / 安东·布鲁克纳 / Anton Bruckner");
+    expect(batchLabel).toBe("第七交响曲 / Symphony No.7 in E major / WAB 107");
   });
 
   it("keeps proposal ids on cards and uses a separate target attribute on action buttons", () => {
@@ -186,7 +209,8 @@ describe("owner ui helpers", () => {
   });
 
   it("derives owner search badges from entity roles instead of collapsing groups into generic people", () => {
-    expect(buildSearchResultBadges({ type: "composer" })).toEqual(["作曲家"]);
+    expect(buildSearchResultBadges({ type: "composer" })).toEqual(["人物", "作曲家"]);
+    expect(buildSearchResultBadges({ type: "composer", roles: ["composer", "conductor"] })).toEqual(["人物", "作曲家", "指挥"]);
     expect(buildSearchResultBadges({ type: "person", roles: ["orchestra"] })).toEqual(["团体", "乐团"]);
     expect(buildSearchResultBadges({ type: "person", roles: ["conductor", "soloist"] })).toEqual(["人物", "指挥", "独奏"]);
   });
@@ -214,12 +238,12 @@ describe("owner ui helpers", () => {
     expect(css).toMatch(/\.owner-dialog\[open\][\s\S]*display:\s*grid/i);
   });
 
-  it("limits inline-check height inside the detail card so form actions remain clickable", async () => {
+  it("stretches inline-check content to fill the detail workspace without restoring the old stacked layout", async () => {
     const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
 
-    expect(css).toMatch(
-      /\.owner-card--detail\s+\.owner-inline-check\s*\{[\s\S]*max-height:\s*min\(48vh,\s*26rem\)/i,
-    );
+    expect(css).toMatch(/\.owner-card--detail\s+\.owner-inline-check\s*\{[\s\S]*height:\s*100%/i);
+    expect(css).toMatch(/\.owner-card--detail\s+#owner-inline-check-panel\s*\{[\s\S]*height:\s*100%/i);
+    expect(css).toMatch(/\.owner-card--detail\s+\.owner-inline-check__summary\s*\{[\s\S]*display:\s*flex/i);
   });
 
   it("treats inline auto-check as a replacement workspace instead of stacking the entity form underneath", async () => {
@@ -247,6 +271,67 @@ describe("owner ui helpers", () => {
 
     expect(css).toMatch(/\.owner-merge-combobox__results\s*\{[\s\S]*max-height:\s*18rem/i);
     expect(css).toMatch(/\.owner-merge-combobox__results\s*\{[\s\S]*overflow:\s*auto/i);
+    expect(css).toMatch(/\.owner-merge-combobox__panel\[hidden\]\s*\{[\s\S]*display:\s*none\s*!important/i);
+  });
+
+  it("normalizes the detail tabs into person and group views while keeping composers reachable through the person tab", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(script).toContain('composerButton.hidden = true');
+    expect(script).toContain('groupButton.dataset.detailTab = "group"');
+    expect(script).toContain('personButton.textContent = "人物"');
+    expect(script).toContain('? "group" : "person"');
+    expect(script).toContain('panel: entityType === "composer" ? "composer" : undefined');
+  });
+
+  it("shows composer as a manageable role in owner forms", async () => {
+    const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
+
+    expect(html).toContain('value="composer"');
+    expect(html).toContain("作曲家");
+  });
+
+  it("shows structured recording fields and explains that slug and sortKey are auto-managed", async () => {
+    const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
+
+    expect(html).toContain('name="workTypeHint"');
+    expect(html).toContain('name="conductorPersonId"');
+    expect(html).toContain('name="orchestraPersonId"');
+    expect(html).toContain("保存时自动生成");
+  });
+
+  it("keeps empty review content aligned to the top instead of pushing controls downward", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(/\.owner-card--detail\s+\.owner-inline-check__summary\s*\{[\s\S]*justify-content:\s*flex-start/i);
+    expect(css).not.toMatch(/\.owner-card--detail\s+\.owner-inline-check__summary\s*>\s*\.owner-job-detail__section:last-child[\s\S]*margin-top:\s*auto/i);
+  });
+
+  it("keeps the top-level owner cards pinned to the top edge instead of vertically centering sparse review content", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(/\.owner-view\.is-active,\s*\.owner-panel__inner\.is-active\s*\{[\s\S]*align-content:\s*start/i);
+    expect(css).toMatch(/\.owner-view\s+\.owner-card\s*\{[\s\S]*align-content:\s*start/i);
+  });
+
+  it("renders owner search result cards with content-driven height instead of a fixed tall shell", async () => {
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+
+    expect(css).toMatch(/\.owner-result-item\s*\{[\s\S]*height:\s*auto/i);
+    expect(css).toMatch(/\.owner-result-item\s*\{[\s\S]*min-height:\s*0/i);
+    expect(css).not.toMatch(/\.owner-result-item\s*\{[\s\S]*min-height:\s*12\.5rem/i);
+  });
+
+  it("shows role checkboxes in a single wrapped row and adds related-entity jump controls to entity forms", async () => {
+    const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(css).toMatch(/\.owner-role-grid\s*\{[\s\S]*display:\s*grid/i);
+    expect(css).toMatch(/\.owner-role-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/i);
+    expect(html).toContain("owner-role-grid");
+    expect(script).toContain("data-related-entity-select");
+    expect(script).toContain("data-related-entity-jump");
   });
 
   it("refreshes review and log panels when switching views instead of leaving stale proposal cards on screen", async () => {

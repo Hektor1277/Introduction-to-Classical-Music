@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const personRoleValues = [
+  "composer",
   "conductor",
   "soloist",
   "singer",
@@ -21,6 +22,7 @@ export const linkPlatformValues = [
 ] as const;
 
 export const imageKindValues = ["cover", "artist", "performance", "other"] as const;
+export const recordingWorkTypeHintValues = ["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"] as const;
 export const mediaSourceKindValues = [
   "wikipedia",
   "wikidata",
@@ -34,6 +36,7 @@ export const mediaSourceKindValues = [
 export const personRoleSchema = z.enum(personRoleValues);
 export const linkPlatformSchema = z.enum(linkPlatformValues);
 export const imageKindSchema = z.enum(imageKindValues);
+export const recordingWorkTypeHintSchema = z.enum(recordingWorkTypeHintValues);
 export const mediaSourceKindSchema = z.enum(mediaSourceKindValues);
 
 const textField = z.string().trim();
@@ -165,7 +168,13 @@ const namedEntityFieldsWithInfoPanel = {
   infoPanel: infoPanelSchema.default({ text: "", articleId: "", collectionLinks: [] }),
 } as const;
 
-const composerSchema = z.preprocess(normalizeNamedEntityInput, z.object(namedEntityFieldsWithInfoPanel));
+const composerSchema = z.preprocess(
+  normalizeNamedEntityInput,
+  z.object({
+    ...namedEntityFieldsWithInfoPanel,
+    roles: z.array(personRoleSchema).min(1).default(["composer"]),
+  }),
+);
 
 const personSchema = z.preprocess(
   normalizeNamedEntityInput,
@@ -195,6 +204,7 @@ const recordingSchema = z.object({
   workId: textField.min(1),
   slug: textField.min(1),
   title: textField.min(1),
+  workTypeHint: recordingWorkTypeHintSchema.default("unknown"),
   sortKey: textField.min(1),
   isPrimaryRecommendation: z.boolean().default(false),
   updatedAt: textField.min(1),
@@ -238,6 +248,7 @@ export type Recording = z.infer<typeof recordingSchema>;
 export type InfoPanel = z.infer<typeof infoPanelSchema>;
 export type LibraryData = z.infer<typeof librarySchema>;
 export type PersonRole = z.infer<typeof personRoleSchema>;
+export type RecordingWorkTypeHint = z.infer<typeof recordingWorkTypeHintSchema>;
 export type MediaSourceKind = z.infer<typeof mediaSourceKindSchema>;
 
 function ensureUniqueIds<T extends { id: string }>(label: string, collection: T[]) {

@@ -1,7 +1,7 @@
 ---
 import EntityInfoPanel from "@/components/EntityInfoPanel.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getDisplayData, getWebsiteDisplay } from "@/lib/display";
+import { buildRecordingDisplayTitle, getDisplayData, getWebsiteDisplay } from "@/lib/display";
 import { loadPersonLinks, readGeneratedArticles, readGeneratedLibrary, readGeneratedSite } from "@/lib/library-store";
 
 export async function getStaticPaths() {
@@ -45,6 +45,7 @@ const appearances = library.recordings
       recording,
       work,
       composer,
+      recordingTitle: buildRecordingDisplayTitle(recording, library),
     };
   });
 ---
@@ -65,9 +66,9 @@ const appearances = library.recordings
     <div class="section-divider"></div>
 
     <section class="section-stack section-stack--tight">
-      {appearances.length ? appearances.map(({ recording, work, composer }) => (
+      {appearances.length ? appearances.map(({ recording, work, composer, recordingTitle }) => (
         <article class="line-entry">
-          <h2><a href={`/recordings/${recording.id}/`}>{recording.title}</a></h2>
+          <h2><a href={`/recordings/${recording.id}/`}>{recordingTitle}</a></h2>
           <p class="list-card__subtitle">{composer ? getWebsiteDisplay(composer).heading : "未知作曲家"} / {work?.title ?? "未知作品"}</p>
         </article>
       )) : <p class="page-note">该人物暂未关联版本条目。</p>}

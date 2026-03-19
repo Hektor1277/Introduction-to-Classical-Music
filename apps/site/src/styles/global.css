@@ -409,13 +409,75 @@ summary,
 
 .daily-card__body {
   display: grid;
-  gap: 0.2rem;
+  grid-template-rows: minmax(3.2rem, auto) minmax(3rem, auto) minmax(1.3rem, auto) minmax(1.2rem, auto) auto;
+  gap: 0.25rem;
   font-size: 0.95rem;
+  min-width: 0;
 }
 
-.daily-card__body h3 {
+.daily-card__title {
   margin: 0;
   font-size: 1.05rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.daily-card__subtitle,
+.daily-card__work,
+.daily-card__slot-primary,
+.daily-card__slot-secondary {
+  margin: 0;
+  overflow: hidden;
+}
+
+.daily-card__subtitle {
+  color: var(--muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.daily-card__work {
+  font-family: var(--serif);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.daily-card__work--secondary {
+  color: var(--muted);
+  font-family: var(--sans);
+}
+
+.daily-card__slots {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+}
+
+.daily-card__slot {
+  display: grid;
+  gap: 0.05rem;
+  min-height: 0;
+}
+
+.daily-card__slot-primary,
+.daily-card__slot-secondary {
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.daily-card__slot-secondary {
+  color: var(--muted);
 }
 
 .line-entry-list {

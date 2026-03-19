@@ -129,6 +129,14 @@
                           <p class="owner-form__hint">自动检查未找到合适图片时，可在这里手动上传。</p>
                         </aside>
                       </div>
+                      <fieldset class="owner-role-grid">
+                        <legend>角色</legend>
+                        <label><input type="checkbox" name="roles" value="composer" checked /> 作曲家</label>
+                        <label><input type="checkbox" name="roles" value="conductor" /> 指挥</label>
+                        <label><input type="checkbox" name="roles" value="soloist" /> 独奏</label>
+                        <label><input type="checkbox" name="roles" value="singer" /> 歌手</label>
+                        <label><input type="checkbox" name="roles" value="instrumentalist" /> 器乐</label>
+                      </fieldset>
                       <label>简介<textarea name="summary"></textarea></label>
                       <label>别名（含简称 / 缩写，每行一个）<textarea name="aliases"></textarea></label>
                       <input name="avatarSrc" type="hidden" />
@@ -190,8 +198,9 @@
                           <p class="owner-form__hint">人物、乐团与组合均可在这里手动上传更合适的图片。</p>
                         </aside>
                       </div>
-                      <fieldset>
+                      <fieldset class="owner-role-grid">
                         <legend>角色</legend>
+                        <label><input type="checkbox" name="roles" value="composer" /> 作曲家</label>
                         <label><input type="checkbox" name="roles" value="conductor" /> 指挥</label>
                         <label><input type="checkbox" name="roles" value="orchestra" /> 乐团</label>
                         <label><input type="checkbox" name="roles" value="soloist" /> 独奏</label>
@@ -286,6 +295,15 @@
                         <div class="owner-form__hero-fields">
                           <label class="owner-form__hero-field">所属作曲家<select name="selectedComposerId"></select></label>
                           <label class="owner-form__hero-field">所属作品<select name="workId" disabled></select></label>
+                          <label class="owner-form__hero-field">体裁<select name="workTypeHint">
+                            <option value="orchestral">orchestral / 管弦乐</option>
+                            <option value="concerto">concerto / 协奏曲</option>
+                            <option value="opera_vocal">opera_vocal / 歌剧与声乐</option>
+                            <option value="chamber_solo">chamber_solo / 室内乐与独奏</option>
+                            <option value="unknown">unknown / 未分类</option>
+                          </select></label>
+                          <label class="owner-form__hero-field">指挥<select name="conductorPersonId"></select></label>
+                          <label class="owner-form__hero-field">乐团<select name="orchestraPersonId"></select></label>
                           <label class="owner-form__hero-field">版本标题<input name="title" required /></label>
                           <label class="owner-form__hero-field">路径别名（Slug）<input name="slug" /></label>
                           <label class="owner-form__hero-field">排序键<input name="sortKey" /></label>
@@ -308,6 +326,7 @@
                       <label>发行日期<input name="releaseDate" /></label>
                       <label>备注<textarea name="notes"></textarea></label>
                       <label>演出信息（每行：role | displayName | personId 可选）<textarea name="credits"></textarea></label>
+                      <p class="owner-form__hint">路径别名（Slug）和排序键由维护工具统一管理，保存时自动生成并沿用现有值。</p>
                       <input name="images" type="hidden" />
                       <input name="performanceDateText" type="hidden" />
                       <input name="venueText" type="hidden" />

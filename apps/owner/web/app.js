@@ -4,6 +4,7 @@
   buildBatchResultSummary,
   buildBatchWorkOptionLabel,
   buildComposerOptionLabel,
+  buildPreferredWorkLabel,
   buildSearchResultBadges,
   buildRecordingLinkChipLabel,
   buildRecordingLinkEditorHtml,
@@ -177,6 +178,20 @@ const confirmDialogCancel = document.querySelector("#owner-confirm-dialog-cancel
 const confirmDialogConfirm = document.querySelector("#owner-confirm-dialog-confirm");
 const articlePreviewDialog = document.querySelector("#owner-article-preview-dialog");
 const articlePreviewClose = document.querySelector("#owner-article-preview-close");
+const GROUP_ROLE_VALUES = new Set(["orchestra", "ensemble", "chorus", "instrumentalist"]);
+const PERSON_ROLE_VALUES = new Set(["conductor", "soloist", "singer", "instrumentalist"]);
+const GROUP_FORM_ROLE_LABELS = {
+  orchestra: "乐团",
+  ensemble: "组合",
+  chorus: "合唱",
+  instrumentalist: "器乐团体",
+};
+const PERSON_FORM_ROLE_LABELS = {
+  conductor: "指挥",
+  soloist: "独奏",
+  singer: "歌手",
+  instrumentalist: "器乐",
+};
 
 const normalizeEntityActionButtons = () => {
   entityForms.forEach((form) => {
@@ -210,7 +225,112 @@ const entityTypeLabels = {
   work: "作品",
   recording: "版本",
 };
+const normalizeSearchTypeOptions = () => {
+  if (!searchType) {
+    return;
+  }
+  if (searchInput) {
+    searchInput.placeholder = "搜索网站文本、人物、团体、作品或版本";
+  }
+  searchType.innerHTML = `
+    <option value="">全部类型</option>
+    <option value="site">网站文本</option>
+    <option value="person">人物</option>
+    <option value="group">团体</option>
+    <option value="work">作品</option>
+    <option value="recording">版本</option>
+  `;
+};
+
+const getVisibleDetailTabForEntity = (entityType, entity = null) => {
+  if (entityType === "composer") {
+    return "person";
+  }
+  if (entityType === "person") {
+    return entity?.roles?.some((role) => GROUP_ROLE_VALUES.has(role)) ? "group" : "person";
+  }
+  return entityType;
+};
+
+const normalizeDetailTabs = () => {
+  const tabsHost = document.querySelector(".owner-tabs--inner");
+  if (!tabsHost) {
+    return;
+  }
+  const composerButton = tabsHost.querySelector('[data-detail-tab="composer"]');
+  const personButton = tabsHost.querySelector('[data-detail-tab="person"]');
+  if (composerButton) {
+    composerButton.hidden = true;
+    composerButton.setAttribute("aria-hidden", "true");
+    composerButton.tabIndex = -1;
+  }
+  if (personButton) {
+    personButton.textContent = "人物";
+  }
+  if (!tabsHost.querySelector('[data-detail-tab="group"]')) {
+    const groupButton = document.createElement("button");
+    groupButton.type = "button";
+    groupButton.dataset.detailTab = "group";
+    groupButton.textContent = "团体";
+    personButton?.insertAdjacentElement("afterend", groupButton);
+    groupButton.addEventListener("click", () => setActiveDetailTab("group"));
+  }
+};
+
+const setLeadingLabelText = (control, text) => {
+  const label = control?.closest("label");
+  if (!label) {
+    return;
+  }
+  [...label.childNodes].forEach((node) => {
+    if (node !== control) {
+      node.remove();
+    }
+  });
+  label.insertBefore(document.createTextNode(text), control);
+};
+
+const configurePersonFormMode = (mode = "person") => {
+  const form = document.querySelector('[data-entity-form="person"]');
+  if (!form) {
+    return;
+  }
+  form.dataset.entityMode = mode;
+  const lifeRangeInput = form.elements.lifeRange;
+  if (lifeRangeInput) {
+    setLeadingLabelText(lifeRangeInput, mode === "group" ? "建立时间 - 解散时间" : "生卒年");
+    lifeRangeInput.placeholder = mode === "group" ? "1882-" : "1918-1990";
+  }
+  const summaryInput = form.elements.summary;
+  if (summaryInput) {
+    setLeadingLabelText(summaryInput, mode === "group" ? "团体简介" : "简介");
+  }
+  const mediaHint = form.querySelector(".owner-form__hint");
+  if (mediaHint) {
+    mediaHint.textContent =
+      mode === "group" ? "乐团、组合与合唱等团体可在这里手动上传更合适的图片。" : "人物可在这里手动上传更合适的图片。";
+  }
+  const visibleRoles = mode === "group" ? GROUP_ROLE_VALUES : PERSON_ROLE_VALUES;
+  const labels = mode === "group" ? GROUP_FORM_ROLE_LABELS : PERSON_FORM_ROLE_LABELS;
+  [...form.querySelectorAll('input[name="roles"]')].forEach((input) => {
+    const wrapper = input.closest("label");
+    if (!wrapper) {
+      return;
+    }
+    const visible = visibleRoles.has(input.value);
+    wrapper.hidden = !visible;
+    wrapper.setAttribute("aria-hidden", String(!visible));
+    const textNode = [...wrapper.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
+    if (textNode) {
+      textNode.textContent = ` ${labels[input.value] || input.value}`;
+    } else {
+      wrapper.append(document.createTextNode(` ${labels[input.value] || input.value}`));
+    }
+  });
+};
 normalizeEntityActionButtons();
+normalizeSearchTypeOptions();
+normalizeDetailTabs();
 const automationCategoryLabels = {
   composer: "作曲家",
   conductor: "指挥",
@@ -243,6 +363,43 @@ const jobItemStatusLabels = {
 };
 
 const compact = (value) => String(value ?? "").trim();
+const normalizeWorkComparableText = (value) =>
+  compact(value)
+    .toLowerCase()
+    .replace(/[，,:：;；()[\]{}]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+const escapeRegExp = (value) => String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const stripCatalogueFromWorkSegment = (segment, catalogue) => {
+  const normalizedSegment = compact(segment);
+  const normalizedCatalogue = compact(catalogue);
+  if (!normalizedSegment || !normalizedCatalogue) {
+    return normalizedSegment;
+  }
+  if (normalizeWorkComparableText(normalizedSegment) === normalizeWorkComparableText(normalizedCatalogue)) {
+    return "";
+  }
+  const escapedCatalogue = escapeRegExp(normalizedCatalogue).replace(/\s+/g, "\\s+");
+  const trailingPatterns = [
+    new RegExp(`(?:\\s*[,，:：;；/|·-]\\s*|\\s+)\\(?${escapedCatalogue}\\)?$`, "i"),
+    new RegExp(`\\(${escapedCatalogue}\\)$`, "i"),
+  ];
+  return trailingPatterns.reduce((currentValue, pattern) => currentValue.replace(pattern, "").trim(), normalizedSegment);
+};
+const buildWorkSlugSource = (title, titleLatin, catalogue) =>
+  [compact(title), stripCatalogueFromWorkSegment(titleLatin || "", catalogue || ""), compact(catalogue)].filter(Boolean).join(" ");
+const createSlugLike = (value) => {
+  const slug = String(value ?? "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[’'".·]/g, "")
+    .replace(/[\/_,:;()[\]{}]+/g, "-")
+    .replace(/[^\p{Letter}\p{Number}-]+/gu, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return slug || "item";
+};
 const escapeHtml = (value) =>
   String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -740,8 +897,11 @@ const deleteEntity = async (form) => {
     method: "DELETE",
   });
   await refreshAll();
+  await performSearch();
   resetEntityForm(form);
-  setActiveDetailTab(entityType);
+  setActiveDetailTab(getVisibleDetailTabForEntity(entityType), {
+    panel: entityType === "composer" ? "person" : undefined,
+  });
   setResult(result);
 };
 
@@ -763,8 +923,11 @@ const mergeEntity = async (form) => {
     body: JSON.stringify({ targetId }),
   });
   await refreshAll();
+  await performSearch();
   await loadEntity(entityType, targetId);
-  setActiveDetailTab(entityType);
+  setActiveDetailTab(getVisibleDetailTabForEntity(entityType, getEntityByTypeAndId(entityType, targetId)), {
+    panel: entityType === "composer" ? "composer" : undefined,
+  });
   setResult(result);
 };
 
@@ -782,9 +945,19 @@ const setActiveView = (viewName) => {
   }
 };
 
-const setActiveDetailTab = (tabName) => {
-  detailTabs.forEach((button) => button.classList.toggle("is-active", button.dataset.detailTab === tabName));
-  detailPanels.forEach((panel) => panel.classList.toggle("is-active", panel.dataset.detailPanel === tabName));
+const setActiveDetailTab = (tabName, options = {}) => {
+  const requestedTab = tabName || "site";
+  const resolvedPanel = options.panel || (requestedTab === "group" ? "person" : requestedTab);
+  [...document.querySelectorAll("[data-detail-tab]")].forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.detailTab === requestedTab);
+  });
+  [...document.querySelectorAll("[data-detail-panel]")].forEach((panel) => {
+    const active = panel.dataset.detailPanel === resolvedPanel;
+    panel.classList.toggle("is-active", active);
+    panel.hidden = !active;
+  });
+  configurePersonFormMode(requestedTab === "group" ? "group" : "person");
+  entityForms.forEach((form) => resetMergeControlsState(form));
 };
 
 const setActiveArticleTab = (tabName) => {
@@ -861,6 +1034,30 @@ const getMergeTargetOptions = (entityType, currentId = "") => {
     .filter(Boolean)
     .sort((left, right) => left.label.localeCompare(right.label, "zh-Hans-CN"));
 };
+const resetMergeControlsState = (form, { closePanel = true } = {}) => {
+  if (!form) {
+    return;
+  }
+  if (form.elements.mergeTargetId) {
+    form.elements.mergeTargetId.value = "";
+  }
+  const host = form.querySelector("[data-merge-host]");
+  if (!host) {
+    return;
+  }
+  const searchInputControl = host.querySelector("[data-merge-target-search]");
+  const panel = host.querySelector("[data-merge-target-panel]");
+  const trigger = host.querySelector("[data-merge-target-toggle]");
+  if (searchInputControl) {
+    searchInputControl.value = "";
+  }
+  if (closePanel && panel) {
+    panel.hidden = true;
+  }
+  if (trigger) {
+    trigger.setAttribute("aria-expanded", "false");
+  }
+};
 const ensureMergeControls = (form) => {
   if (!form || form.querySelector("[data-merge-host]")) {
     return form?.querySelector("[data-merge-host]") || null;
@@ -878,12 +1075,20 @@ const ensureMergeControls = (form) => {
       <h3>合并到主条目</h3>
     </div>
     <div class="owner-merge-combobox">
-      <input type="search" data-merge-target-search placeholder="搜索主条目" />
-      <div class="owner-merge-combobox__results" data-merge-target-results></div>
+      <button
+        type="button"
+        class="owner-merge-combobox__trigger"
+        data-merge-target-toggle
+        aria-expanded="false"
+      >请选择主条目</button>
+      <div class="owner-merge-combobox__panel" data-merge-target-panel hidden>
+        <input type="search" data-merge-target-search placeholder="搜索主条目" />
+        <div class="owner-merge-combobox__results" data-merge-target-results></div>
+      </div>
     </div>
     <input type="hidden" name="mergeTargetId" />
     <p class="owner-form__hint">当前加载条目会作为被合并条目，主条目保留已填写字段，缺失字段由当前条目补齐。</p>
-    <button type="button" data-action="merge" class="owner-button--danger">合并条目</button>
+    <button type="button" data-action="merge" class="owner-button--danger" disabled>合并条目</button>
   `;
   actions.before(mergeHost);
   return mergeHost;
@@ -903,18 +1108,19 @@ const renderMergeControls = (form) => {
   }
   const currentId = compact(form.elements.existingId?.value || "");
   const searchInputControl = host.querySelector("[data-merge-target-search]");
+  const trigger = host.querySelector("[data-merge-target-toggle]");
+  const panel = host.querySelector("[data-merge-target-panel]");
   const resultsPanel = host.querySelector("[data-merge-target-results]");
+  const mergeButton = form.querySelector('[data-action="merge"]');
   const mergeTargetField = form.elements.mergeTargetId;
   if (!currentId) {
     host.hidden = true;
-    if (mergeTargetField) {
-      mergeTargetField.value = "";
-    }
-    if (searchInputControl) {
-      searchInputControl.value = "";
-    }
+    resetMergeControlsState(form);
     if (resultsPanel) {
       resultsPanel.innerHTML = "";
+    }
+    if (mergeButton) {
+      mergeButton.disabled = true;
     }
     return;
   }
@@ -922,6 +1128,14 @@ const renderMergeControls = (form) => {
   const query = compact(searchInputControl?.value || "");
   const options = filterMergeTargetOptions(getMergeTargetOptions(entityType, currentId), query);
   const selectedId = compact(mergeTargetField?.value || "");
+  const selectedOption = options.find((option) => option.value === selectedId) || getMergeTargetOptions(entityType, currentId).find((option) => option.value === selectedId);
+  if (trigger) {
+    trigger.textContent = selectedOption?.label || "请选择主条目";
+    trigger.setAttribute("aria-expanded", String(Boolean(panel && !panel.hidden)));
+  }
+  if (mergeButton) {
+    mergeButton.disabled = !selectedId;
+  }
   if (resultsPanel) {
     resultsPanel.innerHTML =
       options.length > 0
@@ -939,6 +1153,102 @@ const renderMergeControls = (form) => {
   }
 };
 
+const ensureRelatedEntityControls = (form) => {
+  if (!form || form.querySelector("[data-related-entity-host]")) {
+    return form?.querySelector("[data-related-entity-host]") || null;
+  }
+  const actions = form.querySelector(".owner-form__actions");
+  if (!actions) {
+    return null;
+  }
+  const host = document.createElement("section");
+  host.className = "owner-merge-controls";
+  host.dataset.relatedEntityHost = "true";
+  host.hidden = true;
+  host.innerHTML = `
+    <div class="owner-card__header">
+      <h3>关联条目</h3>
+      <span data-related-entity-count>0 条</span>
+    </div>
+    <label>
+      直接关联条目
+      <select data-related-entity-select>
+        <option value="">当前没有直接关联条目</option>
+      </select>
+    </label>
+    <div class="owner-form__actions owner-form__actions--compact">
+      <button type="button" data-related-entity-jump disabled>跳转查看</button>
+    </div>
+    <p class="owner-form__hint">这里只显示一级直接关联。先跳转并解除关联，再处理删除或合并。</p>
+  `;
+  actions.before(host);
+  const select = host.querySelector("[data-related-entity-select]");
+  const jumpButton = host.querySelector("[data-related-entity-jump]");
+  const syncJumpState = () => {
+    const option = select?.selectedOptions?.[0];
+    const relatedType = option?.dataset?.entityType || "";
+    const relatedId = option?.value || "";
+    jumpButton.disabled = !relatedType || !relatedId;
+    jumpButton.dataset.relatedEntityType = relatedType;
+    jumpButton.dataset.relatedEntityId = relatedId;
+  };
+  select?.addEventListener("change", syncJumpState);
+  jumpButton?.addEventListener("click", () => {
+    const relatedType = compact(jumpButton.dataset.relatedEntityType || "");
+    const relatedId = compact(jumpButton.dataset.relatedEntityId || "");
+    if (!relatedType || !relatedId) {
+      return;
+    }
+    void loadEntity(relatedType, relatedId);
+  });
+  return host;
+};
+
+const renderRelatedEntityControls = (form, relatedEntities = []) => {
+  if (!form) {
+    return;
+  }
+  const host = ensureRelatedEntityControls(form);
+  if (!host) {
+    return;
+  }
+  const currentId = compact(form.elements.existingId?.value || "");
+  const normalizedEntities = Array.isArray(relatedEntities)
+    ? relatedEntities.filter((item) => compact(item?.id) && compact(item?.entityType))
+    : [];
+  if (!currentId) {
+    host.hidden = true;
+    return;
+  }
+  host.hidden = false;
+  const count = host.querySelector("[data-related-entity-count]");
+  const select = host.querySelector("[data-related-entity-select]");
+  const jumpButton = host.querySelector("[data-related-entity-jump]");
+  if (count) {
+    count.textContent = `${normalizedEntities.length} 条`;
+  }
+  if (select) {
+    select.innerHTML = normalizedEntities.length
+      ? normalizedEntities
+          .map(
+            (item) => `
+              <option value="${escapeHtml(item.id)}" data-entity-type="${escapeHtml(item.entityType)}">
+                ${escapeHtml(item.label || item.title || item.id)}
+              </option>`,
+          )
+          .join("")
+      : '<option value="">当前没有直接关联条目</option>';
+  }
+  const option = select?.selectedOptions?.[0];
+  const relatedType = option?.dataset?.entityType || "";
+  const relatedId = option?.value || "";
+  if (jumpButton) {
+    jumpButton.disabled = !relatedType || !relatedId;
+    jumpButton.dataset.relatedEntityType = relatedType;
+    jumpButton.dataset.relatedEntityId = relatedId;
+  }
+};
+
 const deriveGroupPath = (work) => {
   if (!work || !state.library) {
     return [];
@@ -953,7 +1263,7 @@ const deriveGroupPath = (work) => {
 const getComposerById = (composerId, library = state.library) => (library?.composers || []).find((item) => item.id === composerId) || null;
 const getWorkById = (workId, library = state.library) => (library?.works || []).find((item) => item.id === workId) || null;
 const getRecordingComposerIdFromWork = (workId, library = state.library) => getWorkById(workId, library)?.composerId || "";
-const getWorkDisplayLabel = (work, library = state.library) => buildWorkOptionLabel(work, library?.composers || []);
+const getWorkDisplayLabel = (work, library = state.library) => buildPreferredWorkLabel(work, library?.composers || []);
 const populateRecordingComposerOptions = (select) => {
   populateOptions(select, [...(state.library?.composers || [])].sort((a, b) => buildComposerOptionLabel(a).localeCompare(buildComposerOptionLabel(b), "zh-Hans-CN")), buildComposerOptionLabel);
   if (select && !select.value) {
@@ -1025,6 +1335,8 @@ const refreshOverview = () => {
 
   populateOptions(document.querySelector('[data-entity-form="work"] select[name="composerId"]'), composers, buildComposerOptionLabel);
   populateRecordingComposerOptions(document.querySelector('[data-entity-form="recording"] select[name="selectedComposerId"]'));
+  populateOptions(document.querySelector('[data-entity-form="recording"] select[name="conductorPersonId"]'), getConductors(), buildComposerOptionLabel);
+  populateOptions(document.querySelector('[data-entity-form="recording"] select[name="orchestraPersonId"]'), getOrchestras(), buildComposerOptionLabel);
   const recordingForm = document.querySelector('[data-entity-form="recording"]');
   populateRecordingWorkOptions(recordingForm, recordingForm?.elements?.selectedComposerId?.value || "", recordingForm?.elements?.workId?.value || "");
   populateRecordingComposerOptions(batchComposerSelect);
@@ -1075,6 +1387,7 @@ const fillNamedEntityForm = (form, entity) => {
   form.elements.aliases.value = (entity?.aliases || []).join("\n");
   form.elements.summary.value = entity?.summary || "";
   renderInfoPanelState(form, entity?.infoPanel);
+  resetMergeControlsState(form);
   renderMergeControls(form);
   const deleteButton = form.querySelector('[data-action="delete"]');
   if (deleteButton) {
@@ -1083,7 +1396,12 @@ const fillNamedEntityForm = (form, entity) => {
   renderFormImagePreview(form.dataset.entityForm, entity);
 };
 
-const fillComposerForm = (form, entity) => fillNamedEntityForm(form, entity);
+const fillComposerForm = (form, entity) => {
+  fillNamedEntityForm(form, entity);
+  [...form.querySelectorAll('input[name="roles"]')].forEach((input) => {
+    input.checked = entity?.roles?.includes(input.value) || input.value === "composer";
+  });
+};
 
 const fillPersonForm = (form, entity) => {
   fillNamedEntityForm(form, entity);
@@ -1093,17 +1411,21 @@ const fillPersonForm = (form, entity) => {
 };
 
 const fillWorkForm = (form, entity) => {
+  const preferredSlugSource = buildWorkSlugSource(entity?.title, entity?.titleLatin, entity?.catalogue);
+  const preferredSlug = createSlugLike(preferredSlugSource || entity?.title || "");
+  const legacySlug = createSlugLike(entity?.title || "");
   form.elements.existingId.value = entity?.id || "";
   form.elements.composerId.value = entity?.composerId || "";
   form.elements.title.value = entity?.title || "";
   form.elements.titleLatin.value = entity?.titleLatin || "";
   form.elements.catalogue.value = entity?.catalogue || "";
   form.elements.groupPath.value = deriveGroupPath(entity).join(" / ");
-  form.elements.slug.value = entity?.slug || "";
+  form.elements.slug.value = !entity?.slug || entity.slug === legacySlug ? preferredSlug : entity.slug;
   form.elements.sortKey.value = entity?.sortKey || "";
   form.elements.aliases.value = (entity?.aliases || []).join("\n");
   form.elements.summary.value = entity?.summary || "";
   renderInfoPanelState(form, entity?.infoPanel);
+  resetMergeControlsState(form);
   renderMergeControls(form);
   const deleteButton = form.querySelector('[data-action="delete"]');
   if (deleteButton) {
@@ -1118,6 +1440,15 @@ const fillRecordingForm = (form, entity) => {
     form.elements.selectedComposerId.value = selectedComposerId;
   }
   populateRecordingWorkOptions(form, selectedComposerId, entity?.workId || "");
+  if (form.elements.workTypeHint) {
+    form.elements.workTypeHint.value = entity?.workTypeHint || "unknown";
+  }
+  if (form.elements.conductorPersonId) {
+    form.elements.conductorPersonId.value = entity?.credits?.find((credit) => credit.role === "conductor")?.personId || "";
+  }
+  if (form.elements.orchestraPersonId) {
+    form.elements.orchestraPersonId.value = entity?.credits?.find((credit) => credit.role === "orchestra")?.personId || "";
+  }
   form.elements.title.value = entity?.title || "";
   form.elements.slug.value = entity?.slug || "";
   form.elements.sortKey.value = entity?.sortKey || "";
@@ -1188,7 +1519,10 @@ const buildNamedEntityPayload = (form) => ({
   },
 });
 
-const buildComposerPayload = (form) => buildNamedEntityPayload(form);
+const buildComposerPayload = (form) => ({
+  ...buildNamedEntityPayload(form),
+  roles: [...form.querySelectorAll('input[name="roles"]:checked')].map((input) => input.value),
+});
 
 const buildPersonPayload = (form) => ({
   ...buildNamedEntityPayload(form),
@@ -1205,7 +1539,9 @@ const buildWorkPayload = (form) => ({
     .split("/")
     .map((item) => item.trim())
     .filter(Boolean),
-  slug: compact(form.elements.slug.value),
+  slug:
+    compact(form.elements.slug.value) ||
+    createSlugLike(buildWorkSlugSource(form.elements.title.value, form.elements.titleLatin.value, form.elements.catalogue.value)),
   sortKey: compact(form.elements.sortKey.value),
   aliases: parseLines(form.elements.aliases.value, (line) => line),
   summary: compact(form.elements.summary.value),
@@ -1220,6 +1556,9 @@ const buildRecordingPayload = (form) => ({
   ...parseRecordingEventMetaInput(form.elements.eventMeta?.value || ""),
   id: compact(form.elements.existingId.value) || undefined,
   workId: compact(form.elements.workId.value),
+  workTypeHint: compact(form.elements.workTypeHint?.value || "unknown"),
+  conductorPersonId: compact(form.elements.conductorPersonId?.value || ""),
+  orchestraPersonId: compact(form.elements.orchestraPersonId?.value || ""),
   title: compact(form.elements.title.value),
   slug: compact(form.elements.slug.value),
   sortKey: compact(form.elements.sortKey.value),
@@ -1698,6 +2037,7 @@ const resetEntityForm = (form) => {
   if (form.elements.mergeTargetId) {
     form.elements.mergeTargetId.value = "";
   }
+  resetMergeControlsState(form);
   state.activeEntity = createEmptyActiveEntity();
   renderInfoPanelState(form, emptyInfoPanel());
   const deleteButton = form.querySelector('[data-action="delete"]');
@@ -1710,6 +2050,7 @@ const resetEntityForm = (form) => {
   }
   clearInlineCheck();
   renderMergeControls(form);
+  renderRelatedEntityControls(form, []);
 };
 
 const clearInlineCheck = () => {
@@ -2157,24 +2498,15 @@ const buildProposalLinkCandidatesHtml = (proposal) => {
 };
 
 const formatImageCandidateLabel = (candidate, index) => {
-  const title = clipText(compact(candidate.title) || "图片候选", 42);
+  const title = clipText(compact(candidate.title) || "图片候选", 24);
   const sourceKind = compact(candidate.sourceKind) || "unknown";
   const host = compact(hostLabel(candidate.sourceUrl));
-  const sourceSlug = (() => {
-    try {
-      const pathname = new URL(candidate.sourceUrl || "").pathname;
-      return clipText(pathname.split("/").filter(Boolean).at(-1) || "", 28);
-    } catch {
-      return "";
-    }
-  })();
   const size =
     candidate.width && candidate.height ? `${candidate.width}×${candidate.height}` : "";
-  const attribution = clipText(compact(candidate.attribution), 36);
+  const attribution = clipText(compact(candidate.attribution), 18);
   const segments = [
     `${index + 1}. ${title}`,
     attribution && attribution !== title ? attribution : "",
-    sourceSlug && sourceSlug !== title && sourceSlug !== attribution ? sourceSlug : "",
     sourceKind,
     host,
     size,
@@ -2408,7 +2740,6 @@ const buildProposalCardsHtml = (run, proposals, options = {}) => {
                 ? `<div class="owner-source-pills">${sourceLabels.map((label) => `<span class="owner-pill">${escapeHtml(label)}</span>`).join("")}</div>`
                 : ""
             }
-            ${inline ? "" : buildEntitySummaryHtml(entity, { excerptLength: 56 })}
             ${
               editableFields.length
                 ? `<section class="owner-proposal__editor">
@@ -2566,14 +2897,17 @@ const loadEntity = async (entityType, entityId) => {
     clearInlineCheck();
     return;
   }
-  const { entity } = await fetchJson(`/api/entity/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`);
+  const { entity, relatedEntities = [] } = await fetchJson(`/api/entity/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`);
   const form = document.querySelector(`[data-entity-form="${entityType}"]`);
   if (!form) {
     return;
   }
   formFillers[entityType]?.(form, entity);
+  renderRelatedEntityControls(form, relatedEntities);
   state.activeEntity = { type: entityType, id: entityId };
-  setActiveDetailTab(entityType);
+  setActiveDetailTab(getVisibleDetailTabForEntity(entityType, entity), {
+    panel: entityType === "composer" ? "composer" : undefined,
+  });
   clearInlineCheck();
   setResult({ loaded: entityType, id: entityId });
 };
@@ -3978,7 +4312,9 @@ const runSingleEntityCheck = async (entityType) => {
     throw new Error("请先载入已有条目，再执行单条自动检查。");
   }
   setActiveView("detail");
-  setActiveDetailTab(entityType);
+  setActiveDetailTab(getVisibleDetailTabForEntity(entityType, getEntityByTypeAndId(entityType, entityId)), {
+    panel: entityType === "composer" ? "composer" : undefined,
+  });
   const { job } = await fetchJson(`/api/automation/entity-check/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`, {
     method: "POST",
   });
@@ -4495,9 +4831,28 @@ entityForms.forEach((form) => {
     renderMergeControls(form);
   });
   form.addEventListener("click", (event) => {
+    const mergeToggleButton = event.target.closest("[data-merge-target-toggle]");
+    if (mergeToggleButton) {
+      const host = form.querySelector("[data-merge-host]");
+      const panel = host?.querySelector("[data-merge-target-panel]");
+      const nextOpen = Boolean(panel?.hidden);
+      if (panel) {
+        panel.hidden = !nextOpen;
+      }
+      mergeToggleButton.setAttribute("aria-expanded", String(nextOpen));
+      if (nextOpen) {
+        host?.querySelector("[data-merge-target-search]")?.focus();
+      }
+      return;
+    }
     const mergeTargetButton = event.target.closest("[data-merge-target-option]");
     if (mergeTargetButton && form.elements.mergeTargetId) {
       form.elements.mergeTargetId.value = mergeTargetButton.dataset.mergeTargetOption || "";
+      const host = form.querySelector("[data-merge-host]");
+      const panel = host?.querySelector("[data-merge-target-panel]");
+      if (panel) {
+        panel.hidden = true;
+      }
       renderMergeControls(form);
       return;
     }

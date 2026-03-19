@@ -1,30 +1,29 @@
 ---
 import DailyRecommendations from "@/components/DailyRecommendations.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { buildRecordingDisplayModel } from "@/lib/display";
 import { readGeneratedLibrary, readGeneratedSite } from "@/lib/library-store";
 import { buildRecentWorkUpdates } from "@/lib/site-content";
 
-const [site, library] = await Promise.all([
-  readGeneratedSite(),
-  readGeneratedLibrary(),
-]);
-
-const composerById = new Map(library.composers.map((composer) => [composer.id, composer]));
-const workById = new Map(library.works.map((work) => [work.id, work]));
+const [site, library] = await Promise.all([readGeneratedSite(), readGeneratedLibrary()]);
 
 const recommendationItems = library.recordings.map((recording) => {
-  const work = workById.get(recording.workId);
-  const composer = work ? composerById.get(work.composerId) : undefined;
-  const conductor = recording.credits.find((credit) => credit.role === "conductor");
-  const orchestra = recording.credits.find((credit) => credit.role === "orchestra");
+  const display = buildRecordingDisplayModel(recording, library);
 
   return {
     id: recording.id,
-    title: recording.title,
-    workTitle: work ? `${composer?.name ?? "未知作曲家"} / ${work.title}` : recording.title,
-    conductorName: conductor?.displayName ?? conductor?.label ?? "",
-    orchestraName: orchestra?.displayName ?? orchestra?.label ?? "",
-    performanceDateText: recording.performanceDateText || recording.venueText || "",
+    title: display.title,
+    subtitle: display.subtitle,
+    workPrimary: display.daily.workPrimary,
+    workSecondary: display.daily.workSecondary,
+    principalPrimary: display.daily.principalPrimary,
+    principalSecondary: display.daily.principalSecondary,
+    supportingPrimary: display.daily.supportingPrimary,
+    supportingSecondary: display.daily.supportingSecondary,
+    ensemblePrimary: display.daily.ensemblePrimary,
+    ensembleSecondary: display.daily.ensembleSecondary,
+    datePlacePrimary: display.daily.datePlacePrimary,
+    datePlaceSecondary: display.daily.datePlaceSecondary,
     href: `/recordings/${recording.id}/`,
     imageSrc: recording.images[0]?.src ?? "",
   };

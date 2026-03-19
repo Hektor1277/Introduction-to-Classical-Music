@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildIndexes } from "@/lib/indexes";
-import { buildRecordingListEntry, collectLibraryDataIssues } from "@/lib/display";
+import { buildRecordingDisplayModel, buildRecordingListEntry, collectLibraryDataIssues } from "@/lib/display";
 import { validateLibrary } from "@/lib/schema";
 
 const library = validateLibrary({
@@ -10,10 +10,10 @@ const library = validateLibrary({
       id: "beethoven",
       slug: "beethoven",
       name: "贝多芬",
-      fullName: "路德维希·冯·贝多芬",
+      fullName: "路德维希·范·贝多芬",
       nameLatin: "Ludwig van Beethoven",
       displayName: "贝多芬",
-      displayFullName: "路德维希·冯·贝多芬",
+      displayFullName: "路德维希·范·贝多芬",
       displayLatinName: "Ludwig van Beethoven",
       country: "Germany",
       avatarSrc: "",
@@ -25,6 +25,7 @@ const library = validateLibrary({
       imageSourceKind: "",
       imageAttribution: "",
       imageUpdatedAt: "",
+      roles: ["composer"],
     },
   ],
   people: [
@@ -36,7 +37,7 @@ const library = validateLibrary({
       nameLatin: "Herbert von Karajan",
       displayName: "卡拉扬",
       displayFullName: "赫伯特·冯·卡拉扬",
-      displayLatinName: "Herbert von Karajan",
+      displayLatinName: "Karajan",
       country: "Austria",
       avatarSrc: "",
       roles: ["conductor"],
@@ -78,7 +79,7 @@ const library = validateLibrary({
       nameLatin: "Maurizio Pollini",
       displayName: "波里尼",
       displayFullName: "毛里齐奥·波里尼",
-      displayLatinName: "Maurizio Pollini",
+      displayLatinName: "Pollini",
       country: "Italy",
       avatarSrc: "",
       roles: ["soloist"],
@@ -133,9 +134,10 @@ const library = validateLibrary({
       titleLatin: "Piano Concerto No. 5 'Emperor'",
       aliases: ["皇帝"],
       catalogue: "Op. 73",
-      summary: "贝多芬协奏曲。",
+      summary: "贝多芬钢琴协奏曲。",
       sortKey: "0500",
       updatedAt: "2026-03-09T00:00:00.000Z",
+      infoPanel: { text: "", articleId: "", collectionLinks: [] },
     },
   ],
   recordings: [
@@ -143,7 +145,8 @@ const library = validateLibrary({
       id: "karajan-bpo-pollini-1977",
       workId: "emperor",
       slug: "karajan-bpo-pollini-1977",
-      title: "卡拉扬 1977",
+      title: "卡拉扬1977",
+      workTypeHint: "concerto",
       sortKey: "0100",
       isPrimaryRecommendation: true,
       updatedAt: "2026-03-09T00:00:00.000Z",
@@ -160,6 +163,7 @@ const library = validateLibrary({
       albumTitle: "",
       label: "",
       releaseDate: "",
+      infoPanel: { text: "", articleId: "", collectionLinks: [] },
     },
   ],
 });
@@ -178,11 +182,11 @@ describe("display normalization", () => {
   it("builds normalized work recording titles from conductor, orchestra and artist display names", () => {
     const entry = buildRecordingListEntry(library.recordings[0], library);
 
-    expect(entry.title).toBe("卡拉扬 - BPO - 波里尼");
-    expect(entry.secondaryText).toContain("Herbert von Karajan");
+    expect(entry.title).toBe("卡拉扬 - 波里尼 - 柏林爱乐乐团 - 1977");
+    expect(entry.secondaryText).toContain("Karajan");
+    expect(entry.secondaryText).toContain("Pollini");
     expect(entry.secondaryText).toContain("Berliner Philharmoniker");
-    expect(entry.secondaryText).toContain("Maurizio Pollini");
-    expect(entry.metaText).toBe("1977 · Berlin");
+    expect(entry.metaText).toBe("1977 路 Berlin");
   });
 
   it("collects visible website data issues as structured maintenance guidance", () => {
@@ -219,5 +223,69 @@ describe("display normalization", () => {
     );
 
     expect(issues.some((issue) => issue.message.includes("规范全名") || issue.message.includes("全称"))).toBe(true);
+  });
+
+  it("builds concerto display with conductor, soloist, orchestra and bilingual lines in the requested order", () => {
+    const model = buildRecordingDisplayModel(library.recordings[0], library);
+
+    expect(model.title).toBe("卡拉扬 - 波里尼 - 柏林爱乐乐团 - 1977");
+    expect(model.subtitle).toBe("Karajan - Pollini - Berliner Philharmoniker - 1977");
+    expect(model.daily.principalPrimary).toBe("卡拉扬");
+    expect(model.daily.principalSecondary).toBe("Karajan");
+    expect(model.daily.supportingPrimary).toBe("波里尼");
+    expect(model.daily.supportingSecondary).toBe("Pollini");
+    expect(model.daily.ensemblePrimary).toBe("柏林爱乐乐团");
+    expect(model.daily.ensembleSecondary).toBe("Berliner Philharmoniker");
+    expect(model.daily.datePlacePrimary).toBe("1977");
+  });
+
+  it("deduplicates conductor names out of soloist lines when the same person appears in both roles", () => {
+    const dedupeLibrary = validateLibrary({
+      ...library,
+      people: [
+        ...library.people,
+        {
+          id: "arrau",
+          slug: "arrau",
+          name: "阿劳",
+          fullName: "克劳迪奥·阿劳",
+          nameLatin: "Claudio Arrau",
+          displayName: "阿劳",
+          displayFullName: "克劳迪奥·阿劳",
+          displayLatinName: "Arrau",
+          country: "Chile",
+          avatarSrc: "",
+          roles: ["soloist"],
+          aliases: ["Claudio Arrau"],
+          abbreviations: [],
+          sortKey: "arrau",
+          summary: "钢琴家。",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+      recordings: [
+        {
+          ...library.recordings[0],
+          id: "concerto-duplicate-credit",
+          performanceDateText: "1958",
+          credits: [
+            { role: "conductor", personId: "karajan", displayName: "Herbert von Karajan" },
+            { role: "soloist", personId: "karajan", displayName: "Herbert von Karajan" },
+            { role: "soloist", personId: "arrau", displayName: "Claudio Arrau" },
+            { role: "orchestra", personId: "bpo", displayName: "Berlin Philharmonic Orchestra" },
+          ],
+          links: [],
+        },
+      ],
+    });
+
+    const model = buildRecordingDisplayModel(dedupeLibrary.recordings[0], dedupeLibrary);
+
+    expect(model.title).toBe("卡拉扬 - 阿劳 - 柏林爱乐乐团 - 1958");
+    expect(model.daily.supportingPrimary).toBe("阿劳");
+    expect(model.daily.supportingPrimary).not.toContain("卡拉扬");
   });
 });

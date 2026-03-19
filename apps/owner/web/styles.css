@@ -209,7 +209,9 @@ button {
 
 .owner-view.is-active,
 .owner-panel__inner.is-active {
-  display: block;
+  display: grid;
+  align-content: start;
+  gap: 1rem;
   min-width: 0;
   max-width: 100%;
 }
@@ -1350,8 +1352,9 @@ button {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.65rem;
-  min-height: 12.5rem;
-  overflow: hidden;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
 }
 
 .owner-result-item > * {
@@ -1784,7 +1787,7 @@ pre {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  min-height: 12.5rem;
+  min-height: 0;
   height: auto;
 }
 
@@ -1882,6 +1885,8 @@ pre {
 
 .owner-proposal__images select {
   width: 100%;
+  max-width: 100%;
+  text-overflow: ellipsis;
 }
 
 .owner-proposal__image-grid {
@@ -2232,8 +2237,8 @@ pre {
 }
 
 .owner-card--search .owner-result-item {
-  min-height: 10.75rem;
-  max-height: 12.5rem;
+  min-height: 0;
+  max-height: none;
 }
 
 .owner-info-panel-editor {
@@ -2317,11 +2322,33 @@ pre {
 
 .owner-inline-check,
 .owner-card--detail .owner-tab-panels {
-  padding-right: 0.4rem;
+  padding-right: 0.8rem;
+  scrollbar-gutter: stable;
 }
 
 .owner-card--detail .owner-inline-check {
-  max-height: min(48vh, 26rem);
+  max-height: none;
+  height: 100%;
+  align-content: start;
+}
+
+.owner-card--detail #owner-inline-check-panel {
+  min-height: 0;
+  height: 100%;
+}
+
+#owner-inline-check-content {
+  min-height: 0;
+  height: 100%;
+  display: grid;
+}
+
+.owner-card--detail .owner-inline-check__summary {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: flex-start;
 }
 
 .owner-article-layout {
@@ -2377,26 +2404,87 @@ pre {
   gap: 0.65rem;
 }
 
+.owner-merge-combobox__trigger {
+  width: 100%;
+  justify-content: space-between !important;
+  text-align: left;
+}
+
+.owner-merge-combobox__panel {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.owner-merge-combobox__panel[hidden] {
+  display: none !important;
+}
+
+.owner-tabs--inner > button[hidden] {
+  display: none !important;
+}
+
+.owner-form fieldset label[hidden],
+#automation-check-form fieldset label[hidden] {
+  display: none !important;
+}
+
 .owner-merge-combobox__results {
   display: grid;
   gap: 0.45rem;
   max-height: 18rem;
   overflow: auto;
-  padding: 0.5rem;
+  padding: 0.5rem 0.65rem 0.5rem 0.5rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
   background: rgba(255, 255, 255, 0.78);
+  scrollbar-gutter: stable;
 }
 
 .owner-merge-combobox__option {
   width: 100%;
   justify-content: flex-start;
   text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .owner-merge-combobox__option.is-selected {
   border-color: var(--line-strong);
   background: rgba(214, 222, 199, 0.7);
+}
+
+.owner-result-list,
+.owner-panel--sidebar,
+.owner-panel--main,
+.owner-chip-list--scrollable,
+.owner-batch-preview-shell__list,
+.owner-article-preview__body {
+  padding-right: 0.8rem;
+  scrollbar-gutter: stable;
+}
+
+.owner-proposal__images select,
+.owner-form select,
+.owner-inline-label select {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.owner-view .owner-card {
+  align-content: start;
+}
+
+.owner-role-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem 0.9rem !important;
+  align-items: center;
+  justify-items: stretch;
+}
+
+.owner-role-grid label {
+  width: 100%;
+  justify-self: stretch !important;
 }
 
 @media (max-width: 1180px) {

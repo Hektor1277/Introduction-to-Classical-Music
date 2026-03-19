@@ -1,15 +1,53 @@
-export function createEmptyActiveEntity() {
+﻿export function createEmptyActiveEntity() {
   return { type: "", id: "" };
 }
 
 const compact = (value) => String(value ?? "").trim();
+const normalizeWorkComparableText = (value) =>
+  compact(value)
+    .toLowerCase()
+    .replace(/[，,:：;；()[\]{}]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+const escapeRegExp = (value) => String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const stripCatalogueFromWorkSegment = (segment, catalogue) => {
+  const normalizedSegment = compact(segment);
+  const normalizedCatalogue = compact(catalogue);
+  if (!normalizedSegment || !normalizedCatalogue) {
+    return normalizedSegment;
+  }
+  if (normalizeWorkComparableText(normalizedSegment) === normalizeWorkComparableText(normalizedCatalogue)) {
+    return "";
+  }
+  const escapedCatalogue = escapeRegExp(normalizedCatalogue).replace(/\s+/g, "\\s+");
+  const trailingPatterns = [
+    new RegExp(`(?:\\s*[,，:：;；/|·-]\\s*|\\s+)\\(?${escapedCatalogue}\\)?$`, "i"),
+    new RegExp(`\\(${escapedCatalogue}\\)$`, "i"),
+  ];
+  return trailingPatterns.reduce((currentValue, pattern) => currentValue.replace(pattern, "").trim(), normalizedSegment);
+};
+const buildWorkDisplayParts = (work, composers = []) => {
+  if (!work) {
+    return [];
+  }
+  const composer = composers.find((item) => compact(item?.id) === compact(work?.composerId));
+  const parts = [
+    compact(work?.title || work?.id || ""),
+    stripCatalogueFromWorkSegment(work?.titleLatin || "", work?.catalogue || ""),
+    compact(work?.catalogue || ""),
+    compact(composer?.name || ""),
+    compact(composer?.nameLatin || ""),
+  ].filter(Boolean);
+  return [...new Set(parts)];
+};
 const personRoleLabels = {
+  composer: "作曲家",
   conductor: "指挥",
   orchestra: "乐团",
   soloist: "独奏",
   singer: "歌手",
   ensemble: "组合",
-  chorus: "合唱团",
+  chorus: "合唱",
   instrumentalist: "器乐",
 };
 const escapeHtml = (value) =>
@@ -78,33 +116,40 @@ export function resolveProposalActionContext(button = null, card = null) {
 }
 
 export function buildWorkOptionLabel(work, composers = []) {
-  if (!work) {
-    return "";
-  }
-  const composer = composers.find((item) => compact(item?.id) === compact(work?.composerId));
-  const composerLabel = composer ? buildComposerOptionLabel(composer) : compact(work?.composerId || "");
-  const title = compact(work?.title || work?.id || "");
-  const titleLatin = compact(work?.titleLatin || "");
-  const catalogue = compact(work?.catalogue || "");
-  return [composerLabel, catalogue, title, titleLatin].filter(Boolean).join(" · ");
+  return buildWorkDisplayParts(work, composers).join(" / ");
 }
 
 export function buildBatchWorkOptionLabel(work) {
   if (!work) {
     return "";
   }
-  return [compact(work?.title || work?.id || ""), compact(work?.titleLatin || ""), compact(work?.catalogue || "")]
+  return [
+    compact(work?.title || work?.id || ""),
+    stripCatalogueFromWorkSegment(work?.titleLatin || "", work?.catalogue || ""),
+    compact(work?.catalogue || ""),
+  ]
     .filter(Boolean)
     .join(" / ");
 }
 
+export function buildPreferredWorkLabel(work, composers = []) {
+  return buildWorkDisplayParts(work, composers).join(" / ");
+}
+
 export function buildSearchResultBadges(item = {}) {
   const type = compact(item.type);
+  const roles = Array.isArray(item.roles) ? item.roles.map((role) => compact(role)).filter(Boolean) : [];
+  if (type === "composer") {
+    const badges = ["人物", "作曲家"];
+    roles.forEach((role) => {
+      if (personRoleLabels[role] && !badges.includes(personRoleLabels[role])) {
+        badges.push(personRoleLabels[role]);
+      }
+    });
+    return badges;
+  }
   if (type === "site") {
     return ["网站文本"];
-  }
-  if (type === "composer") {
-    return ["作曲家"];
   }
   if (type === "work") {
     return ["作品"];
@@ -112,7 +157,6 @@ export function buildSearchResultBadges(item = {}) {
   if (type === "recording") {
     return ["版本"];
   }
-  const roles = Array.isArray(item.roles) ? item.roles.map((role) => compact(role)).filter(Boolean) : [];
   if (type === "person") {
     const badges = [];
     const isGroup = roles.some((role) => ["orchestra", "ensemble", "chorus"].includes(role));
@@ -239,3 +283,5 @@ export function selectBatchSessionAfterRefresh(sessions = [], currentSessionId =
     null
   );
 }
+
+

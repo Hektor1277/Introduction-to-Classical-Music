@@ -1,4 +1,4 @@
-export type SearchPanelKind = "composer" | "workGroup" | "work" | "conductor" | "orchestra" | "person";
+export type SearchPanelKind = "composer" | "workGroup" | "work" | "recording" | "conductor" | "orchestra" | "person";
 
 export type SearchPanelEntry = {
   id: string;
@@ -19,12 +19,18 @@ export type SearchPanelGroup = {
   items: SearchPanelEntry[];
 };
 
+export type SearchPanelBuildState = {
+  groups: SearchPanelGroup[];
+  pagedKinds: SearchPanelKind[];
+};
+
 export const SEARCH_PANEL_KIND_ORDER: SearchPanelKind[] = [
   "composer",
   "conductor",
   "orchestra",
   "workGroup",
   "work",
+  "recording",
   "person",
 ];
 
@@ -35,7 +41,7 @@ type SearchPanelBuildOptions = {
 
 const DEFAULT_PREVIEW_LIMIT = 5;
 const DEFAULT_QUERY_PAGE_SIZE = 10;
-const DISPLAYABLE_KINDS: SearchPanelKind[] = ["composer", "conductor", "orchestra", "work", "person"];
+const DISPLAYABLE_KINDS: SearchPanelKind[] = ["composer", "conductor", "orchestra", "work", "recording", "person"];
 
 export function normalizeSearchQuery(value: string) {
   return String(value ?? "")
@@ -82,7 +88,7 @@ export function buildSearchGroups(
     grouped.set(entry.kind, bucket);
   }
 
-  return SEARCH_PANEL_KIND_ORDER.filter((kind) => DISPLAYABLE_KINDS.includes(kind) && grouped.has(kind)).map((kind) => {
+  const groups = SEARCH_PANEL_KIND_ORDER.filter((kind) => DISPLAYABLE_KINDS.includes(kind) && grouped.has(kind)).map((kind) => {
     const items = grouped.get(kind) ?? [];
     if (!normalizedQuery) {
       return {
@@ -108,4 +114,19 @@ export function buildSearchGroups(
       items: items.slice(startIndex, startIndex + queryPageSize),
     } satisfies SearchPanelGroup;
   });
+
+  if (!normalizedQuery) {
+    return groups;
+  }
+
+  const pagedKinds = SEARCH_PANEL_KIND_ORDER.filter((kind) => {
+    const page = Number(pageByKind?.[kind]) || 1;
+    return page > 1;
+  });
+
+  if (!pagedKinds.length) {
+    return groups;
+  }
+
+  return groups.filter((group) => pagedKinds.includes(group.kind));
 }

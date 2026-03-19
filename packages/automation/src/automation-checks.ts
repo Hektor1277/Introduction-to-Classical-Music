@@ -175,11 +175,20 @@ function sanitizeLatinDisplayName(value: string) {
 }
 
 function sanitizeBaiduTitle(value: string) {
+  const baiduBoilerplatePattern =
+    /内容开放|网络百科全书|自由的网络百科|百科全书/i;
+  const normalized = normalizeWhitespace(String(value || ""));
+  if (!normalized) {
+    return "";
+  }
+  if (baiduBoilerplatePattern.test(normalized)) {
+    return "";
+  }
   return normalizeWhitespace(
-    String(value || "")
-      .replace(/[_\-—–|｜]\s*百度百科.*$/i, "")
-      .replace(/\s*-\s*百度百科.*$/i, "")
-      .replace(/\s*百度百科.*$/i, ""),
+    normalized
+      .replace(/[_-—–―|s]*百度百科.*$/i, "")
+      .replace(/s*-s*百度百科.*$/i, "")
+      .replace(/s*百度百科.*$/i, ""),
   );
 }
 
@@ -189,30 +198,52 @@ function extractLatinNameFromMixedText(value: string) {
 }
 
 function extractChineseLead(value: string) {
-  const matched = String(value || "").match(/^([\u3400-\u9fff·•・．\s]{2,40})/);
-  return normalizeWhitespace(matched?.[1] || "").replace(/\s+/g, "");
+  const boilerplatePattern =
+    /\u767e\u5ea6\u767e\u79d1\u662f\u4e00\u90e8\u5185\u5bb9\u5f00\u653e\u3001\u81ea\u7531\u7684\u7f51\u7edc\u767e\u79d1\u5168\u4e66|\u767e\u5ea6\u767e\u79d1\u662f\u4e00\u90e8\u5185\u5bb9\u5f00\u653e\u81ea\u7531\u7684\u7f51\u7edc\u767e\u79d1\u5168\u4e66|\u767e\u5ea6\u767e\u79d1/g;
+  const clausePattern =
+    /(\u662f|\u4e3a|\u7531|\u7cfb|\u4f4d\u4e8e|\u6210\u7acb\u4e8e|\u521b\u5efa\u4e8e|\u521b\u7acb\u4e8e|\u4e8e)[\s\S]*$/u;
+  const extractedLead = normalizeWhitespace(stripHtml(String(value || "")))
+    .replace(boilerplatePattern, "")
+    .trim()
+    .match(/^([\u3400-\u9fff\s]{2,40})/)?.[1];
+
+  return normalizeWhitespace(extractedLead || "")
+    .replace(/\s+/g, "")
+    .replace(clausePattern, "");
 }
 
 function sanitizeChineseName(value: string) {
+  const boilerplatePattern =
+    /\u767e\u5ea6\u767e\u79d1\u662f\u4e00\u90e8\u5185\u5bb9\u5f00\u653e\u3001\u81ea\u7531\u7684\u7f51\u7edc\u767e\u79d1\u5168\u4e66|\u767e\u5ea6\u767e\u79d1\u662f\u4e00\u90e8\u5185\u5bb9\u5f00\u653e\u81ea\u7531\u7684\u7f51\u7edc\u767e\u79d1\u5168\u4e66|\u767e\u5ea6\u767e\u79d1/g;
+  const clausePattern =
+    /(\u662f|\u4e3a|\u7531|\u7cfb|\u4f4d\u4e8e|\u6210\u7acb\u4e8e|\u521b\u5efa\u4e8e|\u521b\u7acb\u4e8e|\u4e8e)[\s\S]*$/u;
   return normalizeWhitespace(
     String(value || "")
-      .replace(/[（(][^（）()]{0,80}[)）]/g, " ")
-      .replace(/[,，;；:：|｜].*$/g, "")
+      .replace(/\([^()]{0,80}\)/g, " ")
+      .replace(/[,:;|].*$/g, "")
+      .replace(boilerplatePattern, "")
+      .replace(clausePattern, "")
       .replace(/\s+/g, "")
       .trim(),
   );
 }
 
 function looksLikeChineseName(value: string) {
-  return /^[\u3400-\u9fff·•・．]{2,24}$/.test(sanitizeChineseName(value));
+  return /^[㐀-鿿路·]{2,24}$/.test(sanitizeChineseName(value));
 }
 
 function scoreChineseName(value: string, candidateScore: number, referenceName = "") {
+  if (/(百度百科|内容开放|网络百科全书)/.test(String(value || ""))) {
+    return -1;
+  }
+  if (/(是|为|由|系|位于|成立于|创建于|创立于).{2,}/u.test(String(value || ""))) {
+    return -1;
+  }
   const normalized = sanitizeChineseName(value);
   if (!looksLikeChineseName(normalized)) {
     return -1;
   }
-  const separatorBoost = /[·•・．]/.test(normalized) ? 8 : 0;
+  const separatorBoost = /[路·]/.test(normalized) ? 8 : 0;
   const lengthBoost = Math.min(normalized.length, 16);
   const sameAsReferencePenalty = normalized === sanitizeChineseName(referenceName) ? 4 : 0;
   return candidateScore + separatorBoost + lengthBoost - sameAsReferencePenalty;
@@ -1474,6 +1505,30 @@ function extractCatalogueFromText(value: string) {
   ).trim();
 }
 
+function extractStructuredCatalogueFromText(value: string) {
+  const text = normalizeWhitespace(String(value || ""));
+  const patterns: Array<{ pattern: RegExp; normalize?: (matched: string) => string }> = [
+    { pattern: /\bOp\.?\s*\d+[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/^op\b\.?/i, "Op.").replace(/\s+/g, " ").trim() },
+    { pattern: /\bBWV\s*\d+[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/\s+/g, " ").trim() },
+    { pattern: /\bK(?:V)?\.?\s*\d+[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/\s+/g, " ").trim() },
+    { pattern: /\bWAB\s*\d+[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/\s+/g, " ").trim() },
+    { pattern: /\bGMW\s*\d+[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/\s+/g, " ").trim() },
+    { pattern: /\bHob\.?\s*[A-Z0-9:. -]+\b/i, normalize: (matched) => matched.replace(/\s+/g, " ").trim() },
+    { pattern: /\bD\.?\s*\d{1,3}[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/^d\b\.?/i, "D.").replace(/\s+/g, " ").trim() },
+    { pattern: /\bS\.?\s*\d{1,3}[a-z0-9-]*\b/i, normalize: (matched) => matched.replace(/^s\b\.?/i, "S.").replace(/\s+/g, " ").trim() },
+    { pattern: /作品\s*\d+[a-z0-9-]*/i, normalize: (matched) => `Op. ${matched.replace(/[^0-9a-z-]+/gi, "")}` },
+  ];
+
+  for (const { pattern, normalize } of patterns) {
+    const matched = text.match(pattern)?.[0];
+    if (matched) {
+      return normalize ? normalize(matched) : matched.trim();
+    }
+  }
+
+  return "";
+}
+
 function selectWorkLatinTitle(candidateTitle: string, work: Work) {
   const normalizedCandidate = normalizeWhitespace(candidateTitle);
   if (!normalizedCandidate || !/[A-Za-z]/.test(normalizedCandidate)) {
@@ -1611,7 +1666,7 @@ async function fetchWikipediaWorkCandidate(work: Work, library: LibraryData, fet
           sourceUrl: summaryPayload.content_urls?.desktop?.page || summaryUrl,
           sourceLabel: "Wikipedia",
           titleLatin: selectWorkLatinTitle(summaryPayload.title || title, work),
-          catalogue: extractCatalogueFromText(combinedText),
+          catalogue: extractStructuredCatalogueFromText(summaryPayload.title || title) || extractStructuredCatalogueFromText(combinedText),
           summary,
           confidence: 0.86,
         };
@@ -1638,7 +1693,10 @@ async function fetchBaiduWorkCandidate(work: Work, library: LibraryData, fetchIm
         sourceUrl: candidate.sourceUrl,
         sourceLabel: candidate.sourceLabel,
         titleLatin: "",
-        catalogue: extractCatalogueFromText(candidate.summary),
+        catalogue:
+          extractStructuredCatalogueFromText(candidate.displayFullName || "") ||
+          extractStructuredCatalogueFromText(candidate.displayName || "") ||
+          extractStructuredCatalogueFromText(candidate.summary),
         summary: normalizeWhitespace(candidate.summary),
         confidence: candidate.confidence ?? 0.58,
       };

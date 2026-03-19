@@ -1,4 +1,4 @@
-import type { Composer, Credit, LibraryData, Person, PersonRole, Recording } from "./schema.js";
+import type { Composer, Credit, LibraryData, Person, PersonRole, Recording, RecordingWorkTypeHint } from "./schema.js";
 
 type NamedEntity = {
   id: string;
@@ -37,6 +37,30 @@ export type RecordingListEntryDisplay = {
   noteExcerpt: string;
 };
 
+export type RecordingDailyDisplay = {
+  title: string;
+  subtitle: string;
+  workPrimary: string;
+  workSecondary: string;
+  principalPrimary: string;
+  principalSecondary: string;
+  supportingPrimary: string;
+  supportingSecondary: string;
+  ensemblePrimary: string;
+  ensembleSecondary: string;
+  datePlacePrimary: string;
+  datePlaceSecondary: string;
+};
+
+export type RecordingDisplayModel = {
+  title: string;
+  subtitle: string;
+  secondaryText: string;
+  metaText: string;
+  noteExcerpt: string;
+  daily: RecordingDailyDisplay;
+};
+
 export type LibraryDataIssueCategory =
   | "name-normalization"
   | "year-conflict"
@@ -51,11 +75,9 @@ export type LibraryDataIssue = {
   message: string;
 };
 
-const artistRoles: PersonRole[] = ["soloist", "singer", "instrumentalist"];
-const groupRoles: PersonRole[] = ["ensemble", "chorus"];
 const shortTitleDelimiter = " - ";
 const secondaryDelimiter = " / ";
-const metaDelimiter = " · ";
+const metaDelimiter = " 路 ";
 
 function compact(value: unknown) {
   return String(value ?? "").trim();
@@ -92,12 +114,34 @@ function deriveChineseFullName(entity: NamedEntity, primary: string) {
     return explicit;
   }
 
+  const canonical = compact(entity.name);
+  if (looksLikeChineseText(canonical)) {
+    return canonical;
+  }
+
   const aliases = dedupe([...(entity.aliases ?? []), entity.name, entity.displayName]);
   const aliasMatch =
     aliases.find((value) => looksLikeChineseText(value) && compact(value).length > compact(primary).length && compact(value).includes(primary)) ||
     aliases.find((value) => looksLikeChineseText(value) && compact(value).length > compact(primary).length);
 
-  return compact(aliasMatch || primary);
+  return compact(aliasMatch || canonical || primary);
+}
+
+function deriveShortLatinName(entity: NamedEntity) {
+  const explicit = compact(entity.displayLatinName);
+  if (explicit) {
+    return explicit;
+  }
+  const latin = compact(entity.nameLatin);
+  if (!latin) {
+    return "";
+  }
+  const tokens = latin
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .filter((token) => !["von", "van", "de", "del", "der", "di", "da", "la", "le"].includes(token.toLowerCase()));
+  return compact(tokens[tokens.length - 1] || latin);
 }
 
 export function normalizeSearchText(value: string) {
@@ -178,24 +222,41 @@ function getPersonById(library: LibraryData, personId?: string) {
 
 function displayForCredit(credit: Credit, library: LibraryData) {
   const person = getPersonById(library, credit.personId);
+  const fallback = compact(credit.displayName);
+  const fallbackKey = credit.personId || normalizeSearchText(fallback);
   if (!person) {
-    const fallback = compact(credit.displayName);
     return {
+      key: fallbackKey,
+      role: credit.role,
+      personId: compact(credit.personId),
       primary: fallback,
+      fullLabel: fallback,
       secondary: fallback,
       shortLabel: fallback,
     };
   }
 
   const display = getDisplayData(person);
+  const fullLabel =
+    credit.role === "orchestra" || credit.role === "ensemble" || credit.role === "chorus"
+      ? display.full || display.primary
+      : display.primary;
   const shortLabel =
     credit.role === "orchestra" || credit.role === "ensemble" || credit.role === "chorus"
       ? display.abbreviations[0] || display.primary
       : display.primary;
+  const secondary =
+    credit.role === "orchestra" || credit.role === "ensemble" || credit.role === "chorus"
+      ? display.latin || display.full || display.primary
+      : deriveShortLatinName(person) || display.latin || display.full || display.primary;
 
   return {
+    key: compact(person.id) || fallbackKey,
+    role: credit.role,
+    personId: compact(person.id),
     primary: display.primary,
-    secondary: display.latin || display.full || display.primary,
+    fullLabel,
+    secondary,
     shortLabel,
   };
 }
@@ -204,34 +265,210 @@ function creditGroup(credits: Credit[], roles: PersonRole[]) {
   return credits.filter((credit) => roles.includes(credit.role));
 }
 
-export function buildRecordingListEntry(recording: Recording, library: LibraryData): RecordingListEntryDisplay {
-  const conductors = creditGroup(recording.credits, ["conductor"]).map((credit) => displayForCredit(credit, library));
-  const orchestras = creditGroup(recording.credits, ["orchestra"]).map((credit) => displayForCredit(credit, library));
-  const artists = creditGroup(recording.credits, artistRoles).map((credit) => displayForCredit(credit, library));
-  const groups = creditGroup(recording.credits, groupRoles).map((credit) => displayForCredit(credit, library));
+function normalizeRecordingWorkTypeHint(value: unknown): RecordingWorkTypeHint {
+  const normalized = compact(value).toLowerCase();
+  const knownValues = new Set<RecordingWorkTypeHint>(["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"]);
+  return knownValues.has(normalized as RecordingWorkTypeHint) ? (normalized as RecordingWorkTypeHint) : "unknown";
+}
 
-  const titleParts = dedupe([
-    ...conductors.map((item) => item.shortLabel),
-    ...orchestras.map((item) => item.shortLabel),
-    ...artists.map((item) => item.shortLabel),
-    ...groups.map((item) => item.shortLabel),
-  ]);
+function joinRecordingTitleParts(parts: string[]) {
+  return dedupe(parts.map((value) => compact(value))).join(shortTitleDelimiter);
+}
 
-  const secondaryParts = dedupe([
-    ...conductors.map((item) => item.secondary),
-    ...orchestras.map((item) => item.secondary),
-    ...artists.map((item) => item.secondary),
-    ...groups.map((item) => item.secondary),
-  ]);
+function joinCreditNames(items: Array<{ primary: string; fullLabel: string }>, mode: "primary" | "fullLabel") {
+  return dedupe(items.map((item) => item[mode])).join(secondaryDelimiter);
+}
 
-  const metaText = dedupe([recording.performanceDateText, recording.venueText]).join(metaDelimiter);
-  const fallbackPrimary = compact(recording.title);
+type RecordingCreditDisplay = ReturnType<typeof displayForCredit>;
+
+function uniqueCreditDisplays(items: RecordingCreditDisplay[]) {
+  const seen = new Set<string>();
+  const nextItems: RecordingCreditDisplay[] = [];
+  for (const item of items) {
+    if (!item.key || seen.has(item.key)) {
+      continue;
+    }
+    seen.add(item.key);
+    nextItems.push(item);
+  }
+  return nextItems;
+}
+
+function excludeCreditDisplays(items: RecordingCreditDisplay[], blockedKeys: Set<string>) {
+  return items.filter((item) => item.key && !blockedKeys.has(item.key));
+}
+
+function collectCreditDisplays(recording: Recording, library: LibraryData) {
+  const grouped = {
+    conductors: uniqueCreditDisplays(creditGroup(recording.credits, ["conductor"]).map((credit) => displayForCredit(credit, library))),
+    orchestras: uniqueCreditDisplays(creditGroup(recording.credits, ["orchestra"]).map((credit) => displayForCredit(credit, library))),
+    groups: uniqueCreditDisplays(creditGroup(recording.credits, ["ensemble", "chorus"]).map((credit) => displayForCredit(credit, library))),
+    soloists: uniqueCreditDisplays(creditGroup(recording.credits, ["soloist", "instrumentalist"]).map((credit) => displayForCredit(credit, library))),
+    singers: uniqueCreditDisplays(creditGroup(recording.credits, ["singer"]).map((credit) => displayForCredit(credit, library))),
+  };
+  const conductorKeys = new Set(grouped.conductors.map((item) => item.key).filter(Boolean));
+  grouped.soloists = excludeCreditDisplays(grouped.soloists, conductorKeys);
+  grouped.singers = excludeCreditDisplays(grouped.singers, conductorKeys);
+  return grouped;
+}
+
+function joinDisplayValues(items: RecordingCreditDisplay[], key: "primary" | "fullLabel" | "secondary" | "shortLabel") {
+  return dedupe(items.map((item) => compact(item[key]))).join(shortTitleDelimiter);
+}
+
+function buildRecordingDatePlace(recording: Recording) {
+  return {
+    primary: compact(recording.performanceDateText),
+    secondary: compact(recording.venueText),
+    combined: dedupe([recording.performanceDateText, recording.venueText]).join(metaDelimiter),
+  };
+}
+
+function buildRecordingWorkLines(recording: Recording, library: LibraryData) {
+  const work = library.works.find((item) => item.id === recording.workId);
+  const composer = work ? library.composers.find((item) => item.id === work.composerId) : undefined;
+  return {
+    primary: work ? `${composer ? getWebsiteDisplay(composer).heading : "未知作曲家"} / ${work.title}` : "",
+    secondary: dedupe([work?.titleLatin, work?.catalogue]).join(secondaryDelimiter),
+  };
+}
+
+function buildDailyDisplay(
+  title: string,
+  subtitle: string,
+  workPrimary: string,
+  workSecondary: string,
+  principalPrimary: string,
+  principalSecondary: string,
+  supportingPrimary: string,
+  supportingSecondary: string,
+  ensemblePrimary: string,
+  ensembleSecondary: string,
+  datePlacePrimary: string,
+  datePlaceSecondary: string,
+): RecordingDailyDisplay {
+  return {
+    title,
+    subtitle,
+    workPrimary,
+    workSecondary,
+    principalPrimary,
+    principalSecondary,
+    supportingPrimary,
+    supportingSecondary,
+    ensemblePrimary,
+    ensembleSecondary,
+    datePlacePrimary,
+    datePlaceSecondary,
+  };
+}
+
+export function buildRecordingDisplayModel(recording: Recording, library: LibraryData): RecordingDisplayModel {
+  const workTypeHint = normalizeRecordingWorkTypeHint(recording.workTypeHint);
+  const credits = collectCreditDisplays(recording, library);
+  const eventMeta = buildRecordingDatePlace(recording);
+  const workLines = buildRecordingWorkLines(recording, library);
+  const conductorPrimary = joinDisplayValues(credits.conductors, "primary");
+  const conductorSecondary = joinDisplayValues(credits.conductors, "secondary");
+  const soloistPrimary = joinDisplayValues(credits.soloists, "primary");
+  const soloistSecondary = joinDisplayValues(credits.soloists, "secondary");
+  const singerPrimary = joinDisplayValues(credits.singers, "primary");
+  const singerSecondary = joinDisplayValues(credits.singers, "secondary");
+  const orchestraPrimary = joinDisplayValues(credits.orchestras, "fullLabel");
+  const orchestraSecondary = joinDisplayValues(credits.orchestras, "secondary");
+  const groupPrimary = joinDisplayValues(credits.groups, "fullLabel");
+  const groupSecondary = joinDisplayValues(credits.groups, "secondary");
+  const combinedEnsemblePrimary = dedupe([orchestraPrimary, groupPrimary]).join(shortTitleDelimiter);
+  const combinedEnsembleSecondary = dedupe([orchestraSecondary, groupSecondary]).join(shortTitleDelimiter);
+
+  let title = "";
+  let subtitle = "";
+  let principalPrimary = "";
+  let principalSecondary = "";
+  let supportingPrimary = "";
+  let supportingSecondary = "";
+  let ensemblePrimary = combinedEnsemblePrimary;
+  let ensembleSecondary = combinedEnsembleSecondary;
+
+  if (workTypeHint === "concerto") {
+    principalPrimary = conductorPrimary;
+    principalSecondary = conductorSecondary;
+    supportingPrimary = soloistPrimary;
+    supportingSecondary = soloistSecondary;
+    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
+    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
+  } else if (workTypeHint === "opera_vocal") {
+    principalPrimary = conductorPrimary;
+    principalSecondary = conductorSecondary;
+    supportingPrimary = singerPrimary || soloistPrimary;
+    supportingSecondary = singerSecondary || soloistSecondary;
+    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
+    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
+  } else if (workTypeHint === "chamber_solo") {
+    const leadPrimary = groupPrimary || soloistPrimary || singerPrimary;
+    const leadSecondary = groupSecondary || soloistSecondary || singerSecondary;
+    const collaboratorPrimary = !groupPrimary && soloistPrimary && soloistPrimary !== leadPrimary ? soloistPrimary : "";
+    const collaboratorSecondary = !groupSecondary && soloistSecondary && soloistSecondary !== leadSecondary ? soloistSecondary : "";
+    principalPrimary = leadPrimary;
+    principalSecondary = leadSecondary;
+    supportingPrimary = collaboratorPrimary;
+    supportingSecondary = collaboratorSecondary;
+    ensemblePrimary = combinedEnsemblePrimary;
+    ensembleSecondary = combinedEnsembleSecondary;
+    title =
+      joinRecordingTitleParts([leadPrimary, eventMeta.secondary, eventMeta.primary]) ||
+      joinRecordingTitleParts([leadPrimary, eventMeta.primary]) ||
+      compact(recording.title);
+    subtitle =
+      joinRecordingTitleParts([leadSecondary, eventMeta.secondary, eventMeta.primary]) ||
+      joinRecordingTitleParts([leadSecondary, eventMeta.primary]);
+  } else {
+    principalPrimary = conductorPrimary;
+    principalSecondary = conductorSecondary;
+    supportingPrimary = soloistPrimary || singerPrimary;
+    supportingSecondary = soloistSecondary || singerSecondary;
+    title = joinRecordingTitleParts([principalPrimary, ensemblePrimary, eventMeta.primary]) || compact(recording.title);
+    subtitle = joinRecordingTitleParts([principalSecondary, ensembleSecondary, eventMeta.primary]);
+  }
+
+  const safeTitle = title || compact(recording.title) || "*";
+  const safeSubtitle = subtitle || eventMeta.combined || safeTitle;
+  const metaText = eventMeta.combined;
 
   return {
-    title: titleParts.join(shortTitleDelimiter) || fallbackPrimary,
-    secondaryText: secondaryParts.join(secondaryDelimiter),
+    title: safeTitle,
+    subtitle: safeSubtitle,
+    secondaryText: safeSubtitle,
     metaText,
     noteExcerpt: excerpt(recording.notes || "", 120),
+    daily: buildDailyDisplay(
+      safeTitle,
+      safeSubtitle,
+      workLines.primary,
+      workLines.secondary,
+      principalPrimary,
+      principalSecondary,
+      supportingPrimary,
+      supportingSecondary,
+      ensemblePrimary,
+      ensembleSecondary,
+      eventMeta.primary,
+      eventMeta.secondary,
+    ),
+  };
+}
+
+export function buildRecordingDisplayTitle(recording: Recording, library: LibraryData) {
+  return buildRecordingDisplayModel(recording, library).title;
+}
+
+export function buildRecordingListEntry(recording: Recording, library: LibraryData): RecordingListEntryDisplay {
+  const model = buildRecordingDisplayModel(recording, library);
+  return {
+    title: model.title,
+    secondaryText: model.secondaryText,
+    metaText: model.metaText,
+    noteExcerpt: model.noteExcerpt,
   };
 }
 

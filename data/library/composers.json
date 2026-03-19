@@ -23,7 +23,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-柏辽兹",
@@ -49,7 +52,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-柴可夫斯基",
@@ -78,7 +84,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-理查施特劳斯",
@@ -105,7 +114,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-罗伯特舒曼",
@@ -131,7 +143,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-让西贝柳斯",
@@ -159,7 +174,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-贝多芬",
@@ -186,7 +204,10 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   },
   {
     "id": "composer-马勒",
@@ -212,6 +233,9 @@
       "articleId": "",
       "collectionLinks": [],
       "collectionUrl": ""
-    }
+    },
+    "roles": [
+      "composer"
+    ]
   }
 ]

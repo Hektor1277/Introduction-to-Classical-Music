@@ -49,6 +49,26 @@ describe("search panel helpers", () => {
     expect(groups[0]?.totalPages).toBe(2);
   });
 
+  it("focuses on the actively paged result kind once a query enters later pages", () => {
+    const entries: SearchPanelEntry[] = [
+      ...baseEntries,
+      ...Array.from({ length: 12 }, (_, index) => ({
+        id: `work-${index + 1}`,
+        kind: "work" as const,
+        primaryText: `第${index + 1}交响曲 / Symphony ${index + 1} / Op. ${index + 1}`,
+        secondaryText: `测试作曲家 / 交响曲`,
+        href: `/works/${index + 1}`,
+        matchTokens: ["交", "交响曲"],
+        aliasTokens: [],
+      })),
+    ];
+
+    const groups = buildSearchGroups(entries, "交", { work: 2 });
+
+    expect(groups.map((group) => group.kind)).toEqual(["work"]);
+    expect(groups[0]?.items.map((item) => item.id)).toEqual(["work-11", "work-12"]);
+  });
+
   it("does not surface work-group taxonomy as a duplicated top-level result group", () => {
     const entries: SearchPanelEntry[] = [
       {
@@ -75,5 +95,39 @@ describe("search panel helpers", () => {
 
     expect(groups.map((group) => group.kind)).toEqual(["work"]);
     expect(groups[0]?.items.map((item) => item.id)).toEqual(["work-beethoven-5"]);
+  });
+
+  it("keeps work entries display-ready with full bilingual titles and catalogue text", () => {
+    const entry: SearchPanelEntry = {
+      id: "bruckner-7",
+      kind: "work",
+      primaryText: "第七交响曲 / Symphony No. 7 in E major / WAB 107",
+      secondaryText: "安东·布鲁克纳 / 交响曲",
+      href: "/works/bruckner-7",
+      matchTokens: ["第七交响曲", "Symphony No. 7 in E major", "WAB 107"],
+      aliasTokens: [],
+    };
+
+    const groups = buildSearchGroups([entry], "WAB 107", {});
+
+    expect(groups[0]?.items[0]?.primaryText).toContain("WAB 107");
+    expect(groups[0]?.items[0]?.primaryText).toContain("Symphony No. 7 in E major");
+  });
+
+  it("keeps recording entries display-ready with conductor, full orchestra name and time", () => {
+    const entry: SearchPanelEntry = {
+      id: "abbado-bpo-1984",
+      kind: "recording",
+      primaryText: "阿巴多 - 柏林爱乐乐团 - 1984",
+      secondaryText: "第五交响曲 / 古斯塔夫·马勒",
+      href: "/recordings/abbado-bpo-1984",
+      matchTokens: ["阿巴多", "柏林爱乐乐团", "1984", "Mahler"],
+      aliasTokens: ["BPO"],
+    };
+
+    const groups = buildSearchGroups([entry], "柏林爱乐", {});
+
+    expect(groups.map((group) => group.kind)).toEqual(["recording"]);
+    expect(groups[0]?.items[0]?.primaryText).toBe("阿巴多 - 柏林爱乐乐团 - 1984");
   });
 });

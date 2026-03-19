@@ -37,7 +37,7 @@ import {
   loadBatchImportSession,
   saveBatchImportSession,
 } from "../../../packages/automation/src/batch-import-store.js";
-import { collectLibraryDataIssues, getDisplayData, getWebsiteDisplay } from "../../../packages/shared/src/display.js";
+import { buildRecordingDisplayTitle, collectLibraryDataIssues, getDisplayData, getWebsiteDisplay } from "../../../packages/shared/src/display.js";
 import { defaultLlmConfig, mergeLlmConfigPatch, sanitizeLlmConfig, testOpenAiCompatibleConfig } from "../../../packages/automation/src/llm.js";
 import { fetchWithWindowsFallback } from "../../../packages/automation/src/external-fetch.js";
 import { resolveLibraryAssetPath } from "../../../packages/data-core/src/owner-assets.js";
@@ -247,9 +247,134 @@ function removeEntityFromLibrary(library, entityType, entityId) {
   return library;
 }
 
+function normalizeWorkComparableText(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[，,:：;；()[\]{}]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeRegExp(value) {
+  return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function stripCatalogueFromWorkSegment(segment, catalogue) {
+  const normalizedSegment = String(segment ?? "").trim();
+  const normalizedCatalogue = String(catalogue ?? "").trim();
+  if (!normalizedSegment || !normalizedCatalogue) {
+    return normalizedSegment;
+  }
+  if (normalizeWorkComparableText(normalizedSegment) === normalizeWorkComparableText(normalizedCatalogue)) {
+    return "";
+  }
+  const escapedCatalogue = escapeRegExp(normalizedCatalogue).replace(/\s+/g, "\\s+");
+  const trailingPatterns = [
+    new RegExp(`(?:\\s*[,，:：;；/|·-]\\s*|\\s+)\\(?${escapedCatalogue}\\)?$`, "i"),
+    new RegExp(`\\(${escapedCatalogue}\\)$`, "i"),
+  ];
+  return trailingPatterns.reduce((currentValue, pattern) => currentValue.replace(pattern, "").trim(), normalizedSegment);
+}
+
+function buildWorkDisplayParts(work, composer = null) {
+  return [
+    String(work?.title ?? work?.id ?? "").trim(),
+    stripCatalogueFromWorkSegment(work?.titleLatin ?? "", work?.catalogue ?? ""),
+    String(work?.catalogue ?? "").trim(),
+    String(composer?.name ?? "").trim(),
+    String(composer?.nameLatin ?? "").trim(),
+  ].filter(Boolean);
+}
+
+const recordingWorkTypeHints = new Set(["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"]);
+
+function normalizeRecordingWorkTypeHint(value) {
+  const normalized = compact(value).toLowerCase();
+  return recordingWorkTypeHints.has(normalized) ? normalized : "unknown";
+}
+
+function getPersonById(library, personId) {
+  return (library.people || []).find((person) => person.id === personId) || null;
+}
+
+function upsertRecordingCredit(credits, nextCredit) {
+  const nextCredits = (credits || []).filter((credit) => !(credit.role === nextCredit.role && nextCredit.personId));
+  nextCredits.push(nextCredit);
+  return nextCredits;
+}
+
+function buildCanonicalRecordingCredit(library, role, personId) {
+  const person = getPersonById(library, personId);
+  if (!person) {
+    return null;
+  }
+  return {
+    role,
+    personId: person.id,
+    displayName: role === "orchestra" ? getWebsiteDisplay(person).heading : getDisplayData(person).primary || getWebsiteDisplay(person).heading,
+    label: "",
+  };
+}
+
+function buildRecordingEntity(library, payload, infoPanel, timestamp) {
+  const existing = payload.id ? library.recordings.find((item) => item.id === payload.id) : null;
+  let credits = Array.isArray(payload.credits) ? [...payload.credits] : [];
+  const canonicalConductorCredit = buildCanonicalRecordingCredit(library, "conductor", payload.conductorPersonId);
+  const canonicalOrchestraCredit = buildCanonicalRecordingCredit(library, "orchestra", payload.orchestraPersonId);
+
+  if (canonicalConductorCredit) {
+    credits = upsertRecordingCredit(credits, canonicalConductorCredit);
+  }
+  if (canonicalOrchestraCredit) {
+    credits = upsertRecordingCredit(credits, canonicalOrchestraCredit);
+  }
+  if (canonicalConductorCredit?.personId) {
+    credits = credits.filter(
+      (credit) =>
+        !["soloist", "instrumentalist", "singer"].includes(credit.role) || compact(credit.personId || "") !== canonicalConductorCredit.personId,
+    );
+  }
+
+  const baseRecording = {
+    id: existing?.id || payload.id || createEntityId("recording", payload.title || payload.workId || "recording"),
+    workId: payload.workId,
+    slug: existing?.slug || "",
+    title: payload.title || existing?.title || "",
+    workTypeHint: normalizeRecordingWorkTypeHint(payload.workTypeHint || existing?.workTypeHint),
+    sortKey: existing?.sortKey || nextSortKey(library.recordings),
+    isPrimaryRecommendation: Boolean(payload.isPrimaryRecommendation),
+    updatedAt: timestamp,
+    images: payload.images || existing?.images || [],
+    credits,
+    links: payload.links || existing?.links || [],
+    notes: payload.notes || "",
+    performanceDateText: payload.performanceDateText || "",
+    venueText: payload.venueText || "",
+    albumTitle: payload.albumTitle || "",
+    label: payload.label || "",
+    releaseDate: payload.releaseDate || "",
+    infoPanel,
+  };
+
+  const computedTitle = buildRecordingDisplayTitle(baseRecording, library) || payload.title || existing?.title || "未命名版本";
+  return {
+    ...baseRecording,
+    slug: existing?.slug || createSlug(computedTitle),
+    title: computedTitle,
+  };
+}
+
 function buildEntity(library, entityType, payload) {
   const timestamp = new Date().toISOString();
   const infoPanel = parseInfoPanel(payload);
+  const workSlugSource = [
+    payload.title,
+    stripCatalogueFromWorkSegment(payload.titleLatin || "", payload.catalogue || ""),
+    payload.catalogue,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   if (entityType === "composer") {
     return {
@@ -265,6 +390,7 @@ function buildEntity(library, entityType, payload) {
       imageUpdatedAt: payload.imageUpdatedAt || "",
       birthYear: parseNumber(payload.birthYear),
       deathYear: parseNumber(payload.deathYear),
+      roles: payload.roles?.length ? payload.roles : ["composer"],
       aliases: parseList(payload.aliases),
       sortKey: payload.sortKey || nextSortKey(library.composers),
       summary: payload.summary || "",
@@ -297,10 +423,10 @@ function buildEntity(library, entityType, payload) {
   if (entityType === "work") {
     const groupIds = ensureWorkGroups(library, payload.composerId, payload.groupPath || []);
     return {
-      id: payload.id || createEntityId("work", payload.slug || payload.title),
+      id: payload.id || createEntityId("work", payload.slug || workSlugSource || payload.title),
       composerId: payload.composerId,
       groupIds,
-      slug: payload.slug || createSlug(payload.title),
+      slug: payload.slug || createSlug(workSlugSource || payload.title),
       title: payload.title,
       titleLatin: payload.titleLatin || "",
       aliases: parseList(payload.aliases),
@@ -312,25 +438,7 @@ function buildEntity(library, entityType, payload) {
     };
   }
 
-  return {
-    id: payload.id || createEntityId("recording", payload.slug || payload.title),
-    workId: payload.workId,
-    slug: payload.slug || createSlug(payload.title),
-    title: payload.title,
-    sortKey: payload.sortKey || nextSortKey(library.recordings),
-    isPrimaryRecommendation: Boolean(payload.isPrimaryRecommendation),
-    updatedAt: timestamp,
-    images: payload.images || [],
-    credits: payload.credits || [],
-    links: payload.links || [],
-    notes: payload.notes || "",
-    performanceDateText: payload.performanceDateText || "",
-    venueText: payload.venueText || "",
-    albumTitle: payload.albumTitle || "",
-    label: payload.label || "",
-    releaseDate: payload.releaseDate || "",
-    infoPanel,
-  };
+  return buildRecordingEntity(library, payload, infoPanel, timestamp);
 }
 
 function buildArticle(articles, payload) {
@@ -421,30 +529,43 @@ function entityCollectionByType(library, entityType) {
 
 function buildSearchResults(library, site, query, type) {
   const normalizedQuery = String(query || "").trim().toLowerCase();
+  const composerById = new Map((library.composers || []).map((item) => [item.id, item]));
   const makeKeywords = (values) =>
     values
       .flatMap((value) => (Array.isArray(value) ? value : [value]))
       .filter(Boolean)
       .map((value) => String(value).toLowerCase());
+  const matchesRequestedType = (entry) => {
+    if (!type) {
+      return true;
+    }
+    if (type === "person") {
+      return entry.searchBucket === "person" || entry.type === "composer";
+    }
+    if (type === "group") {
+      return entry.searchBucket === "group";
+    }
+    return entry.type === type || entry.searchBucket === type;
+  };
   const buckets = [
-    ["site", [{ id: "site", title: site.title, subtitle: site.subtitle || site.description || "", type: "site" }]],
+    ["site", [{ id: "site", title: site.title, subtitle: site.subtitle || site.description || "", type: "site", searchBucket: "site" }]],
     [
       "composer",
       library.composers.map((item) => {
         const display = getDisplayData(item);
-        const websiteDisplay = getWebsiteDisplay(item);
         return {
           id: item.id,
-          title: websiteDisplay.heading,
-          subtitle: [websiteDisplay.short, websiteDisplay.latin].filter(Boolean).join(" / "),
+          title: getWebsiteDisplay(item).heading,
+          subtitle: [display.primary !== getWebsiteDisplay(item).heading ? display.primary : "", item.nameLatin || display.latin, item.country].filter(Boolean).join(" / "),
           type: "composer",
-          roles: [],
+          searchBucket: "person",
+          roles: item.roles?.length ? item.roles : ["composer"],
           keywords: makeKeywords([
             display.primary,
             display.full,
             display.latin,
-            websiteDisplay.heading,
-            websiteDisplay.short,
+            item.name,
+            item.nameLatin,
             item.aliases,
             item.abbreviations,
             item.country,
@@ -456,21 +577,21 @@ function buildSearchResults(library, site, query, type) {
       "person",
       library.people.map((item) => {
         const display = getDisplayData(item);
+        const isGroup = item.roles.some((role) => ["orchestra", "ensemble", "chorus"].includes(role));
         const websiteDisplay = getWebsiteDisplay(item);
         return {
           id: item.id,
           title: websiteDisplay.heading,
-          subtitle: [websiteDisplay.short, websiteDisplay.latin, (item.abbreviations || []).join(" / "), item.roles.join(" / ")]
-            .filter(Boolean)
-            .join(" / "),
+          subtitle: [websiteDisplay.short, item.nameLatin || display.latin, (item.abbreviations || []).join(" / "), item.country].filter(Boolean).join(" / "),
           type: "person",
+          searchBucket: isGroup ? "group" : "person",
           roles: item.roles,
           keywords: makeKeywords([
             display.primary,
             display.full,
             display.latin,
-            websiteDisplay.heading,
-            websiteDisplay.short,
+            item.name,
+            item.nameLatin,
             item.aliases,
             item.abbreviations,
             item.country,
@@ -481,37 +602,159 @@ function buildSearchResults(library, site, query, type) {
       ],
       [
         "work",
-        library.works.map((item) => {
+      library.works.map((item) => {
           const composer = library.composers.find((composerItem) => composerItem.id === item.composerId);
-          const composerDisplay = composer ? getWebsiteDisplay(composer).heading : "";
+          const composerDisplay = composer?.name || composer?.nameLatin || "";
           return {
             id: item.id,
-            title: item.title,
-            subtitle: [composerDisplay, item.titleLatin, item.catalogue].filter(Boolean).join(" / "),
+            title: buildWorkDisplayParts(item, composer).slice(0, 3).join(" / "),
+            subtitle: [composerDisplay, composer?.nameLatin && composer?.nameLatin !== composerDisplay ? composer.nameLatin : ""].filter(Boolean).join(" / "),
             type: "work",
+            searchBucket: "work",
             roles: [],
-            keywords: makeKeywords([item.title, item.titleLatin, item.catalogue, item.aliases, composerDisplay]),
+            keywords: makeKeywords([item.title, item.titleLatin, item.catalogue, item.aliases, composerDisplay, composer?.nameLatin]),
           };
         }),
       ],
       [
         "recording",
-        library.recordings.map((item) => ({
-          id: item.id,
-          title: item.title,
-          subtitle: item.albumTitle || item.performanceDateText || "",
-          type: "recording",
-          roles: [],
-          keywords: makeKeywords([item.title, item.albumTitle, item.performanceDateText, item.venueText]),
-        })),
+        library.recordings.map((item) => {
+          const work = library.works.find((workItem) => workItem.id === item.workId);
+          const composer = work ? composerById.get(work.composerId) : null;
+          const title = buildRecordingDisplayTitle(item, library);
+          return {
+            id: item.id,
+            title,
+            subtitle: [work?.title, composer ? getWebsiteDisplay(composer).heading : "", item.albumTitle || item.performanceDateText || ""]
+              .filter(Boolean)
+              .join(" / "),
+            type: "recording",
+            searchBucket: "recording",
+            roles: [],
+            keywords: makeKeywords([
+              title,
+              item.title,
+              work?.title,
+              work?.titleLatin,
+              work?.catalogue,
+              composer?.name,
+              composer?.nameLatin,
+              item.albumTitle,
+              item.performanceDateText,
+              item.venueText,
+              item.credits?.map((credit) => [credit.displayName, credit.label, credit.personId]),
+            ]),
+          };
+        }),
       ],
     ];
 
   return buckets
     .flatMap(([, entries]) => entries)
-    .filter((entry) => (type ? entry.type === type : true))
+    .filter((entry) => matchesRequestedType(entry))
     .filter((entry) => !normalizedQuery || [entry.title, entry.subtitle, ...(entry.keywords || [])].join(" ").toLowerCase().includes(normalizedQuery))
     .slice(0, 100);
+}
+
+function buildRelatedEntityReference(library, entityType, entity) {
+  if (!entity) {
+    return null;
+  }
+  if (entityType === "composer") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+    };
+  }
+  if (entityType === "person") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+    };
+  }
+  if (entityType === "work") {
+    const composer = (library.composers || []).find((item) => item.id === entity.composerId);
+    return {
+      entityType,
+      id: entity.id,
+      label: [entity.title, entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      title: entity.title,
+      subtitle: [composer ? getWebsiteDisplay(composer).heading : "", entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+    };
+  }
+  return {
+    entityType,
+    id: entity.id,
+    label: buildRecordingDisplayTitle(entity, library),
+    title: buildRecordingDisplayTitle(entity, library),
+    subtitle: [entity.performanceDateText || "", entity.venueText || "", entity.albumTitle || ""].filter(Boolean).join(" / "),
+  };
+}
+
+function collectRelatedEntities(library, entityType, entityId) {
+  const results = [];
+  const append = (nextType, nextEntity) => {
+    const reference = buildRelatedEntityReference(library, nextType, nextEntity);
+    if (!reference) {
+      return;
+    }
+    const key = `${reference.entityType}:${reference.id}`;
+    if (results.some((item) => `${item.entityType}:${item.id}` === key)) {
+      return;
+    }
+    results.push(reference);
+  };
+
+  if (entityType === "composer") {
+    (library.works || []).filter((item) => item.composerId === entityId).forEach((item) => append("work", item));
+    return results;
+  }
+
+  if (entityType === "person") {
+    (library.recordings || [])
+      .filter((item) => (item.credits || []).some((credit) => credit.personId === entityId))
+      .forEach((item) => append("recording", item));
+    return results;
+  }
+
+  if (entityType === "work") {
+    const work = (library.works || []).find((item) => item.id === entityId);
+    if (work) {
+      const composer = (library.composers || []).find((item) => item.id === work.composerId);
+      if (composer) {
+        append("composer", composer);
+      }
+    }
+    (library.recordings || []).filter((item) => item.workId === entityId).forEach((item) => append("recording", item));
+    return results;
+  }
+
+  if (entityType === "recording") {
+    const recording = (library.recordings || []).find((item) => item.id === entityId);
+    if (!recording) {
+      return results;
+    }
+    const work = (library.works || []).find((item) => item.id === recording.workId);
+    if (work) {
+      append("work", work);
+    }
+    (recording.credits || []).forEach((credit) => {
+      const person = (library.people || []).find((item) => item.id === credit.personId);
+      if (person) {
+        append("person", person);
+      }
+    });
+  }
+
+  return results;
 }
 
 function appendOrReplaceField(fields, nextField) {
@@ -693,7 +936,10 @@ app.get("/api/entity/:entityType/:id", async (request, response) => {
       return;
     }
 
-    response.json({ entity });
+    response.json({
+      entity,
+      relatedEntities: collectRelatedEntities(library, request.params.entityType, request.params.id),
+    });
   } catch (error) {
     response.status(500).json({ error: error instanceof Error ? error.message : String(error) });
   }

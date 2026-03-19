@@ -1,4 +1,4 @@
-import { getEntitySearchTexts, getDisplayData, getWebsiteDisplay, normalizeSearchText } from "../../shared/src/display.js";
+import { buildRecordingDisplayTitle, getEntitySearchTexts, getDisplayData, getWebsiteDisplay, normalizeSearchText } from "../../shared/src/display.js";
 import type { Composer, LibraryData, Person, Recording, Work } from "../../shared/src/schema.js";
 
 export type PersonLinkConfig = {
@@ -22,7 +22,7 @@ type ComposerTreeNode = {
 
 export type SearchEntry = {
   id: string;
-  kind: "composer" | "workGroup" | "work" | "conductor" | "orchestra" | "person";
+  kind: "composer" | "workGroup" | "work" | "recording" | "conductor" | "orchestra" | "person";
   primaryText: string;
   secondaryText: string;
   href: string;
@@ -130,6 +130,36 @@ function dedupe(values: string[]) {
   return [...new Set(values.filter(Boolean))];
 }
 
+function normalizeWorkComparableText(value: string) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[，,:：;；()[\]{}]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeRegExp(value: string) {
+  return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function stripCatalogueFromWorkSegment(segment: string, catalogue: string) {
+  const normalizedSegment = String(segment ?? "").trim();
+  const normalizedCatalogue = String(catalogue ?? "").trim();
+  if (!normalizedSegment || !normalizedCatalogue) {
+    return normalizedSegment;
+  }
+  if (normalizeWorkComparableText(normalizedSegment) === normalizeWorkComparableText(normalizedCatalogue)) {
+    return "";
+  }
+  const escapedCatalogue = escapeRegExp(normalizedCatalogue).replace(/\s+/g, "\\s+");
+  const trailingPatterns = [
+    new RegExp(`(?:\\s*[,，:：;；/|·-]\\s*|\\s+)\\(?${escapedCatalogue}\\)?$`, "i"),
+    new RegExp(`\\(${escapedCatalogue}\\)$`, "i"),
+  ];
+  return trailingPatterns.reduce((currentValue, pattern) => currentValue.replace(pattern, "").trim(), normalizedSegment);
+}
+
 function resolveCanonicalPersonId(personId: string, personLinks: PersonLinkConfig) {
   const seen = new Set<string>();
   let currentId = personId;
@@ -142,8 +172,31 @@ function resolveCanonicalPersonId(personId: string, personLinks: PersonLinkConfi
   return currentId;
 }
 
+function normalizeRecordingForDisplay(recording: Recording, personLinks: PersonLinkConfig, personMap: Map<string, Person>) {
+  const nextCredits = recording.credits.map((credit) => {
+    if (!credit.personId) {
+      return credit;
+    }
+    const canonicalPersonId = resolveCanonicalPersonId(credit.personId, personLinks);
+    const person = personMap.get(canonicalPersonId) ?? personMap.get(credit.personId);
+    if (!person) {
+      return credit;
+    }
+    return {
+      ...credit,
+      personId: person.id,
+    };
+  });
+
+  return {
+    ...recording,
+    credits: nextCredits,
+  };
+}
+
 function ensureRelationshipEntry(
   bucket: Record<string, RelationshipIndexEntry>,
+  library: LibraryData,
   person: Person,
   composer: Composer,
   work: Work,
@@ -185,7 +238,7 @@ function ensureRelationshipEntry(
 
   workEntry.recordings.push({
     id: recording.id,
-    title: recording.title,
+    title: buildRecordingDisplayTitle(recording, library),
     href: recordingHref(recording),
   });
 }
@@ -215,6 +268,14 @@ function createSearchPersonKind(person: Person): SearchEntry["kind"] {
 
 function groupTitlePath(work: Work, groupMap: Map<string, { title: string }>) {
   return work.groupIds.map((groupId) => groupMap.get(groupId)?.title).filter((value): value is string => Boolean(value));
+}
+
+function buildWorkSearchPrimaryText(work: Work) {
+  return dedupe([work.title, stripCatalogueFromWorkSegment(work.titleLatin, work.catalogue), work.catalogue]).join(" / ");
+}
+
+function buildWorkSearchSecondaryText(work: Work, composerHeading: string, groupPath: string[]) {
+  return dedupe([composerHeading, ...groupPath]).join(" / ");
 }
 
 function createSearchEntry(input: Omit<SearchEntry, "matchTokens" | "aliasTokens"> & { matchTokens?: string[]; aliasTokens?: string[] }) {
@@ -282,6 +343,7 @@ export function buildIndexes(
   const personAppearances = new Map<string, number>();
 
   for (const recording of sortByKey(library.recordings)) {
+    const displayRecording = normalizeRecordingForDisplay(recording, personLinks, personMap);
     const work = workMap.get(recording.workId);
     if (!work) {
       continue;
@@ -306,11 +368,11 @@ export function buildIndexes(
       personAppearances.set(person.id, (personAppearances.get(person.id) ?? 0) + 1);
 
       if (credit.role === "conductor" && person.roles.includes("conductor")) {
-        ensureRelationshipEntry(conductorIndex, person, composer, work, recording);
+        ensureRelationshipEntry(conductorIndex, library, person, composer, work, displayRecording);
       }
 
       if (credit.role === "orchestra" && person.roles.includes("orchestra")) {
-        ensureRelationshipEntry(orchestraIndex, person, composer, work, recording);
+        ensureRelationshipEntry(orchestraIndex, library, person, composer, work, displayRecording);
       }
     }
   }
@@ -399,16 +461,54 @@ export function buildIndexes(
       continue;
     }
     const groupPath = groupTitlePath(work, groupMap);
+    const composerHeading = getWebsiteDisplay(composer).heading;
 
     searchIndex.push(
       createSearchEntry({
         id: work.id,
         kind: "work",
-        primaryText: work.title,
-        secondaryText: dedupe([getWebsiteDisplay(composer).heading, groupPath.join(" / "), work.catalogue]).join(" / "),
+        primaryText: buildWorkSearchPrimaryText(work),
+        secondaryText: buildWorkSearchSecondaryText(work, composerHeading, groupPath),
         href: workHref(work),
-        matchTokens: [work.title, work.titleLatin, work.catalogue, ...work.aliases, ...groupPath, getWebsiteDisplay(composer).heading],
+        matchTokens: [work.title, work.titleLatin, work.catalogue, ...work.aliases, ...groupPath, composerHeading],
         aliasTokens: work.aliases,
+      }),
+    );
+  }
+
+  for (const recording of sortByKey(library.recordings)) {
+    const displayRecording = normalizeRecordingForDisplay(recording, personLinks, personMap);
+    const work = workMap.get(recording.workId);
+    if (!work) {
+      continue;
+    }
+    const composer = composerMap.get(work.composerId);
+    const composerHeading = composer ? getWebsiteDisplay(composer).heading : "";
+    const title = buildRecordingDisplayTitle(displayRecording, library);
+    const creditTokens = [...recording.credits, ...displayRecording.credits]
+      .flatMap((credit) => [credit.displayName, credit.label, credit.personId])
+      .filter((value): value is string => Boolean(value));
+
+    searchIndex.push(
+      createSearchEntry({
+        id: displayRecording.id,
+        kind: "recording",
+        primaryText: title,
+        secondaryText: dedupe([work.title, composerHeading]).join(" / "),
+        href: recordingHref(displayRecording),
+        matchTokens: [
+          title,
+          work.title,
+          work.titleLatin,
+          work.catalogue,
+          composerHeading,
+          displayRecording.performanceDateText,
+          displayRecording.venueText,
+          displayRecording.albumTitle,
+          displayRecording.label,
+          ...creditTokens,
+        ],
+        aliasTokens: [],
       }),
     );
   }

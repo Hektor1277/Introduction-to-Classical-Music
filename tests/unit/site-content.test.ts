@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 import type { LibraryData } from "@/lib/schema";
 import type { SiteConfig } from "@/lib/library-store";
@@ -176,5 +178,19 @@ describe("mergeSiteConfigPatch", () => {
       copyrightNotice: "旧版权",
       lastImportedAt: "2026-03-07T15:13:50.982Z",
     });
+  });
+});
+
+describe("site recording presentation wiring", () => {
+  it("feeds the homepage daily recommendations from the structured recording display model", async () => {
+    const page = await fs.readFile(path.resolve("apps/site/src/pages/index.astro"), "utf8");
+    const component = await fs.readFile(path.resolve("apps/site/src/components/DailyRecommendations.astro"), "utf8");
+
+    expect(page).toContain("buildRecordingDisplayModel");
+    expect(component).toContain("subtitle");
+    expect(component).toContain("principalPrimary");
+    expect(component).toContain("supportingPrimary");
+    expect(component).toContain("ensemblePrimary");
+    expect(component).toContain("datePlacePrimary");
   });
 });
