@@ -180,12 +180,19 @@ function stripUnusedPlaceholderPeople(library: Awaited<ReturnType<typeof loadLib
 }
 
 async function main() {
+  const dryRun = process.argv.includes("--dry-run");
   const originalLibrary = await loadLibraryFromDisk();
   let library = backfillRecordingWorkTypeHints(originalLibrary);
 
   const recordingsToRepair = library.recordings.filter((recording) => needsLegacyRepair(recording));
   let repairedCount = 0;
   let backfilledCount = library.recordings.filter((recording, index) => recording.workTypeHint !== originalLibrary.recordings[index]?.workTypeHint).length;
+  let normalizedTitleCount = library.recordings.filter((recording, index) => compact(recording.title) !== compact(originalLibrary.recordings[index]?.title)).length;
+  let normalizedMetadataCount = library.recordings.filter(
+    (recording, index) =>
+      compact(recording.performanceDateText) !== compact(originalLibrary.recordings[index]?.performanceDateText) ||
+      compact(recording.venueText) !== compact(originalLibrary.recordings[index]?.venueText),
+  ).length;
 
   if (recordingsToRepair.length > 0) {
     const { tempDir, rootDir } = await resolveArchiveRoot();
@@ -205,7 +212,17 @@ async function main() {
         const html = await fs.readFile(legacyFilePath, "utf8");
         const parsed = parseLegacyRecordingHtml(html);
         library = ensurePeopleForParsedCredits(library, parsed.credits || []);
-        repairedRecordings.push(repairRecordingFromLegacyParse(library, recording, parsed));
+        const repairedRecording = repairRecordingFromLegacyParse(library, recording, parsed);
+        if (compact(repairedRecording.title) !== compact(recording.title)) {
+          normalizedTitleCount += 1;
+        }
+        if (
+          compact(repairedRecording.performanceDateText) !== compact(recording.performanceDateText) ||
+          compact(repairedRecording.venueText) !== compact(recording.venueText)
+        ) {
+          normalizedMetadataCount += 1;
+        }
+        repairedRecordings.push(repairedRecording);
         repairedCount += 1;
       }
       library = {
@@ -218,8 +235,10 @@ async function main() {
   }
 
   library = stripUnusedPlaceholderPeople(library);
-  await saveLibraryToDisk(library);
-  await writeGeneratedArtifacts();
+  if (!dryRun) {
+    await saveLibraryToDisk(library);
+    await writeGeneratedArtifacts();
+  }
 
   const remainingUnknown = library.recordings.filter((recording) => compact(recording.workTypeHint) === "unknown").length;
   const remainingPlaceholderCredits = library.recordings.filter((recording) => hasPlaceholderCredits(recording)).length;
@@ -228,8 +247,11 @@ async function main() {
     JSON.stringify(
       {
         recordingsTotal: library.recordings.length,
+        dryRun,
         workTypeBackfilled: backfilledCount,
         recordingsRepairedFromLegacy: repairedCount,
+        normalizedTitles: normalizedTitleCount,
+        normalizedMetadata: normalizedMetadataCount,
         remainingUnknownWorkTypeHints: remainingUnknown,
         remainingPlaceholderCredits,
       },
