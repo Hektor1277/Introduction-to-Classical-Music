@@ -420,6 +420,75 @@ describe("automation jobs", () => {
     expect(orchestraPreview.groups[0]?.items.map((item) => item.entityId)).toEqual(["vpo"]);
   });
 
+  it("deduplicates identical proposal ids when a job merges multiple per-item runs", async () => {
+    const duplicateLibrary = validateLibrary({
+      ...library,
+      people: [
+        {
+          ...library.people[0],
+          id: "berlin-phil",
+          slug: "berlin-phil",
+          name: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          displayName: "柏林爱乐乐团",
+          displayLatinName: "Berliner Philharmoniker",
+          roles: ["orchestra"],
+          aliases: ["BPO"],
+          abbreviations: ["BPO"],
+          sortKey: "0100",
+        },
+        {
+          ...library.people[0],
+          id: "berlin-phil-duplicate",
+          slug: "berlin-phil-duplicate",
+          name: "柏林爱乐",
+          nameLatin: "Berliner Philharmoniker",
+          displayName: "柏林爱乐",
+          displayLatinName: "Berliner Philharmoniker",
+          roles: ["orchestra"],
+          aliases: ["Berlin Philharmonic Orchestra"],
+          abbreviations: ["BPO"],
+          sortKey: "0101",
+        },
+      ],
+    });
+
+    const manager = createAutomationJobManager();
+    const job = manager.createJob({
+      library: duplicateLibrary,
+      request: { categories: ["orchestra"], orchestraIds: ["berlin-phil", "berlin-phil-duplicate"] },
+      runChecksImpl: async (_library, request) =>
+        createAutomationRun(duplicateLibrary, {
+          categories: ["orchestra"],
+          proposals: [
+            {
+              id: "merge-berlin-phil|berlin-phil-duplicate",
+              kind: "merge",
+              entityType: "person",
+              entityId: request.orchestraIds?.[0] || "berlin-phil",
+              summary: "疑似重复人物：柏林爱乐乐团 / 柏林爱乐",
+              risk: "high",
+              sources: [],
+              fields: [],
+              mergeCandidates: [
+                {
+                  targetId: "berlin-phil-duplicate",
+                  targetLabel: "柏林爱乐",
+                  reason: "共享规范化名称",
+                },
+              ],
+            },
+          ],
+        }),
+    });
+
+    await manager.waitForJob(job.id);
+    const current = manager.getJob(job.id);
+
+    expect(current?.run?.proposals).toHaveLength(1);
+    expect(current?.run?.proposals[0]?.id).toBe("merge-berlin-phil|berlin-phil-duplicate");
+  });
+
   it("previews work selections directly when requesting work auto-check", () => {
     const libraryWithWork = validateLibrary({
       ...library,

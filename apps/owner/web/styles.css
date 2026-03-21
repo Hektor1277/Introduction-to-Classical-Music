@@ -117,6 +117,8 @@ button {
 
 .owner-panel--main {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
   gap: 1rem;
   min-width: 0;
 }
@@ -211,6 +213,7 @@ button {
 .owner-panel__inner.is-active {
   display: grid;
   align-content: start;
+  align-self: start;
   gap: 1rem;
   min-width: 0;
   max-width: 100%;
@@ -271,8 +274,9 @@ button {
 }
 
 .owner-result-list {
-  display: grid;
-  grid-auto-rows: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.75rem;
   overflow: auto;
   padding-right: 0.3rem;
@@ -448,6 +452,39 @@ button {
 .owner-structured-links {
   display: grid;
   gap: 0.75rem;
+}
+
+.owner-recording-credit-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.owner-recording-credit-editor__rows {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.owner-recording-credit-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.8fr) minmax(12rem, 1.05fr) minmax(14rem, 1.25fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--panel-strong);
+}
+
+.owner-recording-credit-row__display {
+  min-width: 0;
+}
+
+.owner-recording-credit-row__remove {
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(130, 83, 83, 0.25);
+  background: rgba(245, 232, 232, 0.72);
+  color: var(--danger);
 }
 
 .owner-form__media {
@@ -1679,6 +1716,14 @@ pre {
 
 .owner-panel--main > .owner-tabs {
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  align-self: start;
+  justify-self: stretch;
+  flex: 0 0 auto;
+  padding-top: 0.1rem;
+  background: linear-gradient(180deg, rgba(252, 247, 238, 0.98), rgba(252, 247, 238, 0.92));
 }
 
 .owner-view .owner-card,
@@ -2237,8 +2282,18 @@ pre {
 }
 
 .owner-card--search .owner-result-item {
+  display: block;
+  flex: 0 0 auto;
   min-height: 0;
   max-height: none;
+}
+
+.owner-card--search .owner-result-item > * + * {
+  margin-top: 0.75rem;
+}
+
+.owner-card--search .owner-result-item button {
+  margin-top: 0.85rem;
 }
 
 .owner-info-panel-editor {
@@ -2485,6 +2540,42 @@ pre {
 .owner-role-grid label {
   width: 100%;
   justify-self: stretch !important;
+}
+
+.owner-panel--main {
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+}
+
+.owner-panel--main > .owner-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  align-self: start;
+  justify-self: stretch;
+  flex: 0 0 auto;
+  padding-top: 0.1rem;
+  background: linear-gradient(180deg, rgba(252, 247, 238, 0.98), rgba(252, 247, 238, 0.92));
+}
+
+.owner-view.is-active,
+.owner-panel__inner.is-active {
+  align-self: start;
+}
+
+.owner-card--search .owner-result-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.owner-card--search .owner-result-item {
+  display: block;
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: none;
+  height: auto;
+  overflow: visible;
 }
 
 @media (max-width: 1180px) {

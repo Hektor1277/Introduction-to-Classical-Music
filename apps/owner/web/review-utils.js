@@ -3,6 +3,21 @@ export const REVIEW_PAGE_SIZE = 5;
 export const buildDataAttributeSelector = (attributeName, value) =>
   `[${attributeName}="${String(value ?? "").replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"]`;
 
+const dedupeProposalsById = (proposals) => {
+  const seen = new Set();
+  return (proposals || []).filter((proposal) => {
+    const id = String(proposal?.id || "");
+    if (!id) {
+      return true;
+    }
+    if (seen.has(id)) {
+      return false;
+    }
+    seen.add(id);
+    return true;
+  });
+};
+
 const stableSerialize = (value) => JSON.stringify(value ?? null);
 
 export const buildExcerpt = (value, maxLength = 120) => {
@@ -37,14 +52,19 @@ export const paginateItems = (items, page = 1, pageSize = REVIEW_PAGE_SIZE) => {
 export const getProposalsForReviewAction = (proposals, action, options = {}) => {
   const scope = options.scope === "page" ? "page" : "all";
   const scopeIds = new Set((options.scopeIds || []).map((value) => String(value)));
+  const normalizedProposals = dedupeProposalsById(proposals);
   const scopedProposals =
     scope === "page"
-      ? (proposals || []).filter((proposal) => scopeIds.has(String(proposal?.id || "")))
-      : proposals || [];
+      ? normalizedProposals.filter((proposal) => scopeIds.has(String(proposal?.id || "")))
+      : normalizedProposals;
 
   if (action === "apply-confirmed") {
     return scopedProposals.filter(
-      (proposal) => proposal?.reviewState === "confirmed" && proposal?.status === "pending",
+      (proposal) =>
+        proposal?.reviewState === "confirmed" &&
+        proposal?.status === "pending" &&
+        proposal?.kind !== "merge" &&
+        ((proposal?.fields?.length ?? 0) > 0 || (proposal?.imageCandidates?.length ?? 0) > 0),
     );
   }
 
@@ -56,7 +76,7 @@ export const getProposalsForReviewAction = (proposals, action, options = {}) => 
 };
 
 export const filterPendingProposalsForDisplay = (proposals) =>
-  (proposals || []).filter((proposal) => proposal?.status === "pending");
+  dedupeProposalsById(proposals).filter((proposal) => proposal?.status === "pending");
 
 export const hasProposalDraftChanges = (proposal, draft = {}) => {
   if (!proposal) {

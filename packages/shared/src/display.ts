@@ -1,4 +1,8 @@
-import type { Composer, Credit, LibraryData, Person, PersonRole, Recording, RecordingWorkTypeHint } from "./schema.js";
+import {
+  deriveRecordingPresentationFamily,
+  normalizeRecordingWorkTypeHintValue,
+} from "./recording-rules.js";
+import type { Composer, Credit, LibraryData, Person, PersonRole, Recording } from "./schema.js";
 
 type NamedEntity = {
   id: string;
@@ -42,6 +46,8 @@ export type RecordingDailyDisplay = {
   subtitle: string;
   workPrimary: string;
   workSecondary: string;
+  composerPrimary: string;
+  composerSecondary: string;
   principalPrimary: string;
   principalSecondary: string;
   supportingPrimary: string;
@@ -265,12 +271,6 @@ function creditGroup(credits: Credit[], roles: PersonRole[]) {
   return credits.filter((credit) => roles.includes(credit.role));
 }
 
-function normalizeRecordingWorkTypeHint(value: unknown): RecordingWorkTypeHint {
-  const normalized = compact(value).toLowerCase();
-  const knownValues = new Set<RecordingWorkTypeHint>(["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"]);
-  return knownValues.has(normalized as RecordingWorkTypeHint) ? (normalized as RecordingWorkTypeHint) : "unknown";
-}
-
 function joinRecordingTitleParts(parts: string[]) {
   return dedupe(parts.map((value) => compact(value))).join(shortTitleDelimiter);
 }
@@ -324,12 +324,65 @@ function buildRecordingDatePlace(recording: Recording) {
   };
 }
 
-function buildRecordingWorkLines(recording: Recording, library: LibraryData) {
+function buildBrokenRecordingWorkLines(recording: Recording, library: LibraryData) {
+  return buildRecordingWorkLines(recording, library);
+  /*
   const work = library.works.find((item) => item.id === recording.workId);
   const composer = work ? library.composers.find((item) => item.id === work.composerId) : undefined;
+  if (work) {
+    return {
+      primary: [work.title, composer ? getWebsiteDisplay(composer).heading : "未知作曲家"].filter(Boolean).join(" / "),
+      secondary: dedupe([work.titleLatin, work.catalogue, composer ? getDisplayData(composer).secondary : ""]).join(secondaryDelimiter),
+    };
+  }
   return {
     primary: work ? `${composer ? getWebsiteDisplay(composer).heading : "未知作曲家"} / ${work.title}` : "",
     secondary: dedupe([work?.titleLatin, work?.catalogue]).join(secondaryDelimiter),
+  };
+}
+
+*/
+}
+function buildLegacyRecordingWorkLines(recording: Recording, library: LibraryData) {
+  const work = library.works.find((item) => item.id === recording.workId);
+  const composer = work ? library.composers.find((item) => item.id === work.composerId) : undefined;
+
+  if (!work) {
+    return {
+      primary: "",
+      secondary: "",
+      composerPrimary: "",
+      composerSecondary: "",
+    };
+  }
+
+  const composerDisplay = composer ? getWebsiteDisplay(composer) : null;
+  return {
+    primary: [work.title, composerDisplay?.heading || "未知作曲家"].filter(Boolean).join(" / "),
+    secondary: dedupe([work.titleLatin, work.catalogue, composerDisplay?.latin || ""]).join(secondaryDelimiter),
+  };
+}
+
+function buildRecordingWorkLines(recording: Recording, library: LibraryData) {
+  const work = library.works.find((item) => item.id === recording.workId);
+  const composer = work ? library.composers.find((item) => item.id === work.composerId) : undefined;
+
+  if (!work) {
+    return {
+      primary: "",
+      secondary: "",
+      composerPrimary: "",
+      composerSecondary: "",
+    };
+  }
+
+  const composerDisplay = composer ? getWebsiteDisplay(composer) : null;
+
+  return {
+    primary: work.title,
+    secondary: dedupe([work.titleLatin, work.catalogue]).join(" | "),
+    composerPrimary: composerDisplay?.heading || "\u672a\u77e5\u4f5c\u66f2\u5bb6",
+    composerSecondary: composerDisplay?.latin || "",
   };
 }
 
@@ -338,6 +391,8 @@ function buildDailyDisplay(
   subtitle: string,
   workPrimary: string,
   workSecondary: string,
+  composerPrimary: string,
+  composerSecondary: string,
   principalPrimary: string,
   principalSecondary: string,
   supportingPrimary: string,
@@ -352,6 +407,8 @@ function buildDailyDisplay(
     subtitle,
     workPrimary,
     workSecondary,
+    composerPrimary,
+    composerSecondary,
     principalPrimary,
     principalSecondary,
     supportingPrimary,
@@ -364,8 +421,16 @@ function buildDailyDisplay(
 }
 
 export function buildRecordingDisplayModel(recording: Recording, library: LibraryData): RecordingDisplayModel {
-  const workTypeHint = normalizeRecordingWorkTypeHint(recording.workTypeHint);
   const credits = collectCreditDisplays(recording, library);
+  const workTypeHint = normalizeRecordingWorkTypeHintValue(recording.workTypeHint);
+  const presentationFamily = deriveRecordingPresentationFamily({
+    workTypeHint,
+    conductorCount: credits.conductors.length,
+    orchestraCount: credits.orchestras.length,
+    soloistCount: credits.soloists.length,
+    singerCount: credits.singers.length,
+    ensembleCount: credits.groups.length,
+  });
   const eventMeta = buildRecordingDatePlace(recording);
   const workLines = buildRecordingWorkLines(recording, library);
   const conductorPrimary = joinDisplayValues(credits.conductors, "primary");
@@ -390,21 +455,21 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
   let ensemblePrimary = combinedEnsemblePrimary;
   let ensembleSecondary = combinedEnsembleSecondary;
 
-  if (workTypeHint === "concerto") {
+  if (presentationFamily === "concerto") {
     principalPrimary = conductorPrimary;
     principalSecondary = conductorSecondary;
     supportingPrimary = soloistPrimary;
     supportingSecondary = soloistSecondary;
     title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
     subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
-  } else if (workTypeHint === "opera_vocal") {
+  } else if (presentationFamily === "opera") {
     principalPrimary = conductorPrimary;
     principalSecondary = conductorSecondary;
     supportingPrimary = singerPrimary || soloistPrimary;
     supportingSecondary = singerSecondary || soloistSecondary;
     title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
     subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
-  } else if (workTypeHint === "chamber_solo") {
+  } else if (presentationFamily === "solo" || presentationFamily === "chamber") {
     const leadPrimary = groupPrimary || soloistPrimary || singerPrimary;
     const leadSecondary = groupSecondary || soloistSecondary || singerSecondary;
     const collaboratorPrimary = !groupPrimary && soloistPrimary && soloistPrimary !== leadPrimary ? soloistPrimary : "";
@@ -416,11 +481,11 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
     ensemblePrimary = combinedEnsemblePrimary;
     ensembleSecondary = combinedEnsembleSecondary;
     title =
-      joinRecordingTitleParts([leadPrimary, eventMeta.secondary, eventMeta.primary]) ||
+      joinRecordingTitleParts([leadPrimary, presentationFamily === "solo" ? eventMeta.secondary : supportingPrimary || eventMeta.secondary, eventMeta.primary]) ||
       joinRecordingTitleParts([leadPrimary, eventMeta.primary]) ||
       compact(recording.title);
     subtitle =
-      joinRecordingTitleParts([leadSecondary, eventMeta.secondary, eventMeta.primary]) ||
+      joinRecordingTitleParts([leadSecondary, presentationFamily === "solo" ? eventMeta.secondary : supportingSecondary || eventMeta.secondary, eventMeta.primary]) ||
       joinRecordingTitleParts([leadSecondary, eventMeta.primary]);
   } else {
     principalPrimary = conductorPrimary;
@@ -434,6 +499,8 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
   const safeTitle = title || compact(recording.title) || "*";
   const safeSubtitle = subtitle || eventMeta.combined || safeTitle;
   const metaText = eventMeta.combined;
+  const dailyDetailPrimary = eventMeta.primary;
+  const dailyDetailSecondary = eventMeta.secondary;
 
   return {
     title: safeTitle,
@@ -446,14 +513,16 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
       safeSubtitle,
       workLines.primary,
       workLines.secondary,
-      principalPrimary,
-      principalSecondary,
-      supportingPrimary,
-      supportingSecondary,
-      ensemblePrimary,
-      ensembleSecondary,
-      eventMeta.primary,
-      eventMeta.secondary,
+      workLines.composerPrimary,
+      workLines.composerSecondary,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      dailyDetailPrimary,
+      dailyDetailSecondary,
     ),
   };
 }
@@ -472,7 +541,8 @@ export function buildRecordingListEntry(recording: Recording, library: LibraryDa
   };
 }
 
-export function collectLibraryDataIssues(library: LibraryData): LibraryDataIssue[] {
+function collectLegacyLibraryDataIssues(library: LibraryData): LibraryDataIssue[] {
+  /*
   const issues: LibraryDataIssue[] = [];
 
   for (const composer of library.composers) {
@@ -545,6 +615,173 @@ export function collectLibraryDataIssues(library: LibraryData): LibraryDataIssue
         entityId: person.id,
         category: "summary-missing",
         message: `人物 ${display.primary} 缺少简介。`,
+      });
+    }
+  }
+
+  return issues;
+}
+  */
+  return [];
+}
+
+function collectBrokenLibraryDataIssues(library: LibraryData): LibraryDataIssue[] {
+  /*
+  const issues: LibraryDataIssue[] = [];
+
+  for (const composer of library.composers) {
+    const display = getDisplayData(composer);
+    const composerCompat = composer as Composer;
+    if (!composerCompat.displayFullName || !composerCompat.displayLatinName) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "name-normalization",
+        message: `作曲家 ${display.primary} 缺少规范全名或外文名。`,
+      });
+    }
+    if (composer.name && composerCompat.fullName && composer.name === composerCompat.fullName && composer.name.length <= 4) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "name-normalization",
+        message: `作曲家 ${display.primary} 的中文名与中文全名未区分。`,
+      });
+    }
+    if (!composer.country) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "country-missing",
+        message: `作曲家 ${display.primary} 缺少国家信息。`,
+      });
+    }
+  }
+
+  for (const person of library.people) {
+    const display = getDisplayData(person);
+    const personCompat = person as Person;
+    if (!personCompat.displayFullName || !personCompat.displayLatinName) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "name-normalization",
+        message: `人物 ${display.primary} 缺少规范全名或外文名。`,
+      });
+    }
+    if (person.name && personCompat.fullName && person.name === personCompat.fullName && person.name.length <= 4) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "name-normalization",
+        message: `人物 ${display.primary} 的中文名与中文全名未区分。`,
+      });
+    }
+    if (person.birthYear && person.deathYear && person.birthYear > person.deathYear) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "year-conflict",
+        message: `人物 ${display.primary} 的生卒年份冲突。`,
+      });
+    }
+    if (person.roles.some((role) => role === "orchestra" || role === "ensemble" || role === "chorus") && (personCompat.abbreviations?.length ?? 0) === 0) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "abbreviation-missing",
+        message: `团体 ${display.primary} 缺少简称或缩写。`,
+      });
+    }
+    if (!person.summary) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "summary-missing",
+        message: `人物 ${display.primary} 缺少简介。`,
+      });
+    }
+  }
+
+  return issues;
+}
+  */
+  return [];
+}
+
+export function collectLibraryDataIssues(library: LibraryData): LibraryDataIssue[] {
+  const issues: LibraryDataIssue[] = [];
+
+  for (const composer of library.composers) {
+    const display = getDisplayData(composer);
+    const composerCompat = composer as Composer;
+    if (!composerCompat.displayFullName || !composerCompat.displayLatinName) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "name-normalization",
+        message: "composer " + display.primary + " missing canonical full name or latin name",
+      });
+    }
+    if (composer.name && composerCompat.fullName && composer.name === composerCompat.fullName && composer.name.length <= 4) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "name-normalization",
+        message: "composer " + display.primary + " has no distinct short/full Chinese names",
+      });
+    }
+    if (!composer.country) {
+      issues.push({
+        entityType: "composer",
+        entityId: composer.id,
+        category: "country-missing",
+        message: "composer " + display.primary + " missing country",
+      });
+    }
+  }
+
+  for (const person of library.people) {
+    const display = getDisplayData(person);
+    const personCompat = person as Person;
+    if (!personCompat.displayFullName || !personCompat.displayLatinName) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "name-normalization",
+        message: "person " + display.primary + " missing canonical full name or latin name",
+      });
+    }
+    if (person.name && personCompat.fullName && person.name === personCompat.fullName && person.name.length <= 4) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "name-normalization",
+        message: "person " + display.primary + " has no distinct short/full Chinese names",
+      });
+    }
+    if (person.birthYear && person.deathYear && person.birthYear > person.deathYear) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "year-conflict",
+        message: "person " + display.primary + " has conflicting birth/death years",
+      });
+    }
+    if (person.roles.some((role) => role === "orchestra" || role === "ensemble" || role === "chorus") && (personCompat.abbreviations?.length ?? 0) === 0) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "abbreviation-missing",
+        message: "group " + display.primary + " missing abbreviation",
+      });
+    }
+    if (!person.summary) {
+      issues.push({
+        entityType: "person",
+        entityId: person.id,
+        category: "summary-missing",
+        message: "person " + display.primary + " missing summary",
       });
     }
   }

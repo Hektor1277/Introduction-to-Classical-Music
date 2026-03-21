@@ -38,6 +38,11 @@ import {
   saveBatchImportSession,
 } from "../../../packages/automation/src/batch-import-store.js";
 import { buildRecordingDisplayTitle, collectLibraryDataIssues, getDisplayData, getWebsiteDisplay } from "../../../packages/shared/src/display.js";
+import {
+  getRecordingWorkTypeHintLabel,
+  normalizeRecordingWorkTypeHintValue,
+  resolveRecordingWorkTypeHintValue,
+} from "../../../packages/shared/src/recording-rules.js";
 import { defaultLlmConfig, mergeLlmConfigPatch, sanitizeLlmConfig, testOpenAiCompatibleConfig } from "../../../packages/automation/src/llm.js";
 import { fetchWithWindowsFallback } from "../../../packages/automation/src/external-fetch.js";
 import { resolveLibraryAssetPath } from "../../../packages/data-core/src/owner-assets.js";
@@ -287,11 +292,58 @@ function buildWorkDisplayParts(work, composer = null) {
   ].filter(Boolean);
 }
 
-const recordingWorkTypeHints = new Set(["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"]);
-
 function normalizeRecordingWorkTypeHint(value) {
-  const normalized = compact(value).toLowerCase();
-  return recordingWorkTypeHints.has(normalized) ? normalized : "unknown";
+  return normalizeRecordingWorkTypeHintValue(value);
+}
+
+function getComposerById(library, composerId) {
+  return (library.composers || []).find((composer) => composer.id === composerId) || null;
+}
+
+function getWorkById(library, workId) {
+  return (library.works || []).find((work) => work.id === workId) || null;
+}
+
+function getWorkGroupsByWork(library, work) {
+  const groupIds = Array.isArray(work?.groupIds) ? work.groupIds : [];
+  return groupIds
+    .map((groupId) => (library.workGroups || []).find((group) => group.id === groupId))
+    .filter(Boolean);
+}
+
+function resolveRecordingWorkTypeHint(library, value, workId) {
+  return resolveRecordingWorkTypeHintValue(value, getWorkById(library, workId), getWorkGroupsByWork(library, getWorkById(library, workId)));
+}
+
+function getWorkGroupLabel(library, work) {
+  if (!work) {
+    return "作品 / 未分类";
+  }
+  const relatedRecording = (library.recordings || []).find((item) => item.workId === work.id);
+  const resolvedWorkType = resolveRecordingWorkTypeHint(
+    library,
+    relatedRecording?.workTypeHint,
+    work.id,
+  );
+  return `作品 / ${getRecordingWorkTypeHintLabel(resolvedWorkType)}`;
+}
+
+function getPersonGroupLabel(person) {
+  if ((person.roles || []).some((role) => role === "orchestra" || role === "ensemble" || role === "chorus")) {
+    return "团体";
+  }
+  if ((person.roles || []).includes("composer")) {
+    return "作曲家";
+  }
+  return "人物";
+}
+
+function getRelatedRecordingGroupLabel(library, recording) {
+  const work = getWorkById(library, recording.workId);
+  const composer = getComposerById(library, work?.composerId);
+  const composerLabel = composer ? getWebsiteDisplay(composer).heading : "未知作曲家";
+  const workLabel = String(work?.title || recording.title || "未知作品").trim();
+  return `版本 / ${composerLabel} / ${workLabel}`;
 }
 
 function getPersonById(library, personId) {
@@ -299,8 +351,21 @@ function getPersonById(library, personId) {
 }
 
 function upsertRecordingCredit(credits, nextCredit) {
-  const nextCredits = (credits || []).filter((credit) => !(credit.role === nextCredit.role && nextCredit.personId));
-  nextCredits.push(nextCredit);
+  const nextCredits = [...(credits || [])];
+  const matchedIndex = nextCredits.findIndex(
+    (credit) =>
+      credit.role === nextCredit.role &&
+      compact(credit.personId || "") &&
+      compact(credit.personId || "") === compact(nextCredit.personId || ""),
+  );
+  if (matchedIndex >= 0) {
+    nextCredits[matchedIndex] = {
+      ...nextCredits[matchedIndex],
+      ...nextCredit,
+    };
+    return nextCredits;
+  }
+  nextCredits.unshift(nextCredit);
   return nextCredits;
 }
 
@@ -319,6 +384,7 @@ function buildCanonicalRecordingCredit(library, role, personId) {
 
 function buildRecordingEntity(library, payload, infoPanel, timestamp) {
   const existing = payload.id ? library.recordings.find((item) => item.id === payload.id) : null;
+  const workId = payload.workId || existing?.workId || "";
   let credits = Array.isArray(payload.credits) ? [...payload.credits] : [];
   const canonicalConductorCredit = buildCanonicalRecordingCredit(library, "conductor", payload.conductorPersonId);
   const canonicalOrchestraCredit = buildCanonicalRecordingCredit(library, "orchestra", payload.orchestraPersonId);
@@ -338,10 +404,10 @@ function buildRecordingEntity(library, payload, infoPanel, timestamp) {
 
   const baseRecording = {
     id: existing?.id || payload.id || createEntityId("recording", payload.title || payload.workId || "recording"),
-    workId: payload.workId,
+    workId,
     slug: existing?.slug || "",
     title: payload.title || existing?.title || "",
-    workTypeHint: normalizeRecordingWorkTypeHint(payload.workTypeHint || existing?.workTypeHint),
+    workTypeHint: resolveRecordingWorkTypeHint(library, payload.workTypeHint || existing?.workTypeHint, workId),
     sortKey: existing?.sortKey || nextSortKey(library.recordings),
     isPrimaryRecommendation: Boolean(payload.isPrimaryRecommendation),
     updatedAt: timestamp,
@@ -656,10 +722,45 @@ function buildSearchResults(library, site, query, type) {
     .slice(0, 100);
 }
 
-function buildRelatedEntityReference(library, entityType, entity) {
+function buildLegacyRelatedEntityReference(library, entityType, entity) {
+  return buildRelatedEntityReference(library, entityType, entity);
   if (!entity) {
     return null;
   }
+  const workTypeLabel = (value) => {
+    const normalized = normalizeRecordingWorkTypeHint(value);
+    if (normalized === "concerto") return "协奏曲";
+    if (normalized === "opera_vocal") return "歌剧与声乐";
+    if (normalized === "chamber_solo") return "室内乐与独奏";
+    if (normalized === "orchestral") return "管弦乐";
+    return "未分类";
+  };
+  const workGroupLabel = (work) => {
+    const relatedRecording = (library.recordings || []).find(
+      (item) => item.workId === work.id && normalizeRecordingWorkTypeHint(item.workTypeHint) !== "unknown",
+    );
+    if (relatedRecording) {
+      return `作品 / ${workTypeLabel(relatedRecording.workTypeHint)}`;
+    }
+    const groupText = (work.groupIds || [])
+      .map((groupId) => (library.workGroups || []).find((group) => group.id === groupId))
+      .filter(Boolean)
+      .map((group) => `${group.slug || ""} ${group.title || ""}`.toLowerCase())
+      .join(" ");
+    if (/concert|协奏/.test(groupText)) return "作品 / concerto";
+    if (/opera|歌剧|vocal|声乐/.test(groupText)) return "作品 / opera_vocal";
+    if (/sonata|quartet|trio|chamber|solo|室内|奏鸣|独奏/.test(groupText)) return "作品 / chamber_solo";
+    return "作品 / orchestral";
+  };
+  const personGroupLabel = (person) => {
+    if ((person.roles || []).some((role) => role === "orchestra" || role === "ensemble" || role === "chorus")) {
+      return "团体";
+    }
+    if ((person.roles || []).includes("composer")) {
+      return "作曲家";
+    }
+    return "人物";
+  };
   if (entityType === "composer") {
     const display = getWebsiteDisplay(entity);
     return {
@@ -668,6 +769,7 @@ function buildRelatedEntityReference(library, entityType, entity) {
       label: display.heading,
       title: display.heading,
       subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: "作曲家",
     };
   }
   if (entityType === "person") {
@@ -678,6 +780,7 @@ function buildRelatedEntityReference(library, entityType, entity) {
       label: display.heading,
       title: display.heading,
       subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: personGroupLabel(entity),
     };
   }
   if (entityType === "work") {
@@ -688,6 +791,7 @@ function buildRelatedEntityReference(library, entityType, entity) {
       label: [entity.title, entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
       title: entity.title,
       subtitle: [composer ? getWebsiteDisplay(composer).heading : "", entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      groupLabel: workGroupLabel(entity),
     };
   }
   return {
@@ -696,6 +800,140 @@ function buildRelatedEntityReference(library, entityType, entity) {
     label: buildRecordingDisplayTitle(entity, library),
     title: buildRecordingDisplayTitle(entity, library),
     subtitle: [entity.performanceDateText || "", entity.venueText || "", entity.albumTitle || ""].filter(Boolean).join(" / "),
+    groupLabel: `版本 / ${workTypeLabel(entity.workTypeHint)}`,
+  };
+}
+
+function buildRelatedEntityReference(library, entityType, entity) {
+  if (!entity) {
+    return null;
+  }
+
+  if (entityType === "composer") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: "作曲家",
+    };
+  }
+
+  if (entityType === "person") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: getPersonGroupLabel(entity),
+    };
+  }
+
+  if (entityType === "work") {
+    const composer = (library.composers || []).find((item) => item.id === entity.composerId);
+    return {
+      entityType,
+      id: entity.id,
+      label: [entity.title, entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      title: entity.title,
+      subtitle: [composer ? getWebsiteDisplay(composer).heading : "", entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      groupLabel: getWorkGroupLabel(library, entity),
+    };
+  }
+
+  return {
+    entityType,
+    id: entity.id,
+    label: buildRecordingDisplayTitle(entity, library),
+    title: buildRecordingDisplayTitle(entity, library),
+    subtitle: [entity.performanceDateText || "", entity.venueText || "", entity.albumTitle || ""].filter(Boolean).join(" / "),
+    groupLabel: getRelatedRecordingGroupLabel(library, entity),
+  };
+
+  const workTypeLabel = (value) => {
+    const normalized = normalizeRecordingWorkTypeHint(value);
+    if (normalized === "concerto") return "协奏曲";
+    if (normalized === "opera_vocal") return "歌剧与声乐";
+    if (normalized === "chamber_solo") return "室内乐与独奏";
+    if (normalized === "orchestral") return "管弦乐";
+    return "未分类";
+  };
+
+  const workGroupLabel = (work) => {
+    const relatedRecording = (library.recordings || []).find(
+      (item) => item.workId === work.id && normalizeRecordingWorkTypeHint(item.workTypeHint) !== "unknown",
+    );
+    if (relatedRecording) {
+      return `作品 / ${workTypeLabel(relatedRecording.workTypeHint)}`;
+    }
+    const groupText = (work.groupIds || [])
+      .map((groupId) => (library.workGroups || []).find((group) => group.id === groupId))
+      .filter(Boolean)
+      .map((group) => `${group.slug || ""} ${group.title || ""}`.toLowerCase())
+      .join(" ");
+    if (/concert|协奏/.test(groupText)) return "作品 / 协奏曲";
+    if (/opera|歌剧|vocal|声乐/.test(groupText)) return "作品 / 歌剧与声乐";
+    if (/sonata|quartet|trio|chamber|solo|室内|奏鸣|独奏/.test(groupText)) return "作品 / 室内乐与独奏";
+    return "作品 / 管弦乐";
+  };
+
+  const personGroupLabel = (person) => {
+    if ((person.roles || []).some((role) => role === "orchestra" || role === "ensemble" || role === "chorus")) {
+      return "团体";
+    }
+    if ((person.roles || []).includes("composer")) {
+      return "作曲家";
+    }
+    return "人物";
+  };
+
+  if (entityType === "composer") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: "作曲家",
+    };
+  }
+
+  if (entityType === "person") {
+    const display = getWebsiteDisplay(entity);
+    return {
+      entityType,
+      id: entity.id,
+      label: display.heading,
+      title: display.heading,
+      subtitle: [display.short, entity.nameLatin || display.latin, entity.country].filter(Boolean).join(" / "),
+      groupLabel: personGroupLabel(entity),
+    };
+  }
+
+  if (entityType === "work") {
+    const composer = (library.composers || []).find((item) => item.id === entity.composerId);
+    return {
+      entityType,
+      id: entity.id,
+      label: [entity.title, entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      title: entity.title,
+      subtitle: [composer ? getWebsiteDisplay(composer).heading : "", entity.titleLatin, entity.catalogue].filter(Boolean).join(" / "),
+      groupLabel: workGroupLabel(entity),
+    };
+  }
+
+  return {
+    entityType,
+    id: entity.id,
+    label: buildRecordingDisplayTitle(entity, library),
+    title: buildRecordingDisplayTitle(entity, library),
+    subtitle: [entity.performanceDateText || "", entity.venueText || "", entity.albumTitle || ""].filter(Boolean).join(" / "),
+    groupLabel: `版本 / ${workTypeLabel(entity.workTypeHint)}`,
   };
 }
 

@@ -179,7 +179,7 @@ const confirmDialogConfirm = document.querySelector("#owner-confirm-dialog-confi
 const articlePreviewDialog = document.querySelector("#owner-article-preview-dialog");
 const articlePreviewClose = document.querySelector("#owner-article-preview-close");
 const GROUP_ROLE_VALUES = new Set(["orchestra", "ensemble", "chorus", "instrumentalist"]);
-const PERSON_ROLE_VALUES = new Set(["conductor", "soloist", "singer", "instrumentalist"]);
+const PERSON_ROLE_VALUES = new Set(["composer", "conductor", "soloist", "singer", "instrumentalist"]);
 const GROUP_FORM_ROLE_LABELS = {
   orchestra: "乐团",
   ensemble: "组合",
@@ -1181,7 +1181,12 @@ const ensureRelatedEntityControls = (form) => {
     </div>
     <p class="owner-form__hint">这里只显示一级直接关联。先跳转并解除关联，再处理删除或合并。</p>
   `;
-  actions.before(host);
+  const mergeHost = form.querySelector("[data-merge-host]");
+  if (mergeHost) {
+    mergeHost.before(host);
+  } else {
+    actions.before(host);
+  }
   const select = host.querySelector("[data-related-entity-select]");
   const jumpButton = host.querySelector("[data-related-entity-jump]");
   const syncJumpState = () => {
@@ -1228,13 +1233,28 @@ const renderRelatedEntityControls = (form, relatedEntities = []) => {
     count.textContent = `${normalizedEntities.length} 条`;
   }
   if (select) {
+    const groupedEntities = normalizedEntities.reduce((groups, item) => {
+      const key = compact(item.groupLabel || item.entityType || "其他");
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key).push(item);
+      return groups;
+    }, new Map());
     select.innerHTML = normalizedEntities.length
-      ? normalizedEntities
+      ? [...groupedEntities.entries()]
           .map(
-            (item) => `
-              <option value="${escapeHtml(item.id)}" data-entity-type="${escapeHtml(item.entityType)}">
-                ${escapeHtml(item.label || item.title || item.id)}
-              </option>`,
+            ([groupLabel, items]) => `
+              <optgroup label="${escapeHtml(groupLabel)}">
+                ${items
+                  .map(
+                    (item) => `
+                      <option value="${escapeHtml(item.id)}" data-entity-type="${escapeHtml(item.entityType)}">
+                        ${escapeHtml(item.label || item.title || item.id)}
+                      </option>`,
+                  )
+                  .join("")}
+              </optgroup>`,
           )
           .join("")
       : '<option value="">当前没有直接关联条目</option>';
@@ -1296,6 +1316,174 @@ const getConductors = () => (state.library?.people || []).filter((person) => per
 const getOrchestras = () => (state.library?.people || []).filter((person) => person.roles.includes("orchestra"));
 const getArtists = () =>
   (state.library?.people || []).filter((person) => person.roles.some((role) => artistRoles.includes(role)));
+const RECORDING_CREDIT_ROLE_OPTIONS = [
+  ["conductor", "指挥"],
+  ["orchestra", "乐团"],
+  ["chorus", "合唱"],
+  ["ensemble", "组合"],
+  ["soloist", "独奏"],
+  ["singer", "歌手"],
+  ["instrumentalist", "器乐"],
+];
+const RECORDING_CREDIT_ROLE_LABELS = Object.fromEntries(RECORDING_CREDIT_ROLE_OPTIONS);
+const RECORDING_CREDIT_ROLE_COMPAT = {
+  conductor: ["conductor"],
+  orchestra: ["orchestra"],
+  chorus: ["chorus"],
+  ensemble: ["ensemble", "chorus", "orchestra"],
+  soloist: ["soloist", "instrumentalist"],
+  singer: ["singer"],
+  instrumentalist: ["instrumentalist", "soloist"],
+};
+
+const parseRecordingCreditLines = (value) =>
+  parseLines(value, (line) => {
+    const [role, displayName = "", personId = ""] = line.split("|").map((part) => part.trim());
+    if (!role || !displayName) {
+      return null;
+    }
+    return { role, displayName, personId };
+  });
+
+const serializeRecordingCredits = (credits) =>
+  formatLines(
+    (credits || []).filter((credit) => compact(credit?.role) && compact(credit?.displayName)),
+    (item) => [item.role, item.displayName, item.personId || ""].join(" | "),
+  );
+
+const getRecordingCreditEditor = (form) => form?.querySelector?.("[data-recording-credit-editor]") || null;
+const getRecordingCreditRowsHost = (form) => form?.querySelector?.("[data-recording-credit-rows]") || null;
+
+const getPeopleByRecordingCreditRole = (role) => {
+  const acceptedRoles = new Set(RECORDING_CREDIT_ROLE_COMPAT[role] || [role]);
+  return [...(state.library?.people || [])]
+    .filter((person) => person.roles?.some((personRole) => acceptedRoles.has(personRole)))
+    .sort((a, b) => buildComposerOptionLabel(a).localeCompare(buildComposerOptionLabel(b), "zh-Hans-CN"));
+};
+
+const buildRecordingCreditDisplayName = (role, personId, fallback = "") => {
+  const person = (state.library?.people || []).find((item) => item.id === personId);
+  if (!person) {
+    return compact(fallback);
+  }
+  if (["orchestra", "ensemble", "chorus"].includes(role)) {
+    return compact(person.name || fallback);
+  }
+  return compact(person.name || fallback);
+};
+
+const buildRecordingCreditRowHtml = (credit, index) => {
+  const selectedRole = compact(credit?.role || "soloist");
+  const selectedPersonId = compact(credit?.personId || "");
+  const roleOptions = RECORDING_CREDIT_ROLE_OPTIONS.map(
+    ([value, label]) => `<option value="${escapeHtml(value)}" ${value === selectedRole ? "selected" : ""}>${escapeHtml(label)}</option>`,
+  ).join("");
+  const personOptions = [
+    '<option value="">手动填写</option>',
+    ...getPeopleByRecordingCreditRole(selectedRole).map(
+      (person) =>
+        `<option value="${escapeHtml(person.id)}" ${person.id === selectedPersonId ? "selected" : ""}>${escapeHtml(buildComposerOptionLabel(person))}</option>`,
+    ),
+  ].join("");
+  return `
+    <div class="owner-recording-credit-row" data-recording-credit-row data-recording-credit-index="${index}">
+      <label>
+        <span>角色</span>
+        <select data-recording-credit-role>${roleOptions}</select>
+      </label>
+      <label>
+        <span>关联人物 / 团体</span>
+        <select data-recording-credit-person-id>${personOptions}</select>
+      </label>
+      <label class="owner-recording-credit-row__display">
+        <span>显示名称</span>
+        <input data-recording-credit-display value="${escapeHtml(credit?.displayName || "")}" placeholder="可手动填写显示名称" />
+      </label>
+      <button type="button" class="owner-recording-credit-row__remove" data-recording-credit-remove="${index}">删除</button>
+    </div>
+  `;
+};
+
+const syncPrimaryRecordingCreditSelects = (form, credits) => {
+  if (form.elements.conductorPersonId) {
+    form.elements.conductorPersonId.value = compact(
+      (credits || []).find((credit) => credit.role === "conductor" && compact(credit.personId))?.personId || "",
+    );
+  }
+  if (form.elements.orchestraPersonId) {
+    form.elements.orchestraPersonId.value = compact(
+      (credits || []).find((credit) => credit.role === "orchestra" && compact(credit.personId))?.personId || "",
+    );
+  }
+};
+
+const renderRecordingCreditEditor = (form, credits = parseRecordingCreditLines(form?.elements?.credits?.value || "")) => {
+  const host = getRecordingCreditRowsHost(form);
+  if (!host) {
+    return;
+  }
+  host.innerHTML = (credits || []).length
+    ? credits.map((credit, index) => buildRecordingCreditRowHtml(credit, index)).join("")
+    : '<p class="owner-empty">当前没有参与署名。可通过上方快捷字段或“新增署名行”添加。</p>';
+};
+
+const syncRecordingCreditsField = (form, credits, { rerender = true } = {}) => {
+  if (!form?.elements?.credits) {
+    return;
+  }
+  const normalizedCredits = (credits || [])
+    .map((credit) => ({
+      role: compact(credit?.role),
+      personId: compact(credit?.personId || ""),
+      displayName: compact(credit?.displayName || buildRecordingCreditDisplayName(credit?.role, credit?.personId, "")),
+    }))
+    .filter((credit) => credit.role && credit.displayName);
+  form.elements.credits.value = serializeRecordingCredits(normalizedCredits);
+  syncPrimaryRecordingCreditSelects(form, normalizedCredits);
+  if (rerender) {
+    renderRecordingCreditEditor(form, normalizedCredits);
+  }
+};
+
+const readRecordingCreditsFromEditor = (form) => {
+  const rows = [...(getRecordingCreditRowsHost(form)?.querySelectorAll?.("[data-recording-credit-row]") || [])];
+  if (!rows.length) {
+    return parseRecordingCreditLines(form?.elements?.credits?.value || "");
+  }
+  return rows
+    .map((row) => {
+      const role = compact(row.querySelector("[data-recording-credit-role]")?.value || "");
+      const personId = compact(row.querySelector("[data-recording-credit-person-id]")?.value || "");
+      const displayInput = row.querySelector("[data-recording-credit-display]");
+      const displayName = compact(displayInput?.value || buildRecordingCreditDisplayName(role, personId, ""));
+      return role && displayName ? { role, personId, displayName } : null;
+    })
+    .filter(Boolean);
+};
+
+const upsertPrimaryRecordingCredit = (form, role, personId) => {
+  const credits = readRecordingCreditsFromEditor(form);
+  const nextPersonId = compact(personId || "");
+  const firstIndex = credits.findIndex((credit) => credit.role === role);
+  if (!nextPersonId) {
+    if (firstIndex >= 0) {
+      credits.splice(firstIndex, 1);
+    }
+    syncRecordingCreditsField(form, credits);
+    return;
+  }
+  const nextCredit = {
+    role,
+    personId: nextPersonId,
+    displayName: buildRecordingCreditDisplayName(role, nextPersonId, ""),
+  };
+  if (firstIndex >= 0) {
+    credits[firstIndex] = nextCredit;
+  } else {
+    credits.unshift(nextCredit);
+  }
+  syncRecordingCreditsField(form, credits);
+};
 
 const renderIssues = () => {
   issueCount.textContent = `${state.dataIssues.length} 条`;
@@ -1339,6 +1527,9 @@ const refreshOverview = () => {
   populateOptions(document.querySelector('[data-entity-form="recording"] select[name="orchestraPersonId"]'), getOrchestras(), buildComposerOptionLabel);
   const recordingForm = document.querySelector('[data-entity-form="recording"]');
   populateRecordingWorkOptions(recordingForm, recordingForm?.elements?.selectedComposerId?.value || "", recordingForm?.elements?.workId?.value || "");
+  if (recordingForm?.elements?.credits) {
+    syncRecordingCreditsField(recordingForm, parseRecordingCreditLines(recordingForm.elements.credits.value));
+  }
   populateRecordingComposerOptions(batchComposerSelect);
   populateWorkSelectOptions(batchWorkSelect, batchComposerSelect?.value || "", batchWorkSelect?.value || "", {
     ready: "请选择批量作品",
@@ -1463,10 +1654,7 @@ const fillRecordingForm = (form, entity) => {
   form.elements.releaseDate.value = entity?.releaseDate || "";
   form.elements.notes.value = entity?.notes || "";
   form.elements.images.value = formatLines(entity?.images || [], formatRecordingImageLine);
-  form.elements.credits.value = formatLines(
-    entity?.credits || [],
-    (item) => [item.role, item.displayName, item.personId || ""].join(" | "),
-  );
+  syncRecordingCreditsField(form, entity?.credits || []);
   syncRecordingLinksField(form, entity?.links || []);
   renderInfoPanelState(form, entity?.infoPanel);
   const deleteButton = form.querySelector('[data-action="delete"]');
@@ -1571,13 +1759,7 @@ const buildRecordingPayload = (form) => ({
   releaseDate: compact(form.elements.releaseDate.value),
   notes: compact(form.elements.notes.value),
   images: parseRecordingImageLines(form.elements.images.value),
-  credits: parseLines(form.elements.credits.value, (line) => {
-    const [role, displayName = "", personId = ""] = line.split("|").map((part) => part.trim());
-    if (!role || !displayName) {
-      return null;
-    }
-    return { role, displayName, personId };
-  }),
+  credits: readRecordingCreditsFromEditor(form),
   links: parseLines(form.elements.links.value, (line) => {
     const [platform, url, title = ""] = line.split("|").map((part) => part.trim());
     if (!platform || !url) {
@@ -2047,6 +2229,7 @@ const resetEntityForm = (form) => {
   renderFormImagePreview(form.dataset.entityForm, null);
   if (form.dataset.entityForm === "recording") {
     syncRecordingLinksField(form, []);
+    syncRecordingCreditsField(form, []);
   }
   clearInlineCheck();
   renderMergeControls(form);
@@ -4808,9 +4991,37 @@ entityForms.forEach((form) => {
   });
   form.addEventListener("change", async (event) => {
     const selectedComposerSelect = event.target.closest('select[name="selectedComposerId"]');
+    const conductorSelect = event.target.closest('select[name="conductorPersonId"]');
+    const orchestraSelect = event.target.closest('select[name="orchestraPersonId"]');
+    const creditRoleSelect = event.target.closest("[data-recording-credit-role]");
+    const creditPersonSelect = event.target.closest("[data-recording-credit-person-id]");
     const uploadInput = event.target.closest("[data-image-upload]");
     if (selectedComposerSelect) {
       populateRecordingWorkOptions(form, selectedComposerSelect.value, "");
+      return;
+    }
+    if (conductorSelect) {
+      upsertPrimaryRecordingCredit(form, "conductor", conductorSelect.value);
+      return;
+    }
+    if (orchestraSelect) {
+      upsertPrimaryRecordingCredit(form, "orchestra", orchestraSelect.value);
+      return;
+    }
+    if (creditRoleSelect) {
+      const credits = readRecordingCreditsFromEditor(form);
+      syncRecordingCreditsField(form, credits);
+      return;
+    }
+    if (creditPersonSelect) {
+      const row = creditPersonSelect.closest("[data-recording-credit-row]");
+      const role = compact(row?.querySelector("[data-recording-credit-role]")?.value || "");
+      const displayInput = row?.querySelector("[data-recording-credit-display]");
+      if (displayInput && compact(creditPersonSelect.value)) {
+        displayInput.value = buildRecordingCreditDisplayName(role, creditPersonSelect.value, displayInput.value);
+      }
+      syncRecordingCreditsField(form, readRecordingCreditsFromEditor(form), { rerender: false });
+      syncPrimaryRecordingCreditSelects(form, readRecordingCreditsFromEditor(form));
       return;
     }
     if (!uploadInput?.files?.[0]) {
@@ -4825,12 +5036,32 @@ entityForms.forEach((form) => {
   });
   form.addEventListener("input", (event) => {
     const mergeSearchInput = event.target.closest("[data-merge-target-search]");
+    const creditDisplayInput = event.target.closest("[data-recording-credit-display]");
     if (!mergeSearchInput) {
+      if (!creditDisplayInput) {
+        return;
+      }
+      syncRecordingCreditsField(form, readRecordingCreditsFromEditor(form), { rerender: false });
+      syncPrimaryRecordingCreditSelects(form, readRecordingCreditsFromEditor(form));
       return;
     }
     renderMergeControls(form);
   });
   form.addEventListener("click", (event) => {
+    const addCreditButton = event.target.closest("[data-recording-credit-add]");
+    if (addCreditButton) {
+      const credits = readRecordingCreditsFromEditor(form);
+      credits.push({ role: "soloist", personId: "", displayName: "" });
+      syncRecordingCreditsField(form, credits);
+      return;
+    }
+    const removeCreditButton = event.target.closest("[data-recording-credit-remove]");
+    if (removeCreditButton) {
+      const credits = readRecordingCreditsFromEditor(form);
+      credits.splice(Number(removeCreditButton.dataset.recordingCreditRemove || -1), 1);
+      syncRecordingCreditsField(form, credits);
+      return;
+    }
     const mergeToggleButton = event.target.closest("[data-merge-target-toggle]");
     if (mergeToggleButton) {
       const host = form.querySelector("[data-merge-host]");

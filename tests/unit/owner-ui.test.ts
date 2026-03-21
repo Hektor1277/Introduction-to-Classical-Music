@@ -285,8 +285,10 @@ describe("owner ui helpers", () => {
   });
 
   it("shows composer as a manageable role in owner forms", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
     const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
 
+    expect(script).toContain('const PERSON_ROLE_VALUES = new Set(["composer", "conductor", "soloist", "singer", "instrumentalist"])');
     expect(html).toContain('value="composer"');
     expect(html).toContain("作曲家");
   });
@@ -300,6 +302,16 @@ describe("owner ui helpers", () => {
     expect(html).toContain("保存时自动生成");
   });
 
+  it("adds a structured multi-credit editor to the recording form instead of relying only on the legacy textarea", async () => {
+    const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(html).toContain("data-recording-credit-editor");
+    expect(html).toContain("data-recording-credit-add");
+    expect(script).toContain("renderRecordingCreditEditor");
+    expect(script).toContain("syncRecordingCreditsField");
+  });
+
   it("keeps empty review content aligned to the top instead of pushing controls downward", async () => {
     const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
 
@@ -310,13 +322,20 @@ describe("owner ui helpers", () => {
   it("keeps the top-level owner cards pinned to the top edge instead of vertically centering sparse review content", async () => {
     const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
 
+    expect(css).toMatch(/\.owner-panel--main\s*\{[\s\S]*grid-template-rows:\s*auto\s+minmax\(0,\s*1fr\)/i);
     expect(css).toMatch(/\.owner-view\.is-active,\s*\.owner-panel__inner\.is-active\s*\{[\s\S]*align-content:\s*start/i);
+    expect(css).toMatch(/\.owner-panel--main\s*>\s*\.owner-tabs\s*\{[\s\S]*position:\s*sticky/i);
+    expect(css).toMatch(/\.owner-panel--main\s*>\s*\.owner-tabs\s*\{[\s\S]*top:\s*0/i);
     expect(css).toMatch(/\.owner-view\s+\.owner-card\s*\{[\s\S]*align-content:\s*start/i);
   });
 
   it("renders owner search result cards with content-driven height instead of a fixed tall shell", async () => {
     const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
 
+    expect(css).toMatch(/\.owner-result-list\s*\{[\s\S]*display:\s*flex/i);
+    expect(css).toMatch(/\.owner-result-list\s*\{[\s\S]*flex-direction:\s*column/i);
+    expect(css).toMatch(/\.owner-card--search\s+\.owner-result-item\s*\{[\s\S]*display:\s*block/i);
+    expect(css).toMatch(/\.owner-card--search\s+\.owner-result-item\s*\{[\s\S]*(flex:\s*0\s+0\s+auto|flex-shrink:\s*0)/i);
     expect(css).toMatch(/\.owner-result-item\s*\{[\s\S]*height:\s*auto/i);
     expect(css).toMatch(/\.owner-result-item\s*\{[\s\S]*min-height:\s*0/i);
     expect(css).not.toMatch(/\.owner-result-item\s*\{[\s\S]*min-height:\s*12\.5rem/i);
@@ -332,6 +351,19 @@ describe("owner ui helpers", () => {
     expect(html).toContain("owner-role-grid");
     expect(script).toContain("data-related-entity-select");
     expect(script).toContain("data-related-entity-jump");
+  });
+
+  it("renders related-entity controls ahead of merge controls and groups selectable relations", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+    const ownerServer = await fs.readFile(path.resolve("apps/owner/server/owner-app.ts"), "utf8");
+
+    expect(script).toContain("mergeHost.before(host)");
+    expect(script).toContain("<optgroup");
+    expect(script).toContain("groupLabel");
+    expect(ownerServer).toContain('groupLabel: "作曲家"');
+    expect(ownerServer).toContain('return "作品 / 协奏曲"');
+    expect(ownerServer).toContain("getRelatedRecordingGroupLabel");
+    expect(ownerServer).toContain('return `版本 / ${composerLabel} / ${workLabel}`');
   });
 
   it("refreshes review and log panels when switching views instead of leaving stale proposal cards on screen", async () => {

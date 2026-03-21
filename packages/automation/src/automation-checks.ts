@@ -250,6 +250,16 @@ function scoreChineseName(value: string, candidateScore: number, referenceName =
 }
 
 function pickBestChineseFullName(entity: Composer | Person, candidates: EntitySourceCandidate[]) {
+  const isLikelyFullChineseName = (value: string) => {
+    const normalized = sanitizeChineseName(value);
+    if (!looksLikeChineseName(normalized)) {
+      return false;
+    }
+    if (normalized === sanitizeChineseName(entity.name || "")) {
+      return true;
+    }
+    return /[璺穄]/.test(normalized) || normalized.length >= 4;
+  };
   const options = [
     ...candidates.flatMap((candidate) => [
       { value: candidate.displayFullName, score: scoreEntityCandidate(candidate) + 16 },
@@ -262,7 +272,7 @@ function pickBestChineseFullName(entity: Composer | Person, candidates: EntitySo
       value: sanitizeChineseName(option.value || ""),
       score: scoreChineseName(option.value || "", option.score, entity.name),
     }))
-    .filter((option) => option.score >= 0)
+    .filter((option) => option.score >= 0 && isLikelyFullChineseName(option.value))
     .sort((left, right) => right.score - left.score);
 
   return options[0]?.value || "";
@@ -1073,6 +1083,29 @@ function looksLikeShortChineseName(value: string) {
   return normalized.length > 0 && normalized.length <= 4;
 }
 
+function scoreChineseFullNameRichness(value: string) {
+  const normalized = sanitizeChineseName(value);
+  if (!looksLikeChineseName(normalized)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+  const separatorBonus = /[·•・]/.test(normalized) ? 12 : 0;
+  const lengthScore = Math.min(normalized.length, 16);
+  const shortPenalty = normalized.length <= 2 ? 20 : normalized.length === 3 ? 10 : 0;
+  return separatorBonus + lengthScore - shortPenalty;
+}
+
+function shouldReplaceChineseFullName(currentValue: string, nextValue: string) {
+  const current = sanitizeChineseName(currentValue);
+  const next = sanitizeChineseName(nextValue);
+  if (!next || next === current) {
+    return false;
+  }
+  if (!current) {
+    return true;
+  }
+  return scoreChineseFullNameRichness(next) > scoreChineseFullNameRichness(current);
+}
+
 function shouldRefreshEntityImage(entity: Composer | Person) {
   const haystack = `${entity.avatarSrc ?? ""} ${entity.imageSourceUrl ?? ""} ${entity.imageAttribution ?? ""} ${entity.imageSourceKind ?? ""}`;
   if (!String(entity.avatarSrc || "").trim()) {
@@ -1309,7 +1342,7 @@ async function inspectNamedEntity(
     chineseFullName ||
     sanitizeChineseName(displayFullNameCandidate?.displayFullName || "") ||
     sanitizeChineseName(entity.name || "");
-  if (nextFullName && nextFullName !== entity.name) {
+  if (shouldReplaceChineseFullName(entity.name, nextFullName)) {
     fields.push({ path: "name", before: entity.name, after: nextFullName });
   }
 
@@ -1898,16 +1931,28 @@ function selectPeopleByCategory(library: LibraryData, category: AutomationCheckC
   );
 }
 
+function collectMergeKeys(person: Person) {
+  return [
+    normalizeName(person.name),
+    normalizeName(person.nameLatin),
+    ...person.aliases.map(normalizeName),
+    ...getEntityAbbreviations(person).map(normalizeName),
+  ].filter(Boolean);
+}
+
+function buildScopedMergePool(selectedPeople: Person[], mergePool: Person[]) {
+  if (!selectedPeople.length) {
+    return [];
+  }
+  const selectedKeys = new Set(selectedPeople.flatMap((person) => collectMergeKeys(person)));
+  return mergePool.filter((person) => collectMergeKeys(person).some((key) => selectedKeys.has(key)));
+}
+
 function buildMergeProposals(people: Person[]) {
   const keyMap = new Map<string, Person[]>();
 
   people.forEach((person) => {
-    const keys = new Set([
-      normalizeName(person.name),
-      normalizeName(person.nameLatin),
-      ...person.aliases.map(normalizeName),
-      ...getEntityAbbreviations(person).map(normalizeName),
-    ].filter(Boolean));
+    const keys = new Set(collectMergeKeys(person));
 
     keys.forEach((key) => {
       const bucket = keyMap.get(key) ?? [];
@@ -2040,7 +2085,11 @@ export async function runAutomationChecks(
     }
 
     const mergePool = personCategories.flatMap((category) => selectPeopleByCategory(library, category, {}));
-    proposals.push(...buildMergeProposals([...new Map(mergePool.map((person) => [person.id, person])).values()]));
+    const scopedMergePool = buildScopedMergePool(
+      uniquePeople,
+      [...new Map(mergePool.map((person) => [person.id, person])).values()],
+    );
+    proposals.push(...buildMergeProposals(scopedMergePool));
   }
 
   if (categories.includes("recording")) {

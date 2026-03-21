@@ -4,7 +4,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "伯姆1976",
     "title": "伯姆 1976",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -54,7 +54,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "伯姆bpo1977",
     "title": "伯姆BPO 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -99,7 +99,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "克伦佩勒1958",
     "title": "克伦佩勒 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -149,7 +149,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "克列茨基1973",
     "title": "克列茨基 1973",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -204,7 +204,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "卡拉扬1989",
     "title": "卡拉扬 1989",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -254,7 +254,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "富特文格勒1951",
     "title": "富特文格勒 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -309,7 +309,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "岑德2004",
     "title": "岑德 2004",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -354,7 +354,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "布列兹2005",
     "title": "布列兹 2005",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -404,7 +404,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "布隆斯泰特2017",
     "title": "布隆斯泰特 2017",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -449,7 +449,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "朱里尼1985",
     "title": "朱里尼 1985",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -499,7 +499,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "朱里尼1986",
     "title": "朱里尼 1986",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -549,7 +549,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "海廷克2019",
     "title": "海廷克 2019",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -594,7 +594,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "海廷克bpo2019",
     "title": "海廷克BPO 2019",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -639,7 +639,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "穆拉文斯基",
     "title": "穆拉文斯基,",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -684,7 +684,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1939",
     "title": "约胡姆 1939",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -733,24 +733,24 @@
     "id": "recording-第七交响曲-约胡姆1979",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1979",
-    "title": "约胡姆 1979",
-    "workTypeHint": "unknown",
+    "title": "乔治·约胡姆 - 慕尼黑爱乐乐团 - 8 November 1979",
+    "workTypeHint": "orchestral",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
-    "updatedAt": "2026-03-07T15:13:50.637Z",
+    "updatedAt": "2026-03-20T02:49:27.109Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-munich-philharmonic-orchestra",
-        "displayName": "Munich Philharmonic Orchestra",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-约胡姆",
-        "displayName": "约胡姆",
-        "label": "文件名推断"
+        "displayName": "乔治·约胡姆",
+        "label": ""
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-munich-philharmonic-orchestra",
+        "displayName": "慕尼黑爱乐乐团",
+        "label": ""
       }
     ],
     "links": [
@@ -777,14 +777,14 @@
       "collectionLinks": [],
       "collectionUrl": ""
     },
-    "legacyPath": "作曲家/布鲁克纳/交响曲/第七交响曲/约胡姆1979.htm"
+    "legacyPath": ""
   },
   {
     "id": "recording-第七交响曲-约胡姆1986",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1986",
     "title": "约胡姆 1986",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0170",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -834,7 +834,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "罗格纳1979",
     "title": "罗格纳 1979",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0180",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -884,7 +884,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "老桑德林1999",
     "title": "老桑德林 1999",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0190",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -934,7 +934,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "老桑德林brso1999",
     "title": "老桑德林BRSO 1999",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0200",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -979,7 +979,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "舒里希特1954",
     "title": "舒里希特 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0210",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1034,7 +1034,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "舒里希特1964",
     "title": "舒里希特 1964",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0220",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1084,7 +1084,7 @@
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "舒里希特bpo",
     "title": "舒里希特BPO",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0230",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1134,7 +1134,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "伯恩斯坦1977",
     "title": "伯恩斯坦1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1179,7 +1179,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "戴维斯",
     "title": "戴维斯",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1224,7 +1224,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "斯托科夫斯基1968",
     "title": "斯托科夫斯基 1968",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1279,7 +1279,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "杨松斯2001",
     "title": "杨松斯 2001",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1339,7 +1339,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "比彻姆1986",
     "title": "比彻姆 1986",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1394,7 +1394,7 @@
     "workId": "work-柏辽兹-交响曲-幻想交响曲",
     "slug": "米特罗普洛斯1957",
     "title": "米特罗普洛斯 1957",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1444,7 +1444,7 @@
     "workId": "work-理查施特劳斯-交响诗-阿尔卑斯山交响曲",
     "slug": "卡拉扬1982",
     "title": "卡拉扬 1982",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1500,7 +1500,7 @@
     "workId": "work-理查施特劳斯-交响诗-阿尔卑斯山交响曲",
     "slug": "布隆斯泰特1988",
     "title": "布隆斯泰特 1988",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1551,7 +1551,7 @@
     "workId": "work-理查施特劳斯-交响诗-阿尔卑斯山交响曲",
     "slug": "海廷克2012",
     "title": "海廷克 2012",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1607,7 +1607,7 @@
     "workId": "work-理查施特劳斯-交响诗-阿尔卑斯山交响曲",
     "slug": "穆拉文斯基1962",
     "title": "穆拉文斯基 1962",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1673,7 +1673,7 @@
     "workId": "work-理查施特劳斯-交响诗-阿尔卑斯山交响曲",
     "slug": "莫斯特2022",
     "title": "莫斯特 2022",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1687,13 +1687,13 @@
       },
       {
         "role": "conductor",
-        "personId": "person-弗朗兹威尔瑟-莫斯特",
+        "personId": "person-弗朗茨威尔瑟-莫斯特",
         "displayName": "弗朗兹·威尔瑟-莫斯特",
         "label": "指挥"
       },
       {
         "role": "soloist",
-        "personId": "person-莫斯特",
+        "personId": "person-弗朗茨威尔瑟-莫斯特",
         "displayName": "莫斯特",
         "label": "文件名补录"
       }
@@ -1724,7 +1724,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "劳拉-and-怀特1951",
     "title": "劳拉&怀特 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1781,7 +1781,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "吉泽金-and-富特文格勒1942",
     "title": "吉泽金&富特文格勒 1942",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1848,7 +1848,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "安妮-and-佩里克1985",
     "title": "安妮&佩里克 1985",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1915,7 +1915,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "安妮-and-克列茨基",
     "title": "安妮&克列茨基",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -1977,7 +1977,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "弗朗索瓦-and-克列茨基1958",
     "title": "弗朗索瓦&克列茨基 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2034,7 +2034,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "拉罗查-and-萨瓦利施1977",
     "title": "拉罗查&萨瓦利施 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2111,7 +2111,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "格林伯格-and-埃利亚斯伯格1958",
     "title": "格林伯格&埃利亚斯伯格 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2173,7 +2173,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "福斯特-1953",
     "title": "福斯特 1953",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2217,7 +2217,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "科尔托-and-弗里乔伊1951",
     "title": "科尔托&弗里乔伊 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2274,7 +2274,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "维尔萨拉泽-and-鲁丁",
     "title": "维尔萨拉泽&鲁丁",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2330,7 +2330,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "肯普夫-and-多拉蒂1959",
     "title": "肯普夫&多拉蒂 1959",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2387,7 +2387,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "莫伊塞维奇-and-阿克曼1954",
     "title": "莫伊塞维奇&阿克曼 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2454,7 +2454,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "里赫特-and-费伦奇克1954",
     "title": "里赫特&费伦奇克 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2511,7 +2511,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "阿劳-and-约胡姆1977",
     "title": "阿劳&约胡姆 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2568,7 +2568,7 @@
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "鲁普-and-朱里尼1980",
     "title": "鲁普&朱里尼 1980",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2625,7 +2625,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "伊格内修斯-and-施内沃伊特1945",
     "title": "伊格内修斯&施内沃伊特 1945",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2682,7 +2682,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "佩妮曼-and-凯尔伯特1967",
     "title": "佩妮曼&凯尔伯特 1967",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2739,7 +2739,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "佩妮曼-and-布尔1952",
     "title": "佩妮曼&布尔1952",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2801,7 +2801,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "卡瓦科斯-and-万斯凯1991",
     "title": "卡瓦科斯&万斯凯 1991",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2863,7 +2863,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "吉特列斯-and-霍伦斯坦1992",
     "title": "吉特列斯&霍伦斯坦 1992",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2920,7 +2920,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "吉特利斯-and-塞尔2017",
     "title": "吉特利斯&塞尔2017",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -2977,7 +2977,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "奥伊斯特拉赫-and-埃尔林1956",
     "title": "奥伊斯特拉赫&埃尔林 1956",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3039,7 +3039,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "威克斯-and-埃尔林1952",
     "title": "威克斯&埃尔林 1952",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3111,7 +3111,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "弗里德-and-卡姆1987",
     "title": "弗里德&卡姆 1987",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3168,7 +3168,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "海菲兹-and-米特罗普洛斯1951",
     "title": "海菲兹&米特罗普洛斯 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3230,7 +3230,7 @@
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "达莱内-and-斯托加德2021",
     "title": "达莱内&斯托加德 2021",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3292,7 +3292,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "克伦佩勒1957",
     "title": "克伦佩勒 1957",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3337,7 +3337,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "克伦佩勒1962",
     "title": "克伦佩勒 1962",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3387,7 +3387,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "卡拉扬1951-1955",
     "title": "卡拉扬1951- 1955",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3447,7 +3447,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "卡拉扬1963",
     "title": "卡拉扬 1963",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3502,7 +3502,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "卡拉扬1976",
     "title": "卡拉扬 1976",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3562,7 +3562,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "卡拉扬1983",
     "title": "卡拉扬 1983",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3627,7 +3627,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "富特文格勒1943",
     "title": "富特文格勒 1943",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3682,7 +3682,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "富特文格勒1953",
     "title": "富特文格勒 1953",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3747,7 +3747,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "小克莱伯1976",
     "title": "小克莱伯 1976",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3812,7 +3812,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "库伦齐斯2018",
     "title": "库伦齐斯 2018",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3867,7 +3867,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "斯托科夫斯基1973",
     "title": "斯托科夫斯基 1973",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3927,7 +3927,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "比彻姆1959",
     "title": "比彻姆 1959",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -3982,7 +3982,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "穆拉文斯基1964",
     "title": "穆拉文斯基 1964",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4047,7 +4047,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "老克莱伯1949-1955",
     "title": "老克莱伯1949-1955",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4102,7 +4102,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "舒里希特1957",
     "title": "舒里希特 1957",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4152,7 +4152,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "莱纳1955",
     "title": "莱纳 1955",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4217,7 +4217,7 @@
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "阿本德罗特1954",
     "title": "阿本德罗特 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0170",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4262,7 +4262,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "克纳-1951",
     "title": "克纳- 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4312,7 +4312,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "克莱茨基-1962",
     "title": "克莱茨基- 1962",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4367,7 +4367,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "卡拉扬-1971",
     "title": "卡拉扬- 1971",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4412,7 +4412,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "富特-1944",
     "title": "富特- 1944",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4472,7 +4472,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "舒里希特-1961",
     "title": "舒里希特- 1961",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4517,7 +4517,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "萨瓦尔-2020",
     "title": "萨瓦尔- 2020",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4572,7 +4572,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "阿本-1953-华沙",
     "title": "阿本-1953-华沙",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4627,7 +4627,7 @@
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "魏因加特纳-1933",
     "title": "魏因加特纳- 1933",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4672,7 +4672,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "伯恩斯坦1980",
     "title": "伯恩斯坦 1980",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4717,18 +4717,12 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "伯恩斯坦1989",
     "title": "伯恩斯坦 1989",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-伯恩斯坦1977",
@@ -4762,7 +4756,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "卡拉扬1977",
     "title": "卡拉扬 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4807,7 +4801,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "富特1942",
     "title": "富特 1942",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4852,23 +4846,23 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "富特1951",
     "title": "富特 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-威尔海姆富特文格勒",
         "displayName": "威尔海姆·富特文格勒",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-bayreuth-festival-orchestra-and-chorus",
+        "displayName": "Bayreuth Festival Orchestra & Chorus",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -4902,7 +4896,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "富特1954",
     "title": "富特 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -4957,23 +4951,23 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "小泽征尔2002",
     "title": "小泽征尔 2002",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-小泽征尔",
         "displayName": "小泽征尔",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-saito-kinen-orchestra",
+        "displayName": "Saito Kinen Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5002,23 +4996,23 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "巴伦博伊姆2006",
     "title": "巴伦博伊姆 2006",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-丹尼尔巴伦博伊姆",
         "displayName": "丹尼尔·巴伦博伊姆",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-west-eastern-divan-orchestra",
+        "displayName": "West-Eastern Divan Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5052,7 +5046,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "弗里乔伊1958",
     "title": "弗里乔伊 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5107,7 +5101,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "弗里乔伊",
     "title": "弗里乔伊",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5152,7 +5146,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "托斯卡尼尼1948",
     "title": "托斯卡尼尼 1948",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5169,16 +5163,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-阿尔图罗托斯卡尼尼",
         "displayName": "阿尔图罗·托斯卡尼尼",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-nbc-symphony-orchestra",
+        "displayName": "NBC Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5207,23 +5201,23 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "汉斯施密特1970",
     "title": "汉斯施密特 1970",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-汉斯施密特-伊塞尔施泰特",
         "displayName": "汉斯·施密特-伊塞尔施泰特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-ndrso-currently-ndr-elbphilharmonie-orchestra",
+        "displayName": "NDRSO (currently NDR Elbphilharmonie Orchestra)",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5257,23 +5251,23 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "纽曼1989",
     "title": "纽曼 1989",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-瓦茨拉夫纽曼",
         "displayName": "瓦茨拉夫·纽曼",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-czech-philharmonic-orchestra-prague-philharmonic-choir",
+        "displayName": "Czech Philharmonic Orchestra / Prague Philharmonic Choir",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5302,7 +5296,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "舒里希特1965",
     "title": "舒里希特 1965",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5319,16 +5313,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-卡尔舒里希特",
         "displayName": "卡尔·舒里希特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchestre-national-de-lortf",
+        "displayName": "Orchestre National de l'ORTF",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5362,7 +5356,7 @@
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "阿本德罗特1950",
     "title": "阿本德罗特 1950",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5412,23 +5406,23 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "乔治约胡姆-1961",
     "title": "乔治·约胡姆- 1961",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-约胡姆",
         "displayName": "约胡姆",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orquesta-sinfo-nica-de-chile",
+        "displayName": "Orquesta Sinfónica de Chile",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5462,7 +5456,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "加德纳-2011",
     "title": "加德纳- 2011",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5479,16 +5473,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-约翰艾略特加德纳",
         "displayName": "约翰·艾略特·加德纳",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchestre-re-volutionnaire-et-romantique",
+        "displayName": "Orchestre Révolutionnaire et Romantique",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5517,7 +5511,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "卡拉扬-1962",
     "title": "卡拉扬- 1962",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5572,7 +5566,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "卡拉扬-1963",
     "title": "卡拉扬- 1963",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5627,7 +5621,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "厄特沃什-2017",
     "title": "厄特沃什- 2017",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5644,16 +5638,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-彼得厄特沃什",
         "displayName": "彼得·厄特沃什",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-go-teborgs-symfoniker",
+        "displayName": "Gōteborgs Symfoniker",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -5682,7 +5676,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "富特-1943",
     "title": "富特- 1943",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5737,7 +5731,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "库伦齐斯-2018",
     "title": "库伦齐斯- 2018",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5792,7 +5786,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "赛尔-1969",
     "title": "赛尔- 1969",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5847,7 +5841,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "门格尔贝格1940",
     "title": "门格尔贝格 1940",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5892,7 +5886,7 @@
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "马苏尔-1993",
     "title": "马苏尔- 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5937,7 +5931,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "克伦佩勒1957",
     "title": "克伦佩勒 1957",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -5982,7 +5976,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "克伦佩勒1970",
     "title": "克伦佩勒 1970",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6027,7 +6021,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "卡尔伯姆1977",
     "title": "卡尔伯姆 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6072,23 +6066,23 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "瓦尔特1960",
     "title": "瓦尔特 1960",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-布鲁诺瓦尔特",
         "displayName": "布鲁诺·瓦尔特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-coluabia-symphony-orchestra",
+        "displayName": "COLUABIA SYMPHONY ORCHESTRA",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -6117,7 +6111,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "穆拉文斯基1979",
     "title": "穆拉文斯基 1979",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6172,7 +6166,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "舍尔兴1964",
     "title": "舍尔兴 1964",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6189,16 +6183,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-赫尔曼舍尔兴",
         "displayName": "赫尔曼·舍尔兴",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchestra-della-radiolelevisione-francese",
+        "displayName": "Orchestra della Radiolelevisione Francese",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -6227,7 +6221,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "舒里希特1957",
     "title": "舒里希特 1957",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6244,16 +6238,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-卡尔舒里希特",
         "displayName": "卡尔·舒里希特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchester-de-lasocie-te-des-concerts-du-conservatoire",
+        "displayName": "Orchester de laSociétédes Concerts du Conservatoire",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -6282,7 +6276,7 @@
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "蒙都1958",
     "title": "蒙都 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6332,7 +6326,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "亚历山大莫吉列夫斯基-and-列奥尼德克鲁策",
     "title": "亚历山大·莫吉列夫斯基 & 列奥尼德·克鲁策",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6382,7 +6376,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "安特耶魏特哈斯-and-丹尼斯瓦里翁",
     "title": "安特耶·魏特哈斯 & 丹尼斯.瓦里翁",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6432,7 +6426,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "席蒙戈尔德贝格-and-山根美代子",
     "title": "席蒙·戈尔德贝格 & 山根美代子",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6477,7 +6471,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "弗里茨克莱斯勒-and-弗朗茨鲁普",
     "title": "弗里茨·克莱斯勒 & 弗朗茨·鲁普",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6538,7 +6532,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "沃尔夫冈施奈德汉-and-卡尔希曼",
     "title": "沃尔夫冈·施奈德汉 & 卡尔·希曼",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6588,7 +6582,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "艾丽卡莫莉妮-and-鲁道夫菲尔库什尼",
     "title": "艾丽卡·莫莉妮 & 鲁道夫·菲尔库什尼",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6638,7 +6632,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "西盖蒂约瑟夫-and-米奇斯瓦夫霍尔绍夫斯基",
     "title": "西盖蒂·约瑟夫 & 米奇斯瓦夫·霍尔绍夫斯基",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6688,7 +6682,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "西盖蒂约瑟夫-and-阿图尔施纳贝尔",
     "title": "西盖蒂·约瑟夫 & 阿图尔·施纳贝尔",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6733,7 +6727,7 @@
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "让富尼埃-and-吉内特多延",
     "title": "让·富尼埃&吉内特·多延",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6789,7 +6783,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "克劳迪奥阿劳1970",
     "title": "克劳迪奥·阿劳 1970",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6833,7 +6827,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "哈罗德鲍尔1927",
     "title": "哈罗德·鲍尔 1927",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6877,7 +6871,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "園田高弘2023",
     "title": "園田高弘 2023",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6916,7 +6910,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "埃贡佩特里1956",
     "title": "埃贡·佩特里 1956",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -6960,7 +6954,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "威廉肯普夫1965",
     "title": "威廉·肯普夫 1965",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7015,7 +7009,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "威廉默多克1927",
     "title": "威廉·默多克 1927",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7064,7 +7058,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "安妮费舍尔1977",
     "title": "安妮·费舍尔 1977",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7108,7 +7102,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "尤尼丝诺顿1971-1988",
     "title": "尤尼丝·诺顿1971 1988",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7162,7 +7156,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "尼古拉梅特纳1946",
     "title": "尼古拉·梅特纳 1946",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7206,7 +7200,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "帕维尔谢列布里亚科夫1973",
     "title": "帕维尔·谢列布里亚科夫 1973",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7245,7 +7239,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "弗拉基米尔索夫罗尼茨基1960",
     "title": "弗拉基米尔·索夫罗尼茨基 1960",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7289,7 +7283,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "弗拉基米尔阿什肯纳齐1988",
     "title": "弗拉基米尔·阿什肯纳齐 1988",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7328,7 +7322,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "恩斯特利维1956",
     "title": "恩斯特·利维 1956",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7372,7 +7366,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "所罗门卡特纳",
     "title": "所罗门·卡特纳",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7416,7 +7410,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "斯坦尼斯拉夫布宁1993",
     "title": "斯坦尼斯拉夫·布宁 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7460,7 +7454,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "斯维亚托斯拉夫里赫特1960",
     "title": "斯维亚托斯拉夫·里赫特 1960",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7510,7 +7504,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "玛丽亚格林伯格1966",
     "title": "玛丽亚·格林伯格 1966",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0170",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7560,7 +7554,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "瓦尔特吉泽金",
     "title": "瓦尔特·吉泽金",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0180",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7604,7 +7598,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "皮埃尔巴尔比泽1989",
     "title": "皮埃尔·巴尔比泽 1989",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0190",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7648,7 +7642,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "科尔德格鲁特",
     "title": "科尔·德·格鲁特",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0200",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7687,7 +7681,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "维托尔德马库津斯基1963",
     "title": "维托尔德·马库津斯基 1963",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0210",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7726,7 +7720,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "罗伯特卡萨德修",
     "title": "罗伯特·卡萨德修",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0220",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7770,7 +7764,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "豪尔赫博列特1988",
     "title": "豪尔赫·博列特 1988",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0230",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7809,7 +7803,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "迪特泽克林1970",
     "title": "迪特·泽克林 1970",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0240",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7853,7 +7847,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "阿图尔施纳贝尔1933",
     "title": "阿图尔·施纳贝尔 1933",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0250",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7897,7 +7891,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "阿尔多奇科里尼2004",
     "title": "阿尔多·奇科里尼 2004",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0260",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7941,7 +7935,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "马克斯艾格1971",
     "title": "马克斯·艾格 1971",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0270",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -7980,7 +7974,7 @@
     "workId": "work-贝多芬-奏鸣曲-钢琴奏鸣曲-第二十三号奏鸣曲-热情",
     "slug": "马塞尔钱皮1955",
     "title": "马塞尔·钱皮 1955",
-    "workTypeHint": "unknown",
+    "workTypeHint": "chamber_solo",
     "sortKey": "0280",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8019,18 +8013,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "克莱斯勒-and-布莱赫1926",
     "title": "克莱斯勒&布莱赫 1926",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-利奥布莱赫",
@@ -8048,6 +8036,12 @@
         "personId": "person-布莱赫",
         "displayName": "布莱赫",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-staatskapelle-berlin",
+        "displayName": "Staatskapelle Berlin",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8081,18 +8075,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "内芙-and-罗斯鲍德1949",
     "title": "内芙&罗斯鲍德 1949",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-汉斯罗斯鲍德",
@@ -8110,6 +8098,12 @@
         "personId": "person-罗斯鲍德",
         "displayName": "罗斯鲍德",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-south-west-german-radio-symphony-orchestra",
+        "displayName": "South West German Radio Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8143,18 +8137,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "博贝斯库-and-克雷1960",
     "title": "博贝斯库&克雷 1960",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-汉斯穆勒-克雷",
@@ -8172,6 +8160,12 @@
         "personId": "person-克雷",
         "displayName": "克雷",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-stuttgart-radio-symphony-orchestra",
+        "displayName": "Stuttgart Radio Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8205,7 +8199,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "卡瓦科斯-and-梅塔2009",
     "title": "卡瓦科斯&梅塔 2009",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8262,7 +8256,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "奥伊斯特拉赫-and-埃尔林1954",
     "title": "奥伊斯特拉赫&埃尔林 1954",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8319,7 +8313,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "布斯塔博-and-门贝尔伯格1943",
     "title": "布斯塔博&门贝尔伯格 1943",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8386,18 +8380,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "施耐德汉-and-富特文格勒1953",
     "title": "施耐德汉&富特文格勒 1953",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-威尔海姆富特文格勒",
@@ -8415,6 +8403,12 @@
         "personId": "person-威尔海姆富特文格勒",
         "displayName": "威尔海姆·富特文格勒",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-berliner-philarmoniker",
+        "displayName": "Berliner Philarmoniker",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8448,18 +8442,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "梅纽因-and-富特文格勒1953",
     "title": "梅纽因&富特文格勒 1953",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-威尔海姆富特文格勒",
@@ -8477,6 +8465,12 @@
         "personId": "person-威尔海姆富特文格勒",
         "displayName": "威尔海姆·富特文格勒",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-berliner-philarmoniker",
+        "displayName": "Berliner Philarmoniker",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8515,18 +8509,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "海菲兹-and-托斯卡尼尼1940",
     "title": "海菲兹&托斯卡尼尼 1940",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-阿尔图罗托斯卡尼尼",
@@ -8544,6 +8532,12 @@
         "personId": "person-阿尔图罗托斯卡尼尼",
         "displayName": "阿尔图罗·托斯卡尼尼",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-nbc-symphony-orchestra",
+        "displayName": "NBC Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8577,18 +8571,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "瓦尔加-and-霍瓦特1960s",
     "title": "瓦尔加&霍瓦特1960s",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-米兰霍瓦特",
@@ -8606,6 +8594,12 @@
         "personId": "person-霍瓦特1960s",
         "displayName": "霍瓦特1960s",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-zagreb-philharmonic",
+        "displayName": "Zagreb Philharmonic",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8639,7 +8633,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "罗恩-and-富特文格勒1944",
     "title": "罗恩&富特文格勒 1944",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8701,7 +8695,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "胡贝尔曼-and-赛尔1934",
     "title": "胡贝尔曼&赛尔 1934",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8763,18 +8757,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "西盖蒂-and-瓦尔特1932",
     "title": "西盖蒂&瓦尔特 1932",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-布鲁诺瓦尔特",
@@ -8792,6 +8780,12 @@
         "personId": "person-布鲁诺瓦尔特",
         "displayName": "布鲁诺·瓦尔特",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-the-british-symphony-orchestra",
+        "displayName": "The British Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8825,7 +8819,7 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "费拉斯-and-伯姆1951",
     "title": "费拉斯&伯姆 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -8882,18 +8876,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "金佩尔-and-霍尔莱瑟1955",
     "title": "金佩尔&霍尔莱瑟1955",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-海因里希-霍尔莱瑟",
@@ -8911,6 +8899,12 @@
         "personId": "person-霍尔莱瑟1955",
         "displayName": "霍尔莱瑟1955",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-bamberg-symphony-orchestra",
+        "displayName": "Bamberg Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -8949,18 +8943,12 @@
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "马宁-and-杰拉伯特1916",
     "title": "马宁&杰拉伯特1916",
-    "workTypeHint": "unknown",
+    "workTypeHint": "concerto",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-康科迪-杰拉伯特",
@@ -8978,6 +8966,12 @@
         "personId": "person-杰拉伯特1916",
         "displayName": "杰拉伯特1916",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-未知",
+        "displayName": "未知",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9006,7 +9000,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "克伦佩勒1986",
     "title": "克伦佩勒 1986",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9056,23 +9050,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "吉伦1993",
     "title": "吉伦 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-迈克尔吉伦",
         "displayName": "迈克尔·吉伦",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-swr-sinfonieorchester-baden-baden-und-freiburg",
+        "displayName": "SWR Sinfonieorchester Baden-Baden und Freiburg",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9106,7 +9100,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "吉伦1994",
     "title": "吉伦 1994",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9156,23 +9150,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "布列兹1996",
     "title": "布列兹 1996",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-皮埃尔布列兹",
         "displayName": "皮埃尔·布列兹",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-the-cleveland-orchestra",
+        "displayName": "The Cleveland Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9206,7 +9200,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "布列兹2011",
     "title": "布列兹 2011",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9256,7 +9250,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "库贝利克1981",
     "title": "库贝利克 1981",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9306,7 +9300,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "康德拉辛1979",
     "title": "康德拉辛 1979",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9356,7 +9350,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "拉特1999",
     "title": "拉特 1999",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9406,23 +9400,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "殷巴尔",
     "title": "殷巴尔,",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-伊利亚胡殷巴尔",
         "displayName": "伊利亚胡·殷巴尔",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-rundfunk-sinfonieorchester-berlin",
+        "displayName": "柏林广播交响乐团",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9451,23 +9445,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "殷巴尔1986",
     "title": "殷巴尔 1986",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-伊利亚胡殷巴尔",
         "displayName": "伊利亚胡·殷巴尔",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-radio-sinfonie-orchester-frankfurt",
+        "displayName": "Radio-Sinfonie-Orchester Frankfurt",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9496,23 +9490,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "滕施泰特1993",
     "title": "滕施泰特 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-克劳斯滕施泰特",
         "displayName": "克劳斯·滕施泰特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-london-philharmonic-orchestra",
+        "displayName": "London Philharmonic Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9546,7 +9540,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "罗格纳1993",
     "title": "罗格纳 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9591,23 +9585,23 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "莫斯特2023",
     "title": "莫斯特 2023",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
-        "personId": "person-莫斯特",
+        "personId": "person-弗朗茨威尔瑟-莫斯特",
         "displayName": "莫斯特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-the-cleveland-orchestra",
+        "displayName": "The Cleveland Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -9636,7 +9630,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "贝奴姆1958",
     "title": "贝奴姆 1958",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9681,7 +9675,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "贝蒂尼1991",
     "title": "贝蒂尼 1991",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9731,7 +9725,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "阿巴多1984",
     "title": "阿巴多 1984",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9781,7 +9775,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "阿巴多2001",
     "title": "阿巴多 2001",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0170",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9831,7 +9825,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "马泽尔1984",
     "title": "马泽尔 1984",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0180",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9881,7 +9875,7 @@
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "马泽尔2002",
     "title": "马泽尔 2002",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0190",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9926,7 +9920,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "加蒂2010",
     "title": "加蒂 2010",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9971,7 +9965,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "巴尔沙伊1999",
     "title": "巴尔沙伊 1999",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -9988,16 +9982,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-鲁道夫巴尔沙伊",
         "displayName": "鲁道夫·巴尔沙伊",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-junge-deutsche-philharmonie",
+        "displayName": "Junge Deutsche Philharmonie",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -10031,7 +10025,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "巴比罗利1969",
     "title": "巴比罗利 1969",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10091,7 +10085,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "布列兹1996",
     "title": "布列兹 1996",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10156,7 +10150,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "库伦齐斯2021",
     "title": "库伦齐斯 2021",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10206,7 +10200,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "库伦齐斯2024",
     "title": "库伦齐斯 2024",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10256,23 +10250,23 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "滕施泰特1988",
     "title": "滕施泰特 1988",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-克劳斯滕施泰特",
         "displayName": "克劳斯·滕施泰特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-london-philharmonic-orchestra",
+        "displayName": "London Philharmonic Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -10306,7 +10300,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "米特罗普洛斯1960",
     "title": "米特罗普洛斯 1960",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10356,7 +10350,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "罗斯鲍德1951",
     "title": "罗斯鲍德 1951",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10416,7 +10410,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "腾斯泰特1980",
     "title": "腾斯泰特 1980",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10466,23 +10460,23 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "莱因斯多夫1963",
     "title": "莱因斯多夫 1963",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-埃里希莱因斯多夫",
         "displayName": "埃里希·莱因斯多夫",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-boston-symphony-orchestra",
+        "displayName": "Boston Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -10516,7 +10510,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "西诺波利1999",
     "title": "西诺波利 1999",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10555,7 +10549,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "诺特2022",
     "title": "诺特 2022",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10572,16 +10566,16 @@
     ],
     "credits": [
       {
-        "role": "orchestra",
-        "personId": "person-item",
-        "displayName": "-",
-        "label": "乐团"
-      },
-      {
         "role": "conductor",
         "personId": "person-乔纳森诺特",
         "displayName": "乔纳森·诺特",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-tokyo-symphony-orchestra",
+        "displayName": "Tokyo Symphony Orchestra",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -10615,7 +10609,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "阿巴多1993",
     "title": "阿巴多 1993",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10670,7 +10664,7 @@
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "霍伦斯坦1961",
     "title": "霍伦斯坦 1961",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-07T15:13:50.637Z",
@@ -10720,7 +10714,7 @@
     "workId": "work-composer-柴可夫斯基-第五交响曲",
     "slug": "kempe-lso-1964",
     "title": "Kempe - LSO - 1964",
-    "workTypeHint": "unknown",
+    "workTypeHint": "orchestral",
     "sortKey": "2060",
     "isPrimaryRecommendation": false,
     "updatedAt": "2026-03-17T02:26:28.244Z",

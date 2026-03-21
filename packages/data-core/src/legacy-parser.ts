@@ -25,29 +25,24 @@ function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, " ").replace(/\u00a0/g, " ").trim();
 }
 
+function hasAnyKeyword(value: string, keywords: string[]) {
+  return keywords.some((keyword) => value.includes(keyword));
+}
+
 function roleFromLabel(label: string): Credit["role"] {
-  if (label.includes("指挥") || label.includes("鎸囨尌")) {
+  if (hasAnyKeyword(label, ["指挥", "执棒"])) {
     return "conductor";
   }
-  if (label.includes("乐团") || label.includes("乐队") || label.includes("涔愬洟") || label.includes("涔愰槦")) {
+  if (hasAnyKeyword(label, ["乐团", "乐队", "管弦乐团", "管弦乐队", "交响乐团", "交响乐队"])) {
     return "orchestra";
   }
-  if (label.includes("合唱") || label.includes("鍚堝敱")) {
+  if (hasAnyKeyword(label, ["合唱", "chorus", "choir"])) {
     return "chorus";
   }
-  if (
-    label.includes("女高音") ||
-    label.includes("女中音") ||
-    label.includes("次女高音") ||
-    label.includes("男高音") ||
-    label.includes("男中音") ||
-    label.includes("男低音") ||
-    label.includes("歌手") ||
-    label.includes("姝屾墜")
-  ) {
+  if (hasAnyKeyword(label, ["女高音", "女中音", "次女高音", "男高音", "男中音", "男低音", "歌手", "主演", "soprano", "tenor", "baritone", "bass"])) {
     return "singer";
   }
-  if (label.includes("组合") || label.includes("四重奏") || label.includes("三重奏") || label.includes("缁勫悎")) {
+  if (hasAnyKeyword(label, ["组合", "四重奏", "三重奏", "ensemble"])) {
     return "ensemble";
   }
   return "soloist";
@@ -64,7 +59,7 @@ function splitDateAndVenue(raw: string) {
     }
 
     const left = text.slice(0, separatorIndex).trim();
-    const right = text.slice(separatorIndex + 1).trim();
+    const right = text.slice(separatorIndex + separator.length).trim();
     if (right && !/^\d{4}/.test(right)) {
       return {
         performanceDateText: left,
@@ -158,49 +153,55 @@ export function parseLegacyRecordingHtml(html: string): ParsedLegacyRecording {
       return;
     }
 
-    if (labelText.includes("时间")) {
+    if (hasAnyKeyword(labelText, ["时间", "地点"])) {
       const split = splitDateAndVenue(valueText);
       performanceDateText = split.performanceDateText;
       venueText = split.venueText;
       return;
     }
 
-    if (labelText.includes("专辑")) {
+    if (hasAnyKeyword(labelText, ["专辑", "唱片", "Album"])) {
       albumTitle = valueText;
       return;
     }
 
-    if (labelText.includes("发行商") || labelText.includes("厂牌")) {
+    if (hasAnyKeyword(labelText, ["发行商", "厂牌", "唱片公司", "Label"])) {
       label = valueText;
       return;
     }
 
-    if (labelText.includes("发行日期")) {
+    if (hasAnyKeyword(labelText, ["发行日期", "出版日期", "Date"])) {
       releaseDate = valueText;
       return;
     }
 
     if (
-      labelText.includes("乐团") ||
-      labelText.includes("指挥") ||
-      labelText.includes("独奏") ||
-      labelText.includes("钢琴") ||
-      labelText.includes("小提琴") ||
-      labelText.includes("中提琴") ||
-      labelText.includes("大提琴") ||
-      labelText.includes("歌") ||
-      labelText.includes("组合") ||
-      labelText.includes("合唱") ||
-      labelText.includes("涔愬洟") ||
-      labelText.includes("鎸囨尌") ||
-      labelText.includes("鐙") ||
-      labelText.includes("閽㈢惔") ||
-      labelText.includes("灏忔彁鐞") ||
-      labelText.includes("涓彁鐞") ||
-      labelText.includes("澶ф彁鐞") ||
-      labelText.includes("姝") ||
-      labelText.includes("缁勫悎") ||
-      labelText.includes("鍚堝敱")
+      hasAnyKeyword(labelText, [
+        "乐团",
+        "乐队",
+        "管弦乐团",
+        "管弦乐队",
+        "交响乐团",
+        "交响乐队",
+        "指挥",
+        "独奏",
+        "钢琴",
+        "小提琴",
+        "中提琴",
+        "大提琴",
+        "歌手",
+        "组合",
+        "合唱",
+        "主演",
+        "女高音",
+        "女中音",
+        "次女高音",
+        "男高音",
+        "男中音",
+        "男低音",
+        "ensemble",
+        "chorus",
+      ])
     ) {
       const localLink = $(element).find("a").first();
       credits.push({
@@ -223,4 +224,3 @@ export function parseLegacyRecordingHtml(html: string): ParsedLegacyRecording {
     releaseDate,
   };
 }
-

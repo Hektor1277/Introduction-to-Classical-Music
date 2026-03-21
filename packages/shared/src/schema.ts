@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { recordingWorkTypeHintValues } from "./recording-rules.js";
 
 export const personRoleValues = [
   "composer",
@@ -22,7 +23,6 @@ export const linkPlatformValues = [
 ] as const;
 
 export const imageKindValues = ["cover", "artist", "performance", "other"] as const;
-export const recordingWorkTypeHintValues = ["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"] as const;
 export const mediaSourceKindValues = [
   "wikipedia",
   "wikidata",

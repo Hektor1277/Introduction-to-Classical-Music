@@ -187,10 +187,15 @@ describe("site recording presentation wiring", () => {
     const component = await fs.readFile(path.resolve("apps/site/src/components/DailyRecommendations.astro"), "utf8");
 
     expect(page).toContain("buildRecordingDisplayModel");
-    expect(component).toContain("subtitle");
-    expect(component).toContain("principalPrimary");
-    expect(component).toContain("supportingPrimary");
-    expect(component).toContain("ensemblePrimary");
+    expect(page).toContain("composerPrimary: display.daily.composerPrimary");
+    expect(page).toContain("composerSecondary: display.daily.composerSecondary");
+    expect(component.indexOf("daily-card__work-group")).toBeLessThan(component.indexOf("daily-card__recording-group"));
+    expect(component).toContain("daily-card__composer");
+    expect(component).toContain("daily-card__line--fade");
+    expect(component).toContain("daily-card__line--empty");
+    expect(component).toContain('const lineValue = (value: string) => value || "\\u00a0";');
+    expect(component).toContain('title={item.title || undefined}');
+    expect(component).toContain('title={item.subtitle || undefined}');
     expect(component).toContain("datePlacePrimary");
   });
 });

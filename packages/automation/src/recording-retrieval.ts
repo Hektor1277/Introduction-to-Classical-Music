@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import type { RecordingWorkTypeHintValue } from "../../shared/src/recording-rules.js";
 import type {
   AutomationFieldPatch,
   AutomationImageCandidate,
@@ -10,7 +11,7 @@ import type {
 import { detectPlatformFromUrl } from "../../data-core/src/resource-links.js";
 import type { Credit, LibraryData, Recording } from "../../shared/src/schema.js";
 
-export type RecordingWorkTypeHint = "orchestral" | "concerto" | "opera_vocal" | "chamber_solo" | "unknown";
+export type RecordingWorkTypeHint = RecordingWorkTypeHintValue;
 export type RecordingRetrievalRequestedField =
   | "links"
   | "performanceDateText"

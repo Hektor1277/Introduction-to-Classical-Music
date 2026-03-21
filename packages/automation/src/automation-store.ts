@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import type { AutomationRun, AutomationSnapshot } from "./automation.js";
+import { normalizeAutomationRun, type AutomationRun, type AutomationSnapshot } from "./automation.js";
 import { defaultLlmConfig, mergeLlmConfigPatch, type LlmConfig } from "./llm.js";
 import type { RecordingRetrievalProviderStatus } from "./recording-retrieval.js";
 
@@ -64,14 +64,15 @@ function runPath(runId: string) {
 
 export async function saveAutomationRun(run: AutomationRun) {
   await ensureAutomationDirs();
-  await fs.writeFile(runPath(run.id), `${JSON.stringify(run, null, 2)}\n`, "utf8");
-  return run;
+  const normalizedRun = normalizeAutomationRun(run);
+  await fs.writeFile(runPath(normalizedRun.id), `${JSON.stringify(normalizedRun, null, 2)}\n`, "utf8");
+  return normalizedRun;
 }
 
 export async function loadAutomationRun(runId: string) {
   await ensureAutomationDirs();
   const content = await fs.readFile(runPath(runId), "utf8");
-  return JSON.parse(content) as AutomationRun;
+  return normalizeAutomationRun(JSON.parse(content) as AutomationRun);
 }
 
 export async function deleteAutomationRun(runId: string) {
@@ -87,7 +88,7 @@ export async function listAutomationRuns() {
       .filter((file) => file.endsWith(".json"))
       .map(async (file) => {
         const content = await fs.readFile(path.join(runsDir, file), "utf8");
-        return JSON.parse(content) as AutomationRun;
+        return normalizeAutomationRun(JSON.parse(content) as AutomationRun);
       }),
   );
   return runs.sort((left, right) => right.createdAt.localeCompare(left.createdAt));

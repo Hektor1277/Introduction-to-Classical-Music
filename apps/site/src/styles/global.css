@@ -409,75 +409,69 @@ summary,
 
 .daily-card__body {
   display: grid;
-  grid-template-rows: minmax(3.2rem, auto) minmax(3rem, auto) minmax(1.3rem, auto) minmax(1.2rem, auto) auto;
-  gap: 0.25rem;
+  gap: 0.8rem;
   font-size: 0.95rem;
   min-width: 0;
 }
 
-.daily-card__title {
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.45;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.daily-card__group {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
 }
 
-.daily-card__subtitle,
-.daily-card__work,
-.daily-card__slot-primary,
-.daily-card__slot-secondary {
-  margin: 0;
-  overflow: hidden;
+.daily-card__work-group {
+  gap: 0.28rem;
 }
 
-.daily-card__subtitle {
+.daily-card__recording-group {
+  gap: 0.24rem;
+}
+
+.daily-card__line {
+  margin: 0;
+  display: block;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1.38;
+}
+
+.daily-card__line--fade {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 1.4rem), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 1.4rem), transparent 100%);
+}
+
+.daily-card__line--empty {
+  color: transparent;
+  user-select: none;
+}
+
+.daily-card__line--muted {
   color: var(--muted);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .daily-card__work {
   font-family: var(--serif);
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.daily-card__work--secondary {
-  color: var(--muted);
+.daily-card__line--work-primary {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.48;
+}
+
+.daily-card__line--work-secondary,
+.daily-card__composer,
+.daily-card__subtitle,
+.daily-card__date {
   font-family: var(--sans);
 }
 
-.daily-card__slots {
-  display: grid;
-  gap: 0.35rem;
-  align-content: start;
-}
-
-.daily-card__slot {
-  display: grid;
-  gap: 0.05rem;
-  min-height: 0;
-}
-
-.daily-card__slot-primary,
-.daily-card__slot-secondary {
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.daily-card__slot-secondary {
-  color: var(--muted);
+.daily-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.42;
 }
 
 .line-entry-list {

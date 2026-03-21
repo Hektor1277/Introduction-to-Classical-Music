@@ -8,6 +8,7 @@ import {
   ignorePendingAutomationProposals,
   rankImageCandidates,
   revertAutomationProposal,
+  summarizeAutomationRun,
   updateAutomationProposalReview,
 } from "@/lib/automation";
 import { runAutomationChecks } from "@/lib/automation-checks";
@@ -392,6 +393,76 @@ describe("automation checks", () => {
     expect(run.notes.some((note) => note.includes("人物检查"))).toBe(true);
     expect(run.proposals.some((proposal) => proposal.summary.includes("疑似重复人物"))).toBe(true);
     expect(run.proposals.some((proposal) => proposal.entityType === "recording")).toBe(true);
+  });
+
+  it("limits person merge proposals to the requested orchestra scope instead of scanning unrelated duplicates", async () => {
+    const scopedLibrary = validateLibrary({
+      ...library,
+      people: [
+        ...library.people,
+        {
+          id: "bpo",
+          slug: "berlin-phil",
+          name: "柏林爱乐乐团",
+          fullName: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: ["Berlin Philharmonic Orchestra"],
+          sortKey: "bpo",
+          summary: "德国乐团。",
+        },
+        {
+          id: "bpo-duplicate",
+          slug: "berlin-phil-duplicate",
+          name: "柏林爱乐",
+          fullName: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: ["Berlin Philharmonic Orchestra"],
+          sortKey: "bpo-duplicate",
+          summary: "重复乐团。",
+        },
+        {
+          id: "munich-phil",
+          slug: "munich-phil",
+          name: "慕尼黑爱乐乐团",
+          fullName: "慕尼黑爱乐乐团",
+          nameLatin: "Munich Philharmonic Orchestra",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: ["Munich Philharmonic Orchestra"],
+          sortKey: "munich-phil",
+          summary: "德国乐团。",
+        },
+        {
+          id: "munich-phil-duplicate",
+          slug: "munich-phil-duplicate",
+          name: "慕尼黑爱乐",
+          fullName: "慕尼黑爱乐乐团",
+          nameLatin: "Munich Philharmonic Orchestra",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: ["Munich Philharmonic Orchestra"],
+          sortKey: "munich-phil-duplicate",
+          summary: "重复乐团。",
+        },
+      ],
+    });
+
+    const run = await runAutomationChecks(scopedLibrary, { categories: ["orchestra"], orchestraIds: ["bpo"] }, async () => {
+      throw new Error("blocked");
+    });
+    const mergeSummaries = run.proposals.filter((proposal) => proposal.kind === "merge").map((proposal) => proposal.summary);
+
+    expect(mergeSummaries).toHaveLength(1);
+    expect(mergeSummaries[0]).toContain("柏林爱乐");
+    expect(mergeSummaries[0]).not.toContain("慕尼黑爱乐");
   });
 
   it("creates recording proposals from the external retrieval provider without mutating formal data", async () => {
@@ -1380,6 +1451,79 @@ describe("automation checks", () => {
     );
   });
 
+  it("does not replace an existing full Chinese name with a short alias candidate", async () => {
+    const namedLibrary = validateLibrary({
+      composers: [],
+      people: [
+        {
+          id: "tchaikovsky",
+          slug: "tchaikovsky",
+          name: "彼得·伊里奇·柴可夫斯基",
+          fullName: "彼得·伊里奇·柴可夫斯基",
+          nameLatin: "Pyotr Ilyich Tchaikovsky",
+          displayName: "柴可夫斯基",
+          displayFullName: "彼得·伊里奇·柴可夫斯基",
+          displayLatinName: "Pyotr Ilyich Tchaikovsky",
+          country: "",
+          avatarSrc: "",
+          roles: ["conductor"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const llmConfig = {
+      enabled: true,
+      baseUrl: "https://api.example.com/v1",
+      apiKey: "secret-key",
+      model: "deepseek-chat",
+      timeoutMs: 30000,
+    };
+
+    const run = await runAutomationChecks(
+      namedLibrary,
+      { categories: ["conductor"], conductorIds: ["tchaikovsky"] },
+      async (url, init) => {
+        const value = String(url);
+        if (value.includes("/chat/completions")) {
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      displayName: "彼得",
+                      displayFullName: "",
+                      displayLatinName: "Pyotr Ilyich Tchaikovsky",
+                      aliases: ["彼得"],
+                      country: "Russia",
+                      summary: "彼得是俄罗斯作曲家。",
+                      confidence: 0.72,
+                      rationale: "short alias candidate",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`blocked: ${value} ${String(init?.method || "GET")}`);
+      },
+      llmConfig,
+    );
+
+    const proposal = run.proposals[0];
+    expect(proposal).toBeTruthy();
+    expect(proposal?.fields.some((field) => field.path === "name")).toBe(false);
+  });
+
   it("falls back to structured LLM work knowledge when web sources produce no usable fields", async () => {
     const workLibrary = validateLibrary({
       composers: [
@@ -1682,5 +1826,142 @@ describe("automation checks", () => {
     expect(proposal?.entityType).toBe("person");
     expect(nameField?.after).toBe("慕尼黑爱乐乐团");
     expect(String(nameField?.after || "")).not.toContain("百度百科是一部内容开放");
+  });
+
+  it("does not replace an existing Chinese full name with a shorter alias candidate", async () => {
+    const namedLibrary = validateLibrary({
+      composers: [
+        {
+          id: "tchaikovsky",
+          slug: "tchaikovsky",
+          name: "彼得·伊里奇·柴可夫斯基",
+          fullName: "彼得·伊里奇·柴可夫斯基",
+          nameLatin: "Peter Ilyich Tchaikovsky",
+          displayName: "柴可夫斯基",
+          displayFullName: "彼得·伊里奇·柴可夫斯基",
+          displayLatinName: "Peter Ilyich Tchaikovsky",
+          country: "",
+          avatarSrc: "",
+          aliases: ["柴可夫斯基", "Tchaikovsky"],
+          abbreviations: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [],
+      workGroups: [],
+      works: [],
+      recordings: [],
+    });
+
+    const run = await runAutomationChecks(
+      namedLibrary,
+      { categories: ["composer"], composerIds: ["tchaikovsky"] },
+      async (url) => {
+        const value = String(url);
+        if (value.includes("w/api.php")) {
+          return new Response(
+            JSON.stringify({
+              query: {
+                search: [{ title: "Pyotr Ilyich Tchaikovsky" }],
+              },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("api/rest_v1/page/summary")) {
+          return new Response(
+            JSON.stringify({
+              title: "Pyotr Ilyich Tchaikovsky",
+              description: "Russian composer",
+              extract: "Pyotr Ilyich Tchaikovsky was a Russian composer born in 1840.",
+              content_urls: { desktop: { page: "https://en.wikipedia.org/wiki/Pyotr_Ilyich_Tchaikovsky" } },
+            }),
+            { status: 200 },
+          );
+        }
+        if (value.includes("baike.baidu.com")) {
+          return new Response(
+            '<html><head><meta property="og:title" content="彼得" /><meta name="description" content="彼得·伊里奇·柴可夫斯基（Peter Ilyich Tchaikovsky）是俄罗斯作曲家。"></head></html>',
+            { status: 200 },
+          );
+        }
+        if (value.includes("www.baidu.com/s?")) {
+          return new Response(
+            '<html><body><h3><a href="https://baike.baidu.com/item/tchaikovsky">彼得</a></h3><div class="c-abstract">彼得·伊里奇·柴可夫斯基（Peter Ilyich Tchaikovsky）是俄罗斯作曲家。</div></body></html>',
+            { status: 200 },
+          );
+        }
+        throw new Error(`unexpected fetch: ${value}`);
+      },
+    );
+
+    const proposal = run.proposals[0];
+    const nameField = proposal?.fields.find((field) => field.path === "name");
+
+    expect(nameField).toBeUndefined();
+    expect(proposal?.fields).toEqual(
+      expect.arrayContaining([expect.objectContaining({ path: "country", after: "Russia" })]),
+    );
+  });
+
+  it("normalizes duplicated proposal ids within a run", () => {
+    const run = summarizeAutomationRun({
+      id: "run-duplicate-proposals",
+      createdAt: "2026-03-21T00:00:00.000Z",
+      categories: ["conductor"],
+      proposals: [
+        {
+          id: "merge-abbado|boult",
+          kind: "merge",
+          entityType: "person",
+          entityId: "abbado",
+          summary: "疑似重复人物：克劳迪奥·阿巴多 / 欧内斯特·布尔",
+          risk: "high",
+          status: "pending",
+          reviewState: "viewed",
+          sources: ["en.wikipedia.org"],
+          fields: [],
+          warnings: ["Close normalized key: claudioabbado"],
+          mergeCandidates: [{ targetId: "boult", targetLabel: "欧内斯特·布尔", reason: "同名归并" }],
+          imageCandidates: [],
+          evidence: [],
+          linkCandidates: [],
+          selectedImageCandidateId: "",
+        },
+        {
+          id: "merge-abbado|boult",
+          kind: "merge",
+          entityType: "person",
+          entityId: "abbado",
+          summary: "疑似重复人物：克劳迪奥·阿巴多 / 欧内斯特·布尔",
+          risk: "high",
+          status: "pending",
+          reviewState: "confirmed",
+          sources: ["baike.baidu.com"],
+          fields: [],
+          warnings: ["Close normalized key: claudioabbado"],
+          mergeCandidates: [{ targetId: "boult", targetLabel: "欧内斯特·布尔", reason: "同名归并" }],
+          imageCandidates: [],
+          evidence: [],
+          linkCandidates: [],
+          selectedImageCandidateId: "",
+        },
+      ],
+      snapshots: [],
+      notes: ["note-a", "note-a", "note-b"],
+      summary: {
+        total: 2,
+        pending: 2,
+        applied: 0,
+        ignored: 0,
+      },
+    });
+
+    expect(run.proposals).toHaveLength(1);
+    expect(run.proposals[0]?.reviewState).toBe("confirmed");
+    expect(run.proposals[0]?.sources).toEqual(["en.wikipedia.org", "baike.baidu.com"]);
+    expect(run.notes).toEqual(["note-a", "note-b"]);
+    expect(run.summary.total).toBe(1);
   });
 });

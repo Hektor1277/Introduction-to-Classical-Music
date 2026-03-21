@@ -465,19 +465,27 @@ function inferCreditsFromFileName(
   return credits;
 }
 
+function isPlaceholderEntityName(value: string) {
+  const normalized = normalizeWhitespace(value);
+  return !normalized || normalized === "-" || normalized === "未知";
+}
+
 function hydrateCredits(context: ImportContext, credits: Credit[]) {
-  return credits.map((credit) => {
+  return credits.flatMap((credit) => {
+    if (isPlaceholderEntityName(credit.displayName)) {
+      return [];
+    }
     const person = upsertPerson(context, {
       name: credit.displayName,
       roles: [credit.role],
       summary: "",
     });
 
-    return {
+    return [{
       ...credit,
       personId: person.id,
       displayName: person.name,
-    };
+    }];
   });
 }
 

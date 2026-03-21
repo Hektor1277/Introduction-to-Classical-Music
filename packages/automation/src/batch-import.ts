@@ -2,6 +2,12 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { detectPlatformFromUrl } from "../../data-core/src/resource-links.js";
+import {
+  buildBatchRecordingCredits,
+  buildBatchRecordingTitle,
+  getBatchRecordingTemplateSpec,
+  normalizeRecordingWorkTypeHintValue,
+} from "../../shared/src/recording-rules.js";
 import { validateLibrary, type Composer, type Credit, type LibraryData, type Person, type Recording, type Work } from "../../shared/src/schema.js";
 import { createEntityId, createSlug, createSortKey, ensureUniqueValue } from "../../shared/src/slug.js";
 
@@ -52,8 +58,6 @@ type AnalyzeBatchImportOptions = {
   workId?: string;
   workTypeHint?: string;
 };
-
-const strictBatchWorkTypes = ["orchestral", "concerto", "opera_vocal", "chamber_solo", "unknown"] as const;
 
 function compact(value: unknown) {
   return String(value ?? "").trim();
@@ -122,18 +126,8 @@ function upsertById<T extends { id: string }>(collection: T[], entity: T) {
   collection.push(entity);
 }
 
-function normalizeWorkTypeHintValue(value: unknown): (typeof strictBatchWorkTypes)[number] {
-  const normalized = compact(value).toLowerCase();
-  return strictBatchWorkTypes.includes(normalized as (typeof strictBatchWorkTypes)[number])
-    ? (normalized as (typeof strictBatchWorkTypes)[number])
-    : "unknown";
-}
-
 function strictTemplateFieldCount(workTypeHint: string) {
-  if (workTypeHint === "concerto" || workTypeHint === "opera_vocal") {
-    return 5;
-  }
-  return 4;
+  return getBatchRecordingTemplateSpec(workTypeHint).fieldCount;
 }
 
 function normalizeLooseBatchSeparator(line: string) {
@@ -145,7 +139,7 @@ function normalizeLooseBatchSeparator(line: string) {
 }
 
 export function normalizeBatchImportSource(sourceText: string, workTypeHint: string) {
-  const normalizedWorkTypeHint = normalizeWorkTypeHintValue(workTypeHint);
+  const normalizedWorkTypeHint = normalizeRecordingWorkTypeHintValue(workTypeHint);
   const expectedFieldCount = strictTemplateFieldCount(normalizedWorkTypeHint);
 
   return String(sourceText ?? "")
@@ -179,70 +173,15 @@ function parseStrictBatchLinks(sourceText: string) {
 }
 
 function buildStrictRecordingTitle(workTypeHint: string, slots: string[]) {
-  if (workTypeHint === "concerto") {
-    const [soloist, conductor, orchestra, year] = slots;
-    return [soloist, conductor, orchestra, year].filter((item) => item && item !== "-").join(" - ");
-  }
-  if (workTypeHint === "opera_vocal") {
-    const [conductor, cast, ensemble, year] = slots;
-    return [conductor, cast, ensemble, year].filter((item) => item && item !== "-").join(" - ");
-  }
-  if (workTypeHint === "chamber_solo") {
-    const [lead, collaborator, year] = slots;
-    return [lead, collaborator, year].filter((item) => item && item !== "-").join(" - ");
-  }
-  const [conductor, orchestra, year] = slots;
-  return [conductor, orchestra, year].filter((item) => item && item !== "-").join(" - ");
+  return buildBatchRecordingTitle(workTypeHint, slots);
 }
 
 function buildStrictRecordingCredits(workTypeHint: string, slots: string[]) {
-  const credits: Credit[] = [];
-  const pushCredit = (role: Credit["role"], displayName: string) => {
-    if (!displayName || displayName === "-") {
-      return;
-    }
-    credits.push({
-      role,
-      displayName,
-      personId: "",
-      label: "",
-    });
-  };
-
-  if (workTypeHint === "concerto") {
-    pushCredit("soloist", slots[0] || "");
-    pushCredit("conductor", slots[1] || "");
-    pushCredit("orchestra", slots[2] || "");
-    return credits;
-  }
-  if (workTypeHint === "opera_vocal") {
-    pushCredit("conductor", slots[0] || "");
-    pushCredit("singer", slots[1] || "");
-    pushCredit("orchestra", slots[2] || "");
-    return credits;
-  }
-  if (workTypeHint === "chamber_solo") {
-    pushCredit("soloist", slots[0] || "");
-    pushCredit("ensemble", slots[1] || "");
-    return credits;
-  }
-
-  pushCredit("conductor", slots[0] || "");
-  pushCredit("orchestra", slots[1] || "");
-  return credits;
+  return buildBatchRecordingCredits(workTypeHint, slots) as Credit[];
 }
 
 function buildStrictBatchParseNotes(workTypeHint: string) {
-  if (workTypeHint === "concerto") {
-    return ["模板：独奏者 | 指挥 | 乐团 | 年份 | 链接列表"];
-  }
-  if (workTypeHint === "opera_vocal") {
-    return ["模板：指挥 | 主演/卡司 | 乐团/合唱 | 年份 | 链接列表"];
-  }
-  if (workTypeHint === "chamber_solo") {
-    return ["模板：主奏/组合 | 协作者 | 年份 | 链接列表"];
-  }
-  return ["模板：指挥 | 乐团 | 年份 | 链接列表"];
+  return getBatchRecordingTemplateSpec(workTypeHint).parseNotes;
 }
 
 export function parseOrchestraAbbreviationText(sourceText: string) {
@@ -331,7 +270,7 @@ export async function analyzeBatchImport(options: AnalyzeBatchImportOptions): Pr
     throw new Error("所选作品不属于当前作曲家。");
   }
 
-  const workTypeHint = normalizeWorkTypeHintValue(options.workTypeHint);
+  const workTypeHint = normalizeRecordingWorkTypeHintValue(options.workTypeHint);
   const sourceText = normalizeBatchImportSource(options.sourceText ?? "", workTypeHint);
   const lines = sourceText
     .split("\n")

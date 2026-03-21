@@ -152,26 +152,28 @@ describe("owner review utils", () => {
 
   it("returns only current page confirmed pending proposals for page apply actions", () => {
     const proposals = [
-      { id: "p-1", reviewState: "confirmed", status: "pending" },
+      { id: "p-1", reviewState: "confirmed", status: "pending", fields: [{ path: "name", before: "a", after: "b" }] },
+      { id: "p-merge", reviewState: "confirmed", status: "pending", kind: "merge" },
       { id: "p-2", reviewState: "viewed", status: "pending" },
-      { id: "p-3", reviewState: "confirmed", status: "applied" },
-      { id: "p-4", reviewState: "confirmed", status: "pending" },
+      { id: "p-3", reviewState: "confirmed", status: "applied", fields: [{ path: "name", before: "a", after: "b" }] },
+      { id: "p-4", reviewState: "confirmed", status: "pending", fields: [] },
     ];
 
     expect(
       getProposalsForReviewAction(proposals, "apply-confirmed", {
         scope: "page",
-        scopeIds: ["p-1", "p-2", "p-3"],
+        scopeIds: ["p-1", "p-merge", "p-2", "p-3"],
       }).map((proposal) => proposal.id),
     ).toEqual(["p-1"]);
   });
 
   it("returns all matching proposals for global review actions regardless of current page ids", () => {
     const proposals = [
-      { id: "p-1", reviewState: "confirmed", status: "pending" },
+      { id: "p-1", reviewState: "confirmed", status: "pending", fields: [{ path: "name", before: "a", after: "b" }] },
+      { id: "p-merge", reviewState: "confirmed", status: "pending", kind: "merge" },
       { id: "p-2", reviewState: "viewed", status: "pending" },
-      { id: "p-3", reviewState: "confirmed", status: "pending" },
-      { id: "p-4", reviewState: "confirmed", status: "ignored" },
+      { id: "p-3", reviewState: "confirmed", status: "pending", imageCandidates: [{ id: "img-1" }] },
+      { id: "p-4", reviewState: "confirmed", status: "ignored", fields: [{ path: "name", before: "a", after: "b" }] },
     ];
 
     expect(
@@ -186,7 +188,22 @@ describe("owner review utils", () => {
         scope: "all",
         scopeIds: ["p-1"],
       }).map((proposal) => proposal.id),
-    ).toEqual(["p-1", "p-2", "p-3"]);
+    ).toEqual(["p-1", "p-merge", "p-2", "p-3"]);
+  });
+
+  it("deduplicates proposals by id before rendering or bulk actions", () => {
+    const proposals = [
+      { id: "p-1", reviewState: "confirmed", status: "pending", fields: [{ path: "name", before: "a", after: "b" }] },
+      { id: "p-1", reviewState: "confirmed", status: "pending", fields: [{ path: "name", before: "a", after: "b" }] },
+      { id: "p-2", reviewState: "viewed", status: "pending" },
+    ];
+
+    expect(filterPendingProposalsForDisplay(proposals).map((proposal) => proposal.id)).toEqual(["p-1", "p-2"]);
+    expect(
+      getProposalsForReviewAction(proposals, "apply-confirmed", {
+        scope: "all",
+      }).map((proposal) => proposal.id),
+    ).toEqual(["p-1"]);
   });
 
   it("hides already applied or discarded proposals from active review lists", () => {

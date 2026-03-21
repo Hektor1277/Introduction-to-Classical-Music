@@ -112,7 +112,33 @@ function cloneLibrary<T>(library: T): T {
   return structuredClone(library);
 }
 
-export function summarizeAutomationRun(run: AutomationRun): AutomationRun {
+function uniqueStrings(values: Array<string | undefined | null>) {
+  return [...new Set(values.map((value) => String(value ?? "").trim()).filter(Boolean))];
+}
+
+function mergeProposalFields(fields: AutomationFieldPatch[] = []) {
+  return [...new Map(fields.map((field) => [field.path, field])).values()];
+}
+
+function mergeProposalImages(candidates: AutomationImageCandidate[] = []) {
+  return [...new Map(candidates.map((candidate) => [candidate.id, candidate])).values()];
+}
+
+function mergeProposalMergeCandidates(candidates: AutomationMergeCandidate[] = []) {
+  return [...new Map(candidates.map((candidate) => [candidate.targetId, candidate])).values()];
+}
+
+function mergeProposalEvidence(items: AutomationProposalEvidence[] = []) {
+  return [
+    ...new Map(items.map((item) => [`${item.field}|${item.sourceUrl}|${item.sourceLabel}`, item])).values(),
+  ];
+}
+
+function mergeProposalLinks(items: AutomationLinkCandidate[] = []) {
+  return [...new Map(items.map((item) => [item.url, item])).values()];
+}
+
+function summarizeAutomationRunCore(run: AutomationRun): AutomationRun {
   const pending = run.proposals.filter((proposal) => proposal.status === "pending").length;
   const applied = run.proposals.filter((proposal) => proposal.status === "applied").length;
   const ignored = run.proposals.filter((proposal) => proposal.status === "ignored").length;
@@ -126,6 +152,98 @@ export function summarizeAutomationRun(run: AutomationRun): AutomationRun {
       ignored,
     },
   };
+}
+
+export function normalizeAutomationProposals(proposals: AutomationProposal[] = []) {
+  const mergedById = new Map<string, AutomationProposal>();
+
+  for (const proposal of proposals) {
+    const normalizedProposal: AutomationProposal = {
+      ...proposal,
+      kind: proposal.kind ?? "update",
+      status: proposal.status ?? "pending",
+      reviewState: proposal.reviewState ?? "unseen",
+      sources: [...(proposal.sources || [])],
+      fields: [...(proposal.fields || [])],
+      warnings: [...(proposal.warnings || [])],
+      imageCandidates: [...(proposal.imageCandidates || [])],
+      mergeCandidates: [...(proposal.mergeCandidates || [])],
+      selectedImageCandidateId: proposal.selectedImageCandidateId || "",
+      evidence: [...(proposal.evidence || [])],
+      linkCandidates: [...(proposal.linkCandidates || [])],
+    };
+    const existing = mergedById.get(normalizedProposal.id);
+    if (!existing) {
+      mergedById.set(normalizedProposal.id, {
+        ...normalizedProposal,
+        sources: uniqueStrings(normalizedProposal.sources),
+        fields: mergeProposalFields(normalizedProposal.fields),
+        warnings: uniqueStrings(normalizedProposal.warnings || []),
+        imageCandidates: mergeProposalImages(normalizedProposal.imageCandidates),
+        mergeCandidates: mergeProposalMergeCandidates(normalizedProposal.mergeCandidates),
+        evidence: mergeProposalEvidence(normalizedProposal.evidence),
+        linkCandidates: mergeProposalLinks(normalizedProposal.linkCandidates),
+      });
+      continue;
+    }
+
+    mergedById.set(normalizedProposal.id, {
+      ...existing,
+      summary: existing.summary.length >= normalizedProposal.summary.length ? existing.summary : normalizedProposal.summary,
+      risk:
+        existing.risk === "high" || normalizedProposal.risk === "high"
+          ? "high"
+          : existing.risk === "medium" || normalizedProposal.risk === "medium"
+            ? "medium"
+            : "low",
+      status:
+        existing.status === "applied" || normalizedProposal.status === "applied"
+          ? "applied"
+          : existing.status === "ignored" && normalizedProposal.status === "ignored"
+            ? "ignored"
+            : "pending",
+      reviewState:
+        existing.reviewState === "confirmed" || normalizedProposal.reviewState === "confirmed"
+          ? "confirmed"
+          : existing.reviewState === "edited" || normalizedProposal.reviewState === "edited"
+            ? "edited"
+            : existing.reviewState === "viewed" || normalizedProposal.reviewState === "viewed"
+              ? "viewed"
+              : existing.reviewState === "discarded" && normalizedProposal.reviewState === "discarded"
+                ? "discarded"
+                : existing.reviewState || normalizedProposal.reviewState || "unseen",
+      sources: uniqueStrings([...(existing.sources || []), ...(normalizedProposal.sources || [])]),
+      fields: mergeProposalFields([...(existing.fields || []), ...(normalizedProposal.fields || [])]),
+      warnings: uniqueStrings([...(existing.warnings || []), ...(normalizedProposal.warnings || [])]),
+      imageCandidates: mergeProposalImages([
+        ...(existing.imageCandidates || []),
+        ...(normalizedProposal.imageCandidates || []),
+      ]),
+      mergeCandidates: mergeProposalMergeCandidates([
+        ...(existing.mergeCandidates || []),
+        ...(normalizedProposal.mergeCandidates || []),
+      ]),
+      evidence: mergeProposalEvidence([...(existing.evidence || []), ...(normalizedProposal.evidence || [])]),
+      linkCandidates: mergeProposalLinks([...(existing.linkCandidates || []), ...(normalizedProposal.linkCandidates || [])]),
+      selectedImageCandidateId:
+        existing.selectedImageCandidateId || normalizedProposal.selectedImageCandidateId || "",
+    });
+  }
+
+  return [...mergedById.values()];
+}
+
+export function normalizeAutomationRun(run: AutomationRun): AutomationRun {
+  return summarizeAutomationRunCore({
+    ...run,
+    proposals: normalizeAutomationProposals(run.proposals || []),
+    notes: uniqueStrings(run.notes || []),
+    snapshots: [...new Map((run.snapshots || []).map((snapshot) => [snapshot.id, snapshot])).values()],
+  });
+}
+
+export function summarizeAutomationRun(run: AutomationRun): AutomationRun {
+  return normalizeAutomationRun(run);
 }
 
 function findEntityCollection(library: LibraryData, entityType: AutomationEntityType) {

@@ -1,4 +1,4 @@
-import { createAutomationRun, type AutomationCheckCategory, type AutomationRun } from "./automation.js";
+import { createAutomationRun, normalizeAutomationProposals, type AutomationCheckCategory, type AutomationRun } from "./automation.js";
 import {
   reviewAutomationProposalQuality,
   reviewWorkAutomationProposalQuality,
@@ -130,6 +130,14 @@ function groupByCategory(items: AutomationJobSelectionItem[]) {
     category,
     items: groupedItems,
   }));
+}
+
+function uniqueStrings(values: Array<string | undefined | null>) {
+  return [...new Set(values.map((value) => String(value ?? "").trim()).filter(Boolean))];
+}
+
+function mergeRunProposals(runs: AutomationRun[]) {
+  return normalizeAutomationProposals(runs.flatMap((run) => run.proposals || []));
 }
 
 function pickPeople(
@@ -706,8 +714,8 @@ export function createAutomationJobManager() {
 
     const mergedRun = createAutomationRun(input.library, {
       categories: uniqueCategories(input.request),
-      proposals: proposalRuns.flatMap((run) => run.proposals),
-      notes: proposalRuns.flatMap((run) => run.notes),
+      proposals: mergeRunProposals(proposalRuns),
+      notes: uniqueStrings(proposalRuns.flatMap((run) => run.notes)),
       provider: proposalRuns.map((run) => run.provider).find(Boolean),
     });
 

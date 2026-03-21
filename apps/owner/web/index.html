@@ -325,7 +325,15 @@
                       <label>发行商<input name="label" /></label>
                       <label>发行日期<input name="releaseDate" /></label>
                       <label>备注<textarea name="notes"></textarea></label>
-                      <label>演出信息（每行：role | displayName | personId 可选）<textarea name="credits"></textarea></label>
+                      <section class="owner-recording-credit-editor" data-recording-credit-editor>
+                        <div class="owner-card__header">
+                          <h3>参与署名</h3>
+                          <button type="button" data-recording-credit-add>新增署名行</button>
+                        </div>
+                        <div class="owner-recording-credit-editor__rows" data-recording-credit-rows></div>
+                        <p class="owner-form__hint">适用于合唱交响曲、歌剧、芭蕾、清唱剧和室内乐临时组合等多人物 / 多团体版本。快捷字段中的指挥、乐团会同步到这里。</p>
+                      </section>
+                      <input name="credits" type="hidden" />
                       <p class="owner-form__hint">路径别名（Slug）和排序键由维护工具统一管理，保存时自动生成并沿用现有值。</p>
                       <input name="images" type="hidden" />
                       <input name="performanceDateText" type="hidden" />
