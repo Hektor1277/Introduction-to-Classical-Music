@@ -1,0 +1,266 @@
+import { describe, expect, it } from "vitest";
+
+import { validateLibrary, type LibraryData, type Recording } from "@/lib/schema";
+import { auditLibraryData } from "../../packages/data-core/src/library-audit.js";
+
+function buildBaseLibrary(): LibraryData {
+  return validateLibrary({
+    composers: [
+      {
+        id: "composer-beethoven",
+        slug: "beethoven",
+        name: "贝多芬",
+        fullName: "路德维希·凡·贝多芬",
+        nameLatin: "Ludwig van Beethoven",
+        country: "Germany",
+        avatarSrc: "",
+        aliases: [],
+        sortKey: "0010",
+        summary: "",
+      },
+    ],
+    people: [
+      {
+        id: "person-karajan",
+        slug: "karajan",
+        name: "卡拉扬",
+        fullName: "赫伯特·冯·卡拉扬",
+        nameLatin: "Herbert von Karajan",
+        country: "Austria",
+        avatarSrc: "",
+        roles: ["conductor"],
+        aliases: ["Herbert von Karajan"],
+        sortKey: "0010",
+        summary: "",
+      },
+      {
+        id: "person-bpo",
+        slug: "berliner-philharmoniker",
+        name: "柏林爱乐乐团",
+        fullName: "柏林爱乐乐团",
+        nameLatin: "Berliner Philharmoniker",
+        country: "Germany",
+        avatarSrc: "",
+        roles: ["orchestra"],
+        aliases: ["BPO"],
+        sortKey: "0011",
+        summary: "",
+      },
+      {
+        id: "person-anne",
+        slug: "annie-fischer",
+        name: "安妮·费舍尔",
+        fullName: "安妮·费舍尔",
+        nameLatin: "Annie Fischer",
+        country: "Hungary",
+        avatarSrc: "",
+        roles: ["soloist"],
+        aliases: [],
+        sortKey: "0012",
+        summary: "",
+      },
+    ],
+    workGroups: [
+      {
+        id: "group-beethoven-symphony",
+        composerId: "composer-beethoven",
+        title: "交响曲",
+        slug: "symphony",
+        path: ["交响曲"],
+        sortKey: "0010",
+      },
+      {
+        id: "group-beethoven-concerto",
+        composerId: "composer-beethoven",
+        title: "钢琴协奏曲",
+        slug: "piano-concerto",
+        path: ["协奏曲", "钢琴协奏曲"],
+        sortKey: "0020",
+      },
+    ],
+    works: [
+      {
+        id: "work-beethoven-7",
+        composerId: "composer-beethoven",
+        groupIds: ["group-beethoven-symphony"],
+        slug: "symphony-7",
+        title: "第七交响曲",
+        titleLatin: "Symphony No. 7 in A major, Op. 92",
+        aliases: [],
+        catalogue: "Op. 92",
+        summary: "",
+        sortKey: "0010",
+        updatedAt: "2026-03-21T00:00:00.000Z",
+      },
+      {
+        id: "work-beethoven-op54",
+        composerId: "composer-beethoven",
+        groupIds: ["group-beethoven-concerto"],
+        slug: "op54",
+        title: "a小调钢琴协奏曲",
+        titleLatin: "Piano Concerto, Op. 54",
+        aliases: [],
+        catalogue: "Op. 54",
+        summary: "",
+        sortKey: "0020",
+        updatedAt: "2026-03-21T00:00:00.000Z",
+      },
+    ],
+    recordings: [
+      {
+        id: "recording-reference",
+        workId: "work-beethoven-7",
+        slug: "karajan-1977",
+        title: "卡拉扬 - 柏林爱乐乐团 - 1977",
+        workTypeHint: "orchestral",
+        sortKey: "0010",
+        isPrimaryRecommendation: false,
+        updatedAt: "2026-03-21T00:00:00.000Z",
+        images: [],
+        credits: [
+          { role: "conductor", personId: "person-karajan", displayName: "卡拉扬", label: "指挥" },
+          { role: "orchestra", personId: "person-bpo", displayName: "柏林爱乐乐团", label: "乐团" },
+        ],
+        links: [],
+        notes: "",
+        performanceDateText: "1977",
+        venueText: "Berlin",
+        albumTitle: "",
+        label: "",
+        releaseDate: "",
+        infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        legacyPath: "",
+      },
+    ],
+  });
+}
+
+function replaceRecording(library: LibraryData, recording: Recording): LibraryData {
+  return {
+    ...library,
+    recordings: [recording],
+  };
+}
+
+describe("auditLibraryData", () => {
+  it("flags placeholder entities kept in the library", () => {
+    const library = {
+      ...buildBaseLibrary(),
+      people: [
+        ...buildBaseLibrary().people,
+        {
+          id: "person-item",
+          slug: "person-item",
+          name: "-",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          roles: ["orchestra" as const],
+          aliases: [],
+          sortKey: "9999",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+    };
+
+    const issues = auditLibraryData(validateLibrary(library));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "placeholder-entity",
+          severity: "error",
+          entityType: "person",
+          entityId: "person-item",
+          source: "people",
+        }),
+      ]),
+    );
+  });
+
+  it("flags recordings that miss required credit roles for their family", () => {
+    const library = buildBaseLibrary();
+    const brokenRecording = {
+      ...library.recordings[0],
+      id: "recording-concerto-missing-soloist",
+      workId: "work-beethoven-op54",
+      slug: "broken-concerto",
+      title: "卡拉扬 - 柏林爱乐乐团 - 1977",
+      workTypeHint: "concerto" as const,
+      credits: [
+        { role: "conductor", personId: "person-karajan", displayName: "卡拉扬", label: "指挥" },
+        { role: "orchestra", personId: "person-bpo", displayName: "柏林爱乐乐团", label: "乐团" },
+      ],
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, brokenRecording));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-missing-credit-role",
+          severity: "error",
+          entityType: "recording",
+          entityId: "recording-concerto-missing-soloist",
+          source: "recordings.credits",
+          suggestedFix: expect.stringContaining("soloist"),
+        }),
+      ]),
+    );
+  });
+
+  it("flags conflicts between recording work type and related work groups", () => {
+    const library = buildBaseLibrary();
+    const conflictingRecording = {
+      ...library.recordings[0],
+      id: "recording-type-conflict",
+      slug: "type-conflict",
+      workTypeHint: "concerto" as const,
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, conflictingRecording));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-work-type-conflict",
+          severity: "warning",
+          entityType: "recording",
+          entityId: "recording-type-conflict",
+          source: "recordings.workTypeHint",
+        }),
+      ]),
+    );
+  });
+
+  it("flags structured titles that contradict normalized credit-derived titles", () => {
+    const library = buildBaseLibrary();
+    const mismatchedRecording = {
+      ...library.recordings[0],
+      id: "recording-title-mismatch",
+      slug: "title-mismatch",
+      title: "阿巴多 - 芝加哥交响乐团 - 1984",
+      performanceDateText: "1977",
+      venueText: "",
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, mismatchedRecording));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-title-credit-mismatch",
+          severity: "warning",
+          entityType: "recording",
+          entityId: "recording-title-mismatch",
+          source: "recordings.title",
+        }),
+      ]),
+    );
+  });
+});

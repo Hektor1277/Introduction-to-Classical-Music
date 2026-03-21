@@ -1,0 +1,288 @@
+import { buildRecordingDisplayTitle, normalizeSearchText } from "../../shared/src/display.js";
+import {
+  deriveRecordingPresentationFamily,
+  normalizeRecordingWorkTypeHintValue,
+  resolveRecordingWorkTypeHintValue,
+} from "../../shared/src/recording-rules.js";
+import type { Composer, LibraryData, Person, Recording } from "../../shared/src/schema.js";
+
+export type LibraryAuditSeverity = "info" | "warning" | "error";
+export type LibraryAuditEntityType = "composer" | "person" | "work" | "recording";
+export type LibraryAuditIssueCode =
+  | "placeholder-entity"
+  | "recording-missing-credit-role"
+  | "recording-work-type-conflict"
+  | "recording-title-credit-mismatch";
+
+export type LibraryAuditIssue = {
+  code: LibraryAuditIssueCode;
+  severity: LibraryAuditSeverity;
+  entityType: LibraryAuditEntityType;
+  entityId: string;
+  message: string;
+  source: string;
+  suggestedFix: string;
+};
+
+function compact(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function isPlaceholderValue(value: unknown) {
+  const normalized = compact(value).toLowerCase();
+  return !normalized || normalized === "-" || normalized === "unknown" || normalized === "未知" || normalized === "未填写";
+}
+
+function hasPlaceholderIdentity(entity: Pick<Person | Composer, "id" | "name">) {
+  return compact(entity.id) === "person-item" || isPlaceholderValue(entity.name);
+}
+
+function issue(input: LibraryAuditIssue): LibraryAuditIssue {
+  return input;
+}
+
+function countCredits(recording: Recording) {
+  const credits = recording.credits || [];
+  return {
+    conductorCount: credits.filter((credit) => credit.role === "conductor").length,
+    orchestraCount: credits.filter((credit) => credit.role === "orchestra").length,
+    soloistCount: credits.filter((credit) => credit.role === "soloist" || credit.role === "instrumentalist").length,
+    singerCount: credits.filter((credit) => credit.role === "singer").length,
+    ensembleCount: credits.filter((credit) => credit.role === "ensemble" || credit.role === "chorus").length,
+  };
+}
+
+function getRecordingWorkContext(library: LibraryData, recording: Recording) {
+  const work = (library.works || []).find((item) => item.id === recording.workId) || null;
+  const workGroups = (work?.groupIds || [])
+    .map((groupId) => (library.workGroups || []).find((group) => group.id === groupId))
+    .filter((group): group is LibraryData["workGroups"][number] => Boolean(group));
+  return { work, workGroups };
+}
+
+function auditPlaceholderEntities(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const composer of library.composers || []) {
+    if (!hasPlaceholderIdentity(composer)) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "placeholder-entity",
+        severity: "error",
+        entityType: "composer",
+        entityId: composer.id,
+        message: `作曲家条目仍是占位值：${compact(composer.name) || composer.id}`,
+        source: "composers",
+        suggestedFix: "将该占位作曲家替换为正式条目，或先解除所有引用后再删除。",
+      }),
+    );
+  }
+
+  for (const person of library.people || []) {
+    if (!hasPlaceholderIdentity(person)) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "placeholder-entity",
+        severity: "error",
+        entityType: "person",
+        entityId: person.id,
+        message: `人物/团体条目仍是占位值：${compact(person.name) || person.id}`,
+        source: "people",
+        suggestedFix: "将该占位人物或团体迁移为正式实体，或在清理引用后删除。",
+      }),
+    );
+  }
+
+  for (const recording of library.recordings || []) {
+    const placeholderCredit = (recording.credits || []).find(
+      (credit) => compact(credit.personId) === "person-item" || isPlaceholderValue(credit.displayName),
+    );
+    if (!placeholderCredit) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "placeholder-entity",
+        severity: "error",
+        entityType: "recording",
+        entityId: recording.id,
+        message: `版本条目仍引用占位 credit：${compact(placeholderCredit.displayName) || compact(placeholderCredit.personId)}`,
+        source: "recordings.credits",
+        suggestedFix: "回读原始 archive 并为该 credit 绑定正式人物/团体条目。",
+      }),
+    );
+  }
+
+  return issues;
+}
+
+function auditRecordingRequiredCredits(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const recording of library.recordings || []) {
+    const counts = countCredits(recording);
+    const family = deriveRecordingPresentationFamily({
+      workTypeHint: recording.workTypeHint,
+      ...counts,
+    });
+    const ensembleCount = counts.orchestraCount + counts.ensembleCount;
+    const featuredCount = counts.soloistCount + counts.singerCount;
+
+    const missing: string[] = [];
+    if (family === "orchestral") {
+      if (counts.conductorCount === 0) {
+        missing.push("conductor");
+      }
+      if (ensembleCount === 0) {
+        missing.push("orchestra_or_ensemble");
+      }
+    } else if (family === "concerto") {
+      if (featuredCount === 0) {
+        missing.push("soloist");
+      }
+      if (ensembleCount === 0) {
+        missing.push("orchestra_or_ensemble");
+      }
+    } else if (family === "opera") {
+      if (counts.conductorCount === 0) {
+        missing.push("conductor");
+      }
+      if (featuredCount === 0) {
+        missing.push("singer_or_soloist");
+      }
+      if (ensembleCount === 0) {
+        missing.push("orchestra_or_ensemble");
+      }
+    } else if (family === "solo") {
+      if (featuredCount === 0 && ensembleCount === 0) {
+        missing.push("soloist");
+      }
+    } else if (family === "chamber") {
+      if (ensembleCount === 0 && featuredCount < 2) {
+        missing.push("ensemble_or_multiple_soloists");
+      }
+    }
+
+    if (missing.length === 0) {
+      continue;
+    }
+
+    issues.push(
+      issue({
+        code: "recording-missing-credit-role",
+        severity: "error",
+        entityType: "recording",
+        entityId: recording.id,
+        message: `版本缺少 ${family} 体裁所需的关键署名：${missing.join(", ")}`,
+        source: "recordings.credits",
+        suggestedFix: `补齐 ${missing.join(", ")} 对应的 credit，并优先从正式人物/团体条目中选择。`,
+      }),
+    );
+  }
+
+  return issues;
+}
+
+function auditRecordingWorkTypeConflicts(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const recording of library.recordings || []) {
+    const normalized = normalizeRecordingWorkTypeHintValue(recording.workTypeHint);
+    if (normalized === "unknown") {
+      continue;
+    }
+    const { work, workGroups } = getRecordingWorkContext(library, recording);
+    const inferred = resolveRecordingWorkTypeHintValue("unknown", work, workGroups);
+    if (inferred === "unknown" || inferred === normalized) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "recording-work-type-conflict",
+        severity: "warning",
+        entityType: "recording",
+        entityId: recording.id,
+        message: `版本体裁 ${normalized} 与所属作品推断体裁 ${inferred} 不一致。`,
+        source: "recordings.workTypeHint",
+        suggestedFix: "核对作品分组与版本体裁，必要时统一修正 workTypeHint 或作品分组。",
+      }),
+    );
+  }
+
+  return issues;
+}
+
+function looksStructuredTitle(title: string) {
+  return /[|/-]/.test(title);
+}
+
+function auditRecordingTitleCreditMismatches(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const recording of library.recordings || []) {
+    const storedTitle = compact(recording.title);
+    if (!storedTitle || !looksStructuredTitle(storedTitle)) {
+      continue;
+    }
+    const normalizedStored = normalizeSearchText(storedTitle);
+    const derivedTitle = compact(buildRecordingDisplayTitle(recording, library));
+    const normalizedDerived = normalizeSearchText(derivedTitle);
+    if (!normalizedStored || !normalizedDerived || normalizedStored === normalizedDerived) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "recording-title-credit-mismatch",
+        severity: "warning",
+        entityType: "recording",
+        entityId: recording.id,
+        message: `版本标题与结构化 credit 推导标题不一致：stored="${storedTitle}" derived="${derivedTitle}"`,
+        source: "recordings.title",
+        suggestedFix: "优先保留结构化 credits，按当前显示规则重建版本标题并人工复核。",
+      }),
+    );
+  }
+
+  return issues;
+}
+
+export function auditLibraryData(library: LibraryData): LibraryAuditIssue[] {
+  return [
+    ...auditPlaceholderEntities(library),
+    ...auditRecordingRequiredCredits(library),
+    ...auditRecordingWorkTypeConflicts(library),
+    ...auditRecordingTitleCreditMismatches(library),
+  ];
+}
+
+export function summarizeLibraryAuditIssues(issues: LibraryAuditIssue[]) {
+  const byCode = Object.fromEntries(
+    [...new Set(issues.map((entry) => entry.code))].sort().map((code) => [
+      code,
+      issues.filter((entry) => entry.code === code).length,
+    ]),
+  );
+  const bySeverity = Object.fromEntries(
+    [...new Set(issues.map((entry) => entry.severity))].sort().map((severity) => [
+      severity,
+      issues.filter((entry) => entry.severity === severity).length,
+    ]),
+  );
+  const byEntityType = Object.fromEntries(
+    [...new Set(issues.map((entry) => entry.entityType))].sort().map((entityType) => [
+      entityType,
+      issues.filter((entry) => entry.entityType === entityType).length,
+    ]),
+  );
+
+  return {
+    total: issues.length,
+    byCode,
+    bySeverity,
+    byEntityType,
+  };
+}
