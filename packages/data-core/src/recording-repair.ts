@@ -2,6 +2,7 @@ import { parseLegacyRecordingHtml } from "./legacy-parser.js";
 import type { LibraryData, Person, Recording } from "../../shared/src/schema.js";
 import { resolveRecordingWorkTypeHintValue } from "../../shared/src/recording-rules.js";
 import { buildRecordingDisplayTitle } from "../../shared/src/display.js";
+import { findPersonForCredit, isPlaceholderValue } from "./person-cleanup.js";
 
 type ParsedLegacyRecording = ReturnType<typeof parseLegacyRecordingHtml>;
 
@@ -9,60 +10,8 @@ function compact(value: unknown) {
   return String(value ?? "").trim();
 }
 
-function normalizeNameKey(value: unknown) {
-  return compact(value)
-    .toLowerCase()
-    .replace(/[\s'"`"“”‘’.,;:!?()[\]{}\-_/\\|&]+/g, "");
-}
-
-function isPlaceholderValue(value: unknown) {
-  const text = compact(value);
-  return !text || text === "-" || text === "unknown";
-}
-
 function isPlaceholderCredit(credit: { personId?: unknown; displayName?: unknown }) {
   return compact(credit.personId) === "person-item" || isPlaceholderValue(credit.displayName);
-}
-
-function isPlaceholderPerson(person: Person) {
-  return person.id === "person-item" || isPlaceholderValue(person.name);
-}
-
-function personMatchesName(person: Person, value: string) {
-  const target = normalizeNameKey(value);
-  if (!target) {
-    return false;
-  }
-  const candidates = [
-    person.name,
-    person.fullName,
-    person.displayName,
-    person.displayFullName,
-    person.nameLatin,
-    person.displayLatinName,
-    ...(person.aliases || []),
-    ...(person.abbreviations || []),
-  ];
-  return candidates.some((candidate) => normalizeNameKey(candidate) === target);
-}
-
-function findPersonForCredit(library: LibraryData, role: string, displayName: string) {
-  const candidates = (library.people || []).filter((person) => {
-    if (isPlaceholderPerson(person)) {
-      return false;
-    }
-    if (role === "orchestra") {
-      return (person.roles || []).some((personRole) => ["orchestra", "ensemble", "chorus"].includes(personRole));
-    }
-    if (role === "ensemble") {
-      return (person.roles || []).some((personRole) => ["ensemble", "orchestra", "chorus"].includes(personRole));
-    }
-    if (role === "chorus") {
-      return (person.roles || []).includes("chorus");
-    }
-    return true;
-  });
-  return candidates.find((person) => personMatchesName(person, displayName)) || null;
 }
 
 function canonicalCreditDisplayName(person: Person, role: string) {

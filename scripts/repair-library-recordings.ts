@@ -5,8 +5,8 @@ import path from "node:path";
 
 import { loadLibraryFromDisk, saveLibraryToDisk, writeGeneratedArtifacts } from "../packages/data-core/src/library-store.js";
 import { parseLegacyRecordingHtml } from "../packages/data-core/src/legacy-parser.js";
+import { cleanupLibraryPeople, ensurePeopleForCredits, isPlaceholderPerson } from "../packages/data-core/src/person-cleanup.js";
 import { backfillRecordingWorkTypeHints, repairRecordingFromLegacyParse } from "../packages/data-core/src/recording-repair.js";
-import { createEntityId, createSlug, createSortKey } from "../packages/shared/src/slug.js";
 
 const SOURCE_ROOT_NAME = "an incomplete guide to classical music";
 const defaultSources = [
@@ -104,71 +104,6 @@ function normalizeNameKey(value: unknown) {
     .replace(/[\s'"`"“”‘’.,;:!?()[\]{}\-_/\\|&]+/g, "");
 }
 
-function isPlaceholderPerson(person: { id?: unknown; name?: unknown }) {
-  return compact(person.id) === "person-item" || compact(person.name) === "-";
-}
-
-function matchExistingPerson(library: Awaited<ReturnType<typeof loadLibraryFromDisk>>, role: string, displayName: string) {
-  const target = normalizeNameKey(displayName);
-  if (!target) {
-    return null;
-  }
-  const candidates = (library.people || []).filter((person) => {
-    if (isPlaceholderPerson(person)) {
-      return false;
-    }
-    if (role === "orchestra" || role === "ensemble" || role === "chorus") {
-      return (person.roles || []).some((personRole) => ["orchestra", "ensemble", "chorus"].includes(personRole));
-    }
-    return true;
-  });
-  return (
-    candidates.find((person) =>
-      [person.name, person.nameLatin, ...(person.aliases || [])].some((value) => normalizeNameKey(value) === target),
-    ) || null
-  );
-}
-
-function ensurePeopleForParsedCredits(library: Awaited<ReturnType<typeof loadLibraryFromDisk>>, parsedCredits: Array<{ role: string; displayName: string }>) {
-  const nextPeople = [...library.people];
-  let changed = false;
-
-  for (const credit of parsedCredits) {
-    if (!["orchestra", "ensemble", "chorus"].includes(credit.role)) {
-      continue;
-    }
-    const displayName = compact(credit.displayName);
-    if (!displayName || displayName === "-") {
-      continue;
-    }
-    const existing = matchExistingPerson({ ...library, people: nextPeople }, credit.role, displayName);
-    if (existing) {
-      continue;
-    }
-    changed = true;
-    const id = createEntityId(`person-${credit.role}`, displayName);
-    nextPeople.push({
-      id,
-      slug: createSlug(displayName),
-      name: displayName,
-      nameLatin: /[A-Za-z]/.test(displayName) ? displayName : "",
-      country: "",
-      avatarSrc: "",
-      aliases: [],
-      sortKey: createSortKey(nextPeople.length),
-      summary: "",
-      imageSourceUrl: "",
-      imageSourceKind: "",
-      imageAttribution: "",
-      imageUpdatedAt: "",
-      infoPanel: { text: "", articleId: "", collectionLinks: [] },
-      roles: [credit.role as "orchestra" | "ensemble" | "chorus"],
-    });
-  }
-
-  return changed ? { ...library, people: nextPeople } : library;
-}
-
 function stripUnusedPlaceholderPeople(library: Awaited<ReturnType<typeof loadLibraryFromDisk>>) {
   const referencedPersonIds = new Set(
     (library.recordings || []).flatMap((recording) => (recording.credits || []).map((credit) => compact(credit.personId)).filter(Boolean)),
@@ -211,7 +146,7 @@ async function main() {
         }
         const html = await fs.readFile(legacyFilePath, "utf8");
         const parsed = parseLegacyRecordingHtml(html);
-        library = ensurePeopleForParsedCredits(library, parsed.credits || []);
+        library = ensurePeopleForCredits(library, parsed.credits || []);
         const repairedRecording = repairRecordingFromLegacyParse(library, recording, parsed);
         if (compact(repairedRecording.title) !== compact(recording.title)) {
           normalizedTitleCount += 1;
@@ -234,6 +169,8 @@ async function main() {
     }
   }
 
+  library = cleanupLibraryPeople(library);
+  library = backfillRecordingWorkTypeHints(library);
   library = stripUnusedPlaceholderPeople(library);
   if (!dryRun) {
     await saveLibraryToDisk(library);

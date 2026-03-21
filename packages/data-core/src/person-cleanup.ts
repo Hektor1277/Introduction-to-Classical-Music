@@ -1,0 +1,385 @@
+import { createEntityId, createSlug, createSortKey } from "../../shared/src/slug.js";
+import type { Credit, LibraryData, Person, PersonRole, Recording } from "../../shared/src/schema.js";
+
+function compact(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function normalizeNameKey(value: unknown) {
+  return compact(value)
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\s'"`"鈥溾€濃€樷€?,;:!?()[\]{}\-_/\\|&]+/g, "");
+}
+
+export function isPlaceholderValue(value: unknown) {
+  const normalized = normalizeNameKey(value);
+  return !normalized || normalized === "-" || normalized === "unknown" || normalized === "未知" || normalized === "未填写";
+}
+
+export function isPlaceholderPerson(person: Pick<Person, "id" | "name">) {
+  return compact(person.id) === "person-item" || isPlaceholderValue(person.name);
+}
+
+function dedupeCredits(credits: Recording["credits"]) {
+  const seen = new Set<string>();
+  const nextCredits: Recording["credits"] = [];
+  for (const credit of credits) {
+    const key = [compact(credit.role), compact(credit.personId), compact(credit.displayName)].join("::");
+    if (!key || seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    nextCredits.push({
+      ...credit,
+      personId: compact(credit.personId),
+      displayName: compact(credit.displayName),
+      label: compact(credit.label),
+    });
+  }
+  return nextCredits;
+}
+
+function personMatchesName(person: Person, value: string) {
+  const target = normalizeNameKey(value);
+  if (!target) {
+    return false;
+  }
+  const candidates = [
+    person.name,
+    person.fullName,
+    person.displayName,
+    person.displayFullName,
+    person.nameLatin,
+    person.displayLatinName,
+    ...(person.aliases || []),
+  ];
+  return candidates.some((candidate) => normalizeNameKey(candidate) === target);
+}
+
+function isEnsembleRole(role: Credit["role"] | PersonRole) {
+  return role === "orchestra" || role === "ensemble" || role === "chorus";
+}
+
+function ensembleCompatible(role: Credit["role"], person: Person) {
+  const personRoles = new Set(person.roles || []);
+  if (role === "orchestra") {
+    return personRoles.has("orchestra") || personRoles.has("ensemble") || personRoles.has("chorus");
+  }
+  if (role === "ensemble") {
+    return personRoles.has("ensemble") || personRoles.has("orchestra") || personRoles.has("chorus");
+  }
+  if (role === "chorus") {
+    return personRoles.has("chorus") || personRoles.has("ensemble");
+  }
+  return true;
+}
+
+function personQualityScore(person: Person) {
+  let score = 0;
+  const aliases = person.aliases || [];
+  if (compact(person.country)) {
+    score += 3;
+  }
+  if (compact(person.summary)) {
+    score += 4;
+  }
+  if (compact(person.avatarSrc)) {
+    score += 2;
+  }
+  if (compact(person.imageSourceUrl)) {
+    score += 2;
+  }
+  if (compact(person.imageAttribution)) {
+    score += 1;
+  }
+  if (aliases.length) {
+    score += Math.min(aliases.length, 6);
+  }
+  if (compact(person.nameLatin)) {
+    score += 1;
+  }
+  if (compact(person.name) && compact(person.nameLatin) && normalizeNameKey(person.name) !== normalizeNameKey(person.nameLatin)) {
+    score += 2;
+  }
+  if (compact(person.fullName) || compact(person.displayName) || compact(person.displayFullName) || compact(person.displayLatinName)) {
+    score += 1;
+  }
+  return score;
+}
+
+function uniqueNormalizedNames(person: Person) {
+  const values = [
+    person.name,
+    person.fullName,
+    person.displayName,
+    person.displayFullName,
+    person.nameLatin,
+    person.displayLatinName,
+    ...(person.aliases || []),
+  ]
+    .map((value) => normalizeNameKey(value))
+    .filter(Boolean);
+  return [...new Set(values)];
+}
+
+function isThinDuplicateGroupPerson(person: Person) {
+  if (!person.roles.some((role) => isEnsembleRole(role))) {
+    return false;
+  }
+  if (isPlaceholderPerson(person)) {
+    return false;
+  }
+  return (
+    !compact(person.country) &&
+    !compact(person.summary) &&
+    !compact(person.avatarSrc) &&
+    !compact(person.imageSourceUrl) &&
+    !compact(person.imageAttribution) &&
+    (person.aliases || []).length === 0 &&
+    !compact(person.fullName) &&
+    !compact(person.displayName) &&
+    !compact(person.displayFullName) &&
+    !compact(person.displayLatinName)
+  );
+}
+
+function findCanonicalReplacementForThinGroup(library: LibraryData, person: Person) {
+  if (!isThinDuplicateGroupPerson(person)) {
+    return null;
+  }
+  const sourceNames = new Set(uniqueNormalizedNames(person));
+  const sourceSlug = compact(person.slug);
+  if (!sourceNames.size) {
+    if (!sourceSlug) {
+      return null;
+    }
+  }
+  const candidates = (library.people || [])
+    .filter((candidate) => candidate.id !== person.id)
+    .filter((candidate) => !isPlaceholderPerson(candidate))
+    .filter((candidate) => candidate.roles.some((role) => isEnsembleRole(role)) && ensembleCompatible(primaryRoleFromPerson(person), candidate))
+    .filter((candidate) => {
+      const candidateSlug = compact(candidate.slug);
+      if (sourceSlug && candidateSlug && sourceSlug === candidateSlug) {
+        return true;
+      }
+      return uniqueNormalizedNames(candidate).some((value) => sourceNames.has(value));
+    })
+    .sort((left, right) => personQualityScore(right) - personQualityScore(left));
+  const replacement = candidates[0] || null;
+  if (!replacement) {
+    return null;
+  }
+  return personQualityScore(replacement) > personQualityScore(person) ? replacement : null;
+}
+
+export function findPersonForCredit(library: LibraryData, role: Credit["role"], displayName: string) {
+  const target = compact(displayName);
+  if (!target || isPlaceholderValue(target)) {
+    return null;
+  }
+  const candidates = (library.people || [])
+    .filter((person) => !isPlaceholderPerson(person) && ensembleCompatible(role, person))
+    .filter((person) => personMatchesName(person, target))
+    .sort((left, right) => personQualityScore(right) - personQualityScore(left));
+  return candidates[0] || null;
+}
+
+function canonicalCreditDisplayName(person: Person) {
+  return compact(person.name || person.fullName || person.nameLatin);
+}
+
+function primaryRoleFromPerson(person: Person): Credit["role"] {
+  if ((person.roles || []).includes("orchestra")) {
+    return "orchestra";
+  }
+  if ((person.roles || []).includes("chorus")) {
+    return "chorus";
+  }
+  if ((person.roles || []).includes("ensemble")) {
+    return "ensemble";
+  }
+  return "ensemble";
+}
+
+function createFormalPersonForCredit(library: LibraryData, credit: Credit) {
+  const displayName = compact(credit.displayName);
+  const role = credit.role === "chorus" ? "chorus" : credit.role === "ensemble" ? "ensemble" : "orchestra";
+  const person: Person = {
+    id: createEntityId(`person-${role}`, displayName),
+    slug: createSlug(displayName),
+    name: displayName,
+    nameLatin: /[A-Za-z]/.test(displayName) ? displayName : "",
+    country: "",
+    avatarSrc: "",
+    aliases: [],
+    sortKey: createSortKey((library.people || []).length + 1),
+    summary: "",
+    imageSourceUrl: "",
+    imageSourceKind: "",
+    imageAttribution: "",
+    imageUpdatedAt: "",
+    infoPanel: { text: "", articleId: "", collectionLinks: [] },
+    roles: [role satisfies PersonRole],
+  };
+  return {
+    ...library,
+    people: [...(library.people || []), person],
+  };
+}
+
+export function ensurePeopleForCredits(library: LibraryData, credits: Credit[]) {
+  let nextLibrary = library;
+  for (const credit of credits) {
+    if (!["orchestra", "ensemble", "chorus"].includes(credit.role)) {
+      continue;
+    }
+    if (isPlaceholderValue(credit.displayName)) {
+      continue;
+    }
+    const matchedPerson = findPersonForCredit(nextLibrary, credit.role, credit.displayName);
+    if (matchedPerson) {
+      continue;
+    }
+    nextLibrary = createFormalPersonForCredit(nextLibrary, credit);
+  }
+  return nextLibrary;
+}
+
+function extractMetadataCandidates(recording: Pick<Recording, "performanceDateText" | "venueText">) {
+  const texts = [compact(recording.venueText), compact(recording.performanceDateText)].filter(Boolean);
+  const candidates = new Set<string>();
+  for (const text of texts) {
+    candidates.add(text);
+    for (const piece of text.split("/")) {
+      const trimmedPiece = compact(piece);
+      if (trimmedPiece) {
+        candidates.add(trimmedPiece);
+      }
+    }
+    for (const piece of text.split(",")) {
+      const trimmedPiece = compact(piece);
+      if (trimmedPiece && !/^\d{4}([./-]\d{1,2}([./-]\d{1,2})?)?$/.test(trimmedPiece)) {
+        candidates.add(trimmedPiece);
+      }
+    }
+  }
+  return [...candidates];
+}
+
+function inferEnsemblePersonFromMetadata(library: LibraryData, recording: Recording) {
+  const candidates = extractMetadataCandidates(recording);
+  for (const candidate of candidates) {
+    const matched = findPersonForCredit(library, "orchestra", candidate);
+    if (matched && ensembleCompatible("orchestra", matched)) {
+      return matched;
+    }
+  }
+  return null;
+}
+
+export function repairRecordingPeople(library: LibraryData, recording: Recording) {
+  let nextLibrary = library;
+  const nextCredits: Recording["credits"] = [];
+  const redirectedThinGroupIds = new Map<string, Person>();
+
+  for (const person of nextLibrary.people || []) {
+    const replacement = findCanonicalReplacementForThinGroup(nextLibrary, person);
+    if (replacement) {
+      redirectedThinGroupIds.set(person.id, replacement);
+    }
+  }
+
+  for (const currentCredit of recording.credits || []) {
+    let nextCredit: Credit = {
+      ...currentCredit,
+      personId: compact(currentCredit.personId),
+      displayName: compact(currentCredit.displayName),
+      label: compact(currentCredit.label),
+    };
+
+    const redirectedPerson = redirectedThinGroupIds.get(compact(nextCredit.personId));
+    if (redirectedPerson) {
+      nextCredit = {
+        ...nextCredit,
+        role: primaryRoleFromPerson(redirectedPerson),
+        personId: redirectedPerson.id,
+        displayName: canonicalCreditDisplayName(redirectedPerson),
+      };
+    }
+
+    if (!isPlaceholderValue(nextCredit.displayName)) {
+      if (["orchestra", "ensemble", "chorus"].includes(nextCredit.role)) {
+        nextLibrary = ensurePeopleForCredits(nextLibrary, [nextCredit]);
+      }
+      const matchedPerson = findPersonForCredit(nextLibrary, nextCredit.role, nextCredit.displayName);
+      if (matchedPerson) {
+        nextCredit = {
+          ...nextCredit,
+          role: ["orchestra", "ensemble", "chorus"].includes(nextCredit.role) ? primaryRoleFromPerson(matchedPerson) : nextCredit.role,
+          personId: matchedPerson.id,
+          displayName: canonicalCreditDisplayName(matchedPerson),
+        };
+      }
+    }
+
+    nextCredits.push(nextCredit);
+  }
+
+  const hasEnsembleCredit = nextCredits.some((credit) => ["orchestra", "ensemble", "chorus"].includes(credit.role));
+  if (!hasEnsembleCredit) {
+    const inferredPerson = inferEnsemblePersonFromMetadata(nextLibrary, recording);
+    if (inferredPerson) {
+      nextCredits.push({
+        role: primaryRoleFromPerson(inferredPerson),
+        personId: inferredPerson.id,
+        displayName: canonicalCreditDisplayName(inferredPerson),
+        label: "元数据推断",
+      });
+    }
+  }
+
+  return {
+    library: nextLibrary,
+    recording: {
+      ...recording,
+      credits: dedupeCredits(nextCredits),
+    },
+  };
+}
+
+export function stripUnusedPlaceholderPeople(library: LibraryData) {
+  const referencedPersonIds = new Set(
+    (library.recordings || []).flatMap((recording) => (recording.credits || []).map((credit) => compact(credit.personId)).filter(Boolean)),
+  );
+  return {
+    ...library,
+    people: (library.people || []).filter((person) => {
+      if (referencedPersonIds.has(person.id)) {
+        return true;
+      }
+      if (isPlaceholderPerson(person)) {
+        return false;
+      }
+      if (isThinDuplicateGroupPerson(person) && findCanonicalReplacementForThinGroup(library, person)) {
+        return false;
+      }
+      return true;
+    }),
+  };
+}
+
+export function cleanupLibraryPeople(library: LibraryData) {
+  let nextLibrary = library;
+  const nextRecordings: Recording[] = [];
+  for (const recording of library.recordings || []) {
+    const repaired = repairRecordingPeople(nextLibrary, recording);
+    nextLibrary = repaired.library;
+    nextRecordings.push(repaired.recording);
+  }
+  return stripUnusedPlaceholderPeople({
+    ...nextLibrary,
+    recordings: nextRecordings,
+  });
+}
