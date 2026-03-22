@@ -29,20 +29,38 @@ function hasAnyKeyword(value: string, keywords: string[]) {
   return keywords.some((keyword) => value.includes(keyword));
 }
 
+function normalizeAsciiLabel(value: string) {
+  return value.toLowerCase().replace(/[^a-z]+/g, " ").trim();
+}
+
+function matchesEnglishLabel(label: string, keywords: string[]) {
+  const normalized = normalizeAsciiLabel(label);
+  if (!normalized) {
+    return false;
+  }
+  return keywords.some((keyword) => normalized === normalizeAsciiLabel(keyword));
+}
+
 function roleFromLabel(label: string): Credit["role"] {
-  if (hasAnyKeyword(label, ["指挥", "执棒"])) {
+  if (hasAnyKeyword(label, ["指挥", "执棒"]) || matchesEnglishLabel(label, ["conductor", "dirigent"])) {
     return "conductor";
   }
-  if (hasAnyKeyword(label, ["乐团", "乐队", "管弦乐团", "管弦乐队", "交响乐团", "交响乐队"])) {
+  if (
+    hasAnyKeyword(label, ["乐团", "乐队", "管弦乐团", "管弦乐队", "交响乐团", "交响乐队"]) ||
+    matchesEnglishLabel(label, ["orchestra", "philharmonic orchestra", "symphony orchestra", "philharmonic"])
+  ) {
     return "orchestra";
   }
-  if (hasAnyKeyword(label, ["合唱", "chorus", "choir"])) {
+  if (hasAnyKeyword(label, ["合唱"]) || matchesEnglishLabel(label, ["chorus", "choir"])) {
     return "chorus";
   }
-  if (hasAnyKeyword(label, ["女高音", "女中音", "次女高音", "男高音", "男中音", "男低音", "歌手", "主演", "soprano", "tenor", "baritone", "bass"])) {
+  if (
+    hasAnyKeyword(label, ["女高音", "女中音", "次女高音", "男高音", "男中音", "男低音", "歌手", "主演"]) ||
+    matchesEnglishLabel(label, ["soprano", "tenor", "baritone", "bass", "mezzo soprano", "singer", "vocal"])
+  ) {
     return "singer";
   }
-  if (hasAnyKeyword(label, ["组合", "四重奏", "三重奏", "ensemble"])) {
+  if (hasAnyKeyword(label, ["组合", "四重奏", "三重奏"]) || matchesEnglishLabel(label, ["ensemble", "quartet", "trio"])) {
     return "ensemble";
   }
   return "soloist";
@@ -153,24 +171,27 @@ export function parseLegacyRecordingHtml(html: string): ParsedLegacyRecording {
       return;
     }
 
-    if (hasAnyKeyword(labelText, ["时间", "地点"])) {
+    if (hasAnyKeyword(labelText, ["时间", "地点"]) || matchesEnglishLabel(labelText, ["date", "time", "venue", "location"])) {
       const split = splitDateAndVenue(valueText);
       performanceDateText = split.performanceDateText;
       venueText = split.venueText;
       return;
     }
 
-    if (hasAnyKeyword(labelText, ["专辑", "唱片", "Album"])) {
+    if (hasAnyKeyword(labelText, ["专辑", "唱片", "Album"]) || matchesEnglishLabel(labelText, ["album"])) {
       albumTitle = valueText;
       return;
     }
 
-    if (hasAnyKeyword(labelText, ["发行商", "厂牌", "唱片公司", "Label"])) {
+    if (
+      hasAnyKeyword(labelText, ["发行商", "厂牌", "唱片公司", "Label"]) ||
+      matchesEnglishLabel(labelText, ["label", "publisher"])
+    ) {
       label = valueText;
       return;
     }
 
-    if (hasAnyKeyword(labelText, ["发行日期", "出版日期", "Date"])) {
+    if (hasAnyKeyword(labelText, ["发行日期", "出版日期", "Date"]) || matchesEnglishLabel(labelText, ["release", "release date", "date"])) {
       releaseDate = valueText;
       return;
     }
@@ -201,6 +222,21 @@ export function parseLegacyRecordingHtml(html: string): ParsedLegacyRecording {
         "男低音",
         "ensemble",
         "chorus",
+      ]) ||
+      matchesEnglishLabel(labelText, [
+        "orchestra",
+        "conductor",
+        "soloist",
+        "violin",
+        "piano",
+        "cello",
+        "soprano",
+        "tenor",
+        "baritone",
+        "bass",
+        "ensemble",
+        "chorus",
+        "choir",
       ])
     ) {
       const localLink = $(element).find("a").first();

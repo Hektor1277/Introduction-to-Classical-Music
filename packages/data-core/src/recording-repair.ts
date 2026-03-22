@@ -1,6 +1,6 @@
 import { parseLegacyRecordingHtml } from "./legacy-parser.js";
 import type { LibraryData, Person, Recording } from "../../shared/src/schema.js";
-import { resolveRecordingWorkTypeHintValue } from "../../shared/src/recording-rules.js";
+import { deriveRecordingPresentationFamily, resolveRecordingWorkTypeHintValue } from "../../shared/src/recording-rules.js";
 import { buildRecordingDisplayTitle } from "../../shared/src/display.js";
 import { findPersonForCredit, isPlaceholderValue } from "./person-cleanup.js";
 
@@ -95,9 +95,135 @@ export function normalizeRecordingCredits(library: LibraryData, credits: Recordi
   return dedupeCredits(normalizedCredits);
 }
 
+function looksDateLike(value: string) {
+  return /\d/.test(value);
+}
+
+function maybePromoteVenueToEnsembleCredit(
+  library: LibraryData,
+  recording: Pick<Recording, "credits" | "venueText">,
+  metadata: { performanceDateText: string; venueText: string },
+) {
+  const hasEnsembleCredit = (recording.credits || []).some((credit) =>
+    ["orchestra", "ensemble", "chorus"].includes(credit.role),
+  );
+  if (hasEnsembleCredit || !metadata.venueText) {
+    return null;
+  }
+
+  const matchedPerson = findPersonForCredit(library, "orchestra", metadata.venueText);
+  if (!matchedPerson) {
+    return null;
+  }
+
+  return {
+    credit: {
+      role: "orchestra" as const,
+      personId: matchedPerson.id,
+      displayName: canonicalCreditDisplayName(matchedPerson, "orchestra"),
+      label: "地点回填乐团",
+    },
+    venueText: "",
+  };
+}
+
+function countCredits(recording: Pick<Recording, "credits" | "workTypeHint">) {
+  const credits = recording.credits || [];
+  return {
+    conductorCount: credits.filter((credit) => credit.role === "conductor").length,
+    orchestraCount: credits.filter((credit) => credit.role === "orchestra").length,
+    soloistCount: credits.filter((credit) => credit.role === "soloist" || credit.role === "instrumentalist").length,
+    singerCount: credits.filter((credit) => credit.role === "singer").length,
+    ensembleCount: credits.filter((credit) => credit.role === "ensemble" || credit.role === "chorus").length,
+  };
+}
+
+function getMissingRequiredCreditRoles(recording: Pick<Recording, "credits" | "workTypeHint">) {
+  const counts = countCredits(recording);
+  const family = deriveRecordingPresentationFamily({
+    workTypeHint: recording.workTypeHint,
+    ...counts,
+  });
+  const ensembleCount = counts.orchestraCount + counts.ensembleCount;
+  const featuredCount = counts.soloistCount + counts.singerCount;
+  const missingRoles: string[] = [];
+
+  if (family === "orchestral") {
+    if (counts.conductorCount === 0) {
+      missingRoles.push("conductor");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "concerto") {
+    if (featuredCount === 0) {
+      missingRoles.push("soloist");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "opera") {
+    if (counts.conductorCount === 0) {
+      missingRoles.push("conductor");
+    }
+    if (featuredCount === 0) {
+      missingRoles.push("singer_or_soloist");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "solo") {
+    if (featuredCount === 0 && ensembleCount === 0) {
+      missingRoles.push("soloist");
+    }
+  } else if (family === "chamber") {
+    if (ensembleCount === 0 && featuredCount < 2) {
+      missingRoles.push("ensemble_or_multiple_soloists");
+    }
+  }
+
+  return missingRoles;
+}
+
+export function recordingNeedsLegacyRepair(
+  library: LibraryData,
+  recording: Pick<
+    Recording,
+    | "legacyPath"
+    | "credits"
+    | "performanceDateText"
+    | "venueText"
+    | "albumTitle"
+    | "label"
+    | "releaseDate"
+    | "workTypeHint"
+    | "workId"
+  >,
+) {
+  if (!compact(recording.legacyPath)) {
+    return false;
+  }
+
+  if (hasPlaceholderCredits(recording) || isMetadataIncomplete(recording)) {
+    return true;
+  }
+
+  const { work, workGroups } = getRecordingWorkContext(library, recording as Recording);
+  const nextWorkTypeHint = resolveRecordingWorkTypeHintValue(recording.workTypeHint, work, workGroups);
+  return getMissingRequiredCreditRoles({
+    credits: recording.credits || [],
+    workTypeHint: nextWorkTypeHint,
+  }).length > 0;
+}
+
 export function normalizeRecordingMetadata(recording: Pick<Recording, "performanceDateText" | "venueText">) {
-  const performanceDateText = compact(recording.performanceDateText);
-  const venueText = compact(recording.venueText);
+  let performanceDateText = compact(recording.performanceDateText);
+  let venueText = compact(recording.venueText);
+
+  if (performanceDateText && venueText && !looksDateLike(performanceDateText) && looksDateLike(venueText)) {
+    [performanceDateText, venueText] = [venueText, performanceDateText];
+  }
+
   if (venueText || !performanceDateText.includes(" / ")) {
     return {
       performanceDateText,
@@ -115,10 +241,13 @@ export function rebuildRecordingDerivedFields(library: LibraryData, recording: R
   const { work, workGroups } = getRecordingWorkContext(library, recording);
   const metadata = normalizeRecordingMetadata(recording);
   const credits = normalizeRecordingCredits(library, recording.credits || []);
+  const promotedVenueCredit = maybePromoteVenueToEnsembleCredit(library, { credits, venueText: recording.venueText }, metadata);
+  const nextCredits = promotedVenueCredit ? normalizeRecordingCredits(library, [...credits, promotedVenueCredit.credit]) : credits;
   const nextRecording = {
     ...recording,
-    credits,
+    credits: nextCredits,
     ...metadata,
+    ...(promotedVenueCredit ? { venueText: promotedVenueCredit.venueText } : {}),
     workTypeHint: resolveRecordingWorkTypeHintValue(recording.workTypeHint, work, workGroups),
   };
   return {
@@ -132,6 +261,14 @@ export function backfillRecordingWorkTypeHints(library: LibraryData): LibraryDat
     ...library,
     recordings: (library.recordings || []).map((recording) => rebuildRecordingDerivedFields(library, recording)),
   };
+}
+
+function hasPlaceholderCredits(recording: Pick<Recording, "credits">) {
+  return (recording.credits || []).some((credit) => isPlaceholderCredit(credit));
+}
+
+function isMetadataIncomplete(recording: Pick<Recording, "performanceDateText" | "venueText" | "albumTitle" | "label" | "releaseDate">) {
+  return !compact(recording.performanceDateText) || !compact(recording.venueText) || (!compact(recording.albumTitle) && !compact(recording.label) && !compact(recording.releaseDate));
 }
 
 export function repairRecordingFromLegacyParse(library: LibraryData, recording: Recording, parsed: ParsedLegacyRecording): Recording {

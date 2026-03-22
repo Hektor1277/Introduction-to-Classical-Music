@@ -37,4 +37,43 @@ describe("legacy parser", () => {
     expect(parsed.label).toBe("Orfeo");
     expect(parsed.releaseDate).toBe("1952");
   });
+
+  it("parses English recording labels for orchestra and conductor credits", () => {
+    const parsed = parseLegacyRecordingHtml(`
+      <html>
+        <body>
+          <p>Orchestra: Sächsische Staatskapelle Dresden</p>
+          <p>Conductor: Giuseppe Sinopoli</p>
+          <p>Date: 1999</p>
+        </body>
+      </html>
+    `);
+
+    expect(parsed.credits).toEqual([
+      {
+        role: "orchestra",
+        personId: "",
+        displayName: "Sächsische Staatskapelle Dresden",
+        label: "Orchestra",
+      },
+      {
+        role: "conductor",
+        personId: "",
+        displayName: "Giuseppe Sinopoli",
+        label: "Conductor",
+      },
+    ]);
+  });
+
+  it("does not treat work titles with orchestra words as credit labels", () => {
+    const parsed = parseLegacyRecordingHtml(`
+      <html>
+        <body>
+          <p>Concerto for violin and orchestra in D Major, Op. 61: II. Rondo allegro</p>
+        </body>
+      </html>
+    `);
+
+    expect(parsed.credits).toEqual([]);
+  });
 });

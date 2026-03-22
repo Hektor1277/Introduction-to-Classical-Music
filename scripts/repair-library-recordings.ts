@@ -6,7 +6,11 @@ import path from "node:path";
 import { loadLibraryFromDisk, saveLibraryToDisk, writeGeneratedArtifacts } from "../packages/data-core/src/library-store.js";
 import { parseLegacyRecordingHtml } from "../packages/data-core/src/legacy-parser.js";
 import { cleanupLibraryPeople, ensurePeopleForCredits, isPlaceholderPerson } from "../packages/data-core/src/person-cleanup.js";
-import { backfillRecordingWorkTypeHints, repairRecordingFromLegacyParse } from "../packages/data-core/src/recording-repair.js";
+import {
+  backfillRecordingWorkTypeHints,
+  recordingNeedsLegacyRepair,
+  repairRecordingFromLegacyParse,
+} from "../packages/data-core/src/recording-repair.js";
 
 const SOURCE_ROOT_NAME = "an incomplete guide to classical music";
 const defaultSources = [
@@ -15,26 +19,6 @@ const defaultSources = [
 
 function compact(value: unknown) {
   return String(value ?? "").trim();
-}
-
-function hasPlaceholderCredits(recording: { credits?: Array<{ personId?: unknown; displayName?: unknown }> }) {
-  return (recording.credits || []).some((credit) => compact(credit.personId) === "person-item" || compact(credit.displayName) === "-");
-}
-
-function isMetadataIncomplete(recording: { performanceDateText?: unknown; venueText?: unknown; albumTitle?: unknown; label?: unknown; releaseDate?: unknown }) {
-  return !compact(recording.performanceDateText) || !compact(recording.venueText) || (!compact(recording.albumTitle) && !compact(recording.label) && !compact(recording.releaseDate));
-}
-
-function needsLegacyRepair(recording: {
-  legacyPath?: unknown;
-  credits?: Array<{ personId?: unknown; displayName?: unknown }>;
-  performanceDateText?: unknown;
-  venueText?: unknown;
-  albumTitle?: unknown;
-  label?: unknown;
-  releaseDate?: unknown;
-}) {
-  return Boolean(compact(recording.legacyPath)) && (hasPlaceholderCredits(recording) || isMetadataIncomplete(recording));
 }
 
 async function exists(targetPath: string) {
@@ -119,7 +103,7 @@ async function main() {
   const originalLibrary = await loadLibraryFromDisk();
   let library = backfillRecordingWorkTypeHints(originalLibrary);
 
-  const recordingsToRepair = library.recordings.filter((recording) => needsLegacyRepair(recording));
+  const recordingsToRepair = library.recordings.filter((recording) => recordingNeedsLegacyRepair(library, recording));
   let repairedCount = 0;
   let backfilledCount = library.recordings.filter((recording, index) => recording.workTypeHint !== originalLibrary.recordings[index]?.workTypeHint).length;
   let normalizedTitleCount = library.recordings.filter((recording, index) => compact(recording.title) !== compact(originalLibrary.recordings[index]?.title)).length;
@@ -134,7 +118,7 @@ async function main() {
     try {
       const repairedRecordings = [];
       for (const recording of library.recordings) {
-        if (!needsLegacyRepair(recording)) {
+        if (!recordingNeedsLegacyRepair(library, recording)) {
           repairedRecordings.push(recording);
           continue;
         }
@@ -178,7 +162,9 @@ async function main() {
   }
 
   const remainingUnknown = library.recordings.filter((recording) => compact(recording.workTypeHint) === "unknown").length;
-  const remainingPlaceholderCredits = library.recordings.filter((recording) => hasPlaceholderCredits(recording)).length;
+  const remainingPlaceholderCredits = library.recordings.filter((recording) =>
+    (recording.credits || []).some((credit) => compact(credit.personId) === "person-item" || compact(credit.displayName) === "-"),
+  ).length;
 
   console.log(
     JSON.stringify(
