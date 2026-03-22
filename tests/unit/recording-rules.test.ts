@@ -88,6 +88,27 @@ describe("recording rules", () => {
       { role: "orchestra", displayName: "斯德哥尔摩节日管弦乐团", personId: "", label: "" },
     ]);
   });
+
+  it("splits multi-party batch slots into structured credits without fabricating chamber ensembles", () => {
+    expect(
+      buildBatchRecordingCredits("orchestral", [
+        "Furtwangler",
+        "Bayreuth Festival Orchestra + Bayreuth Festival Chorus",
+        "1951",
+      ]),
+    ).toEqual([
+      { role: "conductor", displayName: "Furtwangler", personId: "", label: "" },
+      { role: "orchestra", displayName: "Bayreuth Festival Orchestra", personId: "", label: "" },
+      { role: "chorus", displayName: "Bayreuth Festival Chorus", personId: "", label: "" },
+    ]);
+
+    expect(buildBatchRecordingCredits("chamber_solo", ["Zimmermann + Nowak + Budnik", "Poland", "2025"])).toEqual([
+      { role: "soloist", displayName: "Zimmermann", personId: "", label: "" },
+      { role: "soloist", displayName: "Nowak", personId: "", label: "" },
+      { role: "soloist", displayName: "Budnik", personId: "", label: "" },
+    ]);
+  });
+
   it("infers recording work type hints from related work and group text", () => {
     expect(inferRecordingWorkTypeHintFromTexts(["第九交响曲“合唱”", "交响曲"])).toBe("orchestral");
     expect(inferRecordingWorkTypeHintFromTexts(["Piano Concerto, Op. 54", "钢琴协奏曲"])).toBe("concerto");

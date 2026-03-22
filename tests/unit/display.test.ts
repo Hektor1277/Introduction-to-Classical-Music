@@ -318,6 +318,148 @@ describe("display normalization", () => {
     expect(model.daily.supportingPrimary).toBe("");
   });
 
+  it("keeps orchestral titles stable when both orchestra and chorus participate in the same recording", () => {
+    const choralLibrary = validateLibrary({
+      ...library,
+      people: [
+        ...library.people,
+        {
+          id: "bayreuth-orchestra",
+          slug: "bayreuth-festival-orchestra",
+          name: "Bayreuth Festival Orchestra",
+          fullName: "Bayreuth Festival Orchestra",
+          nameLatin: "Bayreuth Festival Orchestra",
+          displayName: "Bayreuth Festival Orchestra",
+          displayFullName: "Bayreuth Festival Orchestra",
+          displayLatinName: "Bayreuth Festival Orchestra",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "bayreuth-orchestra",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+        {
+          id: "bayreuth-chorus",
+          slug: "bayreuth-festival-chorus",
+          name: "Bayreuth Festival Chorus",
+          fullName: "Bayreuth Festival Chorus",
+          nameLatin: "Bayreuth Festival Chorus",
+          displayName: "Bayreuth Festival Chorus",
+          displayFullName: "Bayreuth Festival Chorus",
+          displayLatinName: "Bayreuth Festival Chorus",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["chorus"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "bayreuth-chorus",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+      recordings: [
+        {
+          ...library.recordings[0],
+          id: "choral-recording",
+          workTypeHint: "orchestral",
+          performanceDateText: "1951",
+          credits: [
+            { role: "conductor", personId: "karajan", displayName: "Herbert von Karajan" },
+            { role: "orchestra", personId: "bayreuth-orchestra", displayName: "Bayreuth Festival Orchestra" },
+            { role: "chorus", personId: "bayreuth-chorus", displayName: "Bayreuth Festival Chorus" },
+          ],
+        },
+      ],
+    });
+
+    const model = buildRecordingDisplayModel(choralLibrary.recordings[0], choralLibrary);
+
+    expect(model.title).toContain("Bayreuth Festival Orchestra");
+    expect(model.title).toContain("Bayreuth Festival Chorus");
+    expect(model.subtitle).toContain("Bayreuth Festival Orchestra");
+    expect(model.subtitle).toContain("Bayreuth Festival Chorus");
+  });
+
+  it("uses all soloists in chamber titles when there is no fixed ensemble entity", () => {
+    const chamberLibrary = validateLibrary({
+      ...library,
+      people: [
+        ...library.people,
+        {
+          id: "soloist-a",
+          slug: "soloist-a",
+          name: "榻愰粯灏旀浖",
+          fullName: "榻愰粯灏旀浖",
+          nameLatin: "Zimmermann",
+          displayName: "榻愰粯灏旀浖",
+          displayFullName: "榻愰粯灏旀浖",
+          displayLatinName: "Zimmermann",
+          country: "Poland",
+          avatarSrc: "",
+          roles: ["soloist"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "soloist-a",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+        {
+          id: "soloist-b",
+          slug: "soloist-b",
+          name: "璇哄▋鍏?",
+          fullName: "璇哄▋鍏?",
+          nameLatin: "Nowak",
+          displayName: "璇哄▋鍏?",
+          displayFullName: "璇哄▋鍏?",
+          displayLatinName: "Nowak",
+          country: "Poland",
+          avatarSrc: "",
+          roles: ["soloist"],
+          aliases: [],
+          abbreviations: [],
+          sortKey: "soloist-b",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+      recordings: [
+        {
+          ...library.recordings[0],
+          id: "chamber-multi-soloists",
+          workTypeHint: "chamber_solo",
+          performanceDateText: "2025",
+          venueText: "Poland",
+          credits: [
+            { role: "soloist", personId: "soloist-a", displayName: "Zimmermann" },
+            { role: "soloist", personId: "soloist-b", displayName: "Nowak" },
+          ],
+        },
+      ],
+    });
+
+    const model = buildRecordingDisplayModel(chamberLibrary.recordings[0], chamberLibrary);
+
+    expect(model.title).toContain("榻愰粯灏旀浖");
+    expect(model.title).toContain("璇哄▋鍏?");
+    expect(model.subtitle).toContain("Zimmermann");
+    expect(model.subtitle).toContain("Nowak");
+  });
+
   it("keeps the work secondary line on composer latin text instead of a removed display field", () => {
     const model = buildRecordingDisplayModel(library.recordings[0], library);
 

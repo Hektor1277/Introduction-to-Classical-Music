@@ -2,7 +2,7 @@ export const recordingWorkTypeHintValues = ["orchestral", "concerto", "opera_voc
 
 export type RecordingWorkTypeHintValue = (typeof recordingWorkTypeHintValues)[number];
 export type RecordingPresentationFamily = "orchestral" | "concerto" | "opera" | "solo" | "chamber" | "unknown";
-export type RecordingDraftCreditRole = "conductor" | "orchestra" | "soloist" | "singer" | "ensemble";
+export type RecordingDraftCreditRole = "conductor" | "orchestra" | "chorus" | "soloist" | "singer" | "ensemble";
 export type RecordingDraftCredit = {
   role: RecordingDraftCreditRole;
   displayName: string;
@@ -126,6 +126,34 @@ function nonPlaceholder(value: string) {
   return compact(value) && compact(value) !== "-";
 }
 
+function splitBatchCreditNames(value: string) {
+  return compact(value)
+    .split(/\s*\+\s*/g)
+    .map((item) => compact(item))
+    .filter(Boolean);
+}
+
+function inferBatchEnsembleRole(value: string, fallbackRole: Extract<RecordingDraftCreditRole, "orchestra" | "chorus" | "ensemble">) {
+  const normalized = compact(value).toLowerCase();
+  if (!normalized) {
+    return fallbackRole;
+  }
+  if (/(chorus|choir|合唱)/i.test(normalized)) {
+    return "chorus";
+  }
+  if (/(orchestra|philharmonic|symphony|sinfonieorchester|philharmoniker|orkester|orquesta|orchestre|kapelle|zenekara|乐团|乐队)/i.test(normalized)) {
+    return "orchestra";
+  }
+  if (/(ensemble|quartet|quintet|trio|duo|octet|nonet|重奏|组合)/i.test(normalized)) {
+    return "ensemble";
+  }
+  return fallbackRole;
+}
+
+function looksLikeBatchEnsemble(value: string) {
+  return inferBatchEnsembleRole(value, "ensemble") !== "ensemble" || /(ensemble|quartet|quintet|trio|duo|octet|nonet|重奏|组合)/i.test(compact(value));
+}
+
 export function deriveRecordingPresentationFamily({
   workTypeHint,
   conductorCount = 0,
@@ -223,26 +251,42 @@ export function buildBatchRecordingCredits(workTypeHint: unknown, slots: string[
       label: "",
     });
   };
+  const pushSplitCredits = (
+    fallbackRole: Extract<RecordingDraftCreditRole, "orchestra" | "chorus" | "ensemble" | "soloist" | "singer">,
+    rawValue: string,
+    { requireEnsembleLike = false }: { requireEnsembleLike?: boolean } = {},
+  ) => {
+    for (const item of splitBatchCreditNames(rawValue)) {
+      if (requireEnsembleLike && !looksLikeBatchEnsemble(item)) {
+        continue;
+      }
+      if (fallbackRole === "soloist" || fallbackRole === "singer") {
+        pushCredit(fallbackRole, item);
+        continue;
+      }
+      pushCredit(inferBatchEnsembleRole(item, fallbackRole), item);
+    }
+  };
 
   if (normalizedHint === "concerto") {
-    pushCredit("soloist", slots[0] || "");
+    pushSplitCredits("soloist", slots[0] || "");
     pushCredit("conductor", slots[1] || "");
-    pushCredit("orchestra", slots[2] || "");
+    pushSplitCredits("orchestra", slots[2] || "");
     return credits;
   }
   if (normalizedHint === "opera_vocal") {
     pushCredit("conductor", slots[0] || "");
-    pushCredit("singer", slots[1] || "");
-    pushCredit("orchestra", slots[2] || "");
+    pushSplitCredits("singer", slots[1] || "");
+    pushSplitCredits("ensemble", slots[2] || "");
     return credits;
   }
   if (normalizedHint === "chamber_solo") {
-    pushCredit("soloist", slots[0] || "");
-    pushCredit("ensemble", slots[1] || "");
+    pushSplitCredits("soloist", slots[0] || "");
+    pushSplitCredits("ensemble", slots[1] || "", { requireEnsembleLike: true });
     return credits;
   }
 
   pushCredit("conductor", slots[0] || "");
-  pushCredit("orchestra", slots[1] || "");
+  pushSplitCredits("ensemble", slots[1] || "");
   return credits;
 }
