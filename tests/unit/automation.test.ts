@@ -1964,4 +1964,77 @@ describe("automation checks", () => {
     expect(run.notes).toEqual(["note-a", "note-b"]);
     expect(run.summary.total).toBe(1);
   });
+
+  it("coalesces semantically duplicated update proposals even when their ids differ", () => {
+    const run = summarizeAutomationRun({
+      id: "run-semantic-duplicate-proposals",
+      createdAt: "2026-03-22T00:00:00.000Z",
+      categories: ["orchestra"],
+      proposals: [
+        {
+          id: "munich-name-from-wikipedia",
+          kind: "update",
+          entityType: "person",
+          entityId: "kleiber",
+          summary: "自动检查：卡洛斯·克莱伯",
+          risk: "low",
+          status: "pending",
+          reviewState: "viewed",
+          sources: ["en.wikipedia.org"],
+          fields: [{ path: "country", before: "", after: "Germany" }],
+          warnings: ["Wikipedia"],
+          imageCandidates: [],
+          evidence: [
+            {
+              field: "country",
+              sourceUrl: "https://en.wikipedia.org/wiki/Carlos_Kleiber",
+              sourceLabel: "Wikipedia",
+              confidence: 0.9,
+            },
+          ],
+          linkCandidates: [],
+          selectedImageCandidateId: "",
+        },
+        {
+          id: "munich-name-from-baidu",
+          kind: "update",
+          entityType: "person",
+          entityId: "kleiber",
+          summary: "自动检查：卡洛斯·克莱伯",
+          risk: "medium",
+          status: "pending",
+          reviewState: "confirmed",
+          sources: ["baike.baidu.com"],
+          fields: [{ path: "country", before: "", after: "Germany" }],
+          warnings: ["Baidu"],
+          imageCandidates: [],
+          evidence: [
+            {
+              field: "country",
+              sourceUrl: "https://baike.baidu.com/item/Carlos_Kleiber",
+              sourceLabel: "Baidu Baike",
+              confidence: 0.72,
+            },
+          ],
+          linkCandidates: [],
+          selectedImageCandidateId: "",
+        },
+      ],
+      snapshots: [],
+      notes: [],
+      summary: {
+        total: 2,
+        pending: 2,
+        applied: 0,
+        ignored: 0,
+      },
+    });
+
+    expect(run.proposals).toHaveLength(1);
+    expect(run.proposals[0]?.reviewState).toBe("confirmed");
+    expect(run.proposals[0]?.sources).toEqual(["en.wikipedia.org", "baike.baidu.com"]);
+    expect(run.proposals[0]?.warnings).toEqual(["Wikipedia", "Baidu"]);
+    expect(run.proposals[0]?.evidence).toHaveLength(2);
+    expect(run.summary.total).toBe(1);
+  });
 });

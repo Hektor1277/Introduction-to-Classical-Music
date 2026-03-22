@@ -116,6 +116,25 @@ function uniqueStrings(values: Array<string | undefined | null>) {
   return [...new Set(values.map((value) => String(value ?? "").trim()).filter(Boolean))];
 }
 
+function stableSerialize(value: unknown): string {
+  if (value === null || typeof value !== "object") {
+    return JSON.stringify(value);
+  }
+
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableSerialize(item)).join(",")}]`;
+  }
+
+  return `{${Object.entries(value as Record<string, unknown>)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, item]) => `${JSON.stringify(key)}:${stableSerialize(item)}`)
+    .join(",")}}`;
+}
+
+function normalizeSummaryKey(summary: string) {
+  return summary.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
 function mergeProposalFields(fields: AutomationFieldPatch[] = []) {
   return [...new Map(fields.map((field) => [field.path, field])).values()];
 }
@@ -138,6 +157,96 @@ function mergeProposalLinks(items: AutomationLinkCandidate[] = []) {
   return [...new Map(items.map((item) => [item.url, item])).values()];
 }
 
+function getReviewStatePriority(reviewState: AutomationReviewState | undefined) {
+  switch (reviewState) {
+    case "confirmed":
+      return 4;
+    case "edited":
+      return 3;
+    case "viewed":
+      return 2;
+    case "discarded":
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+function getSemanticProposalKey(proposal: AutomationProposal) {
+  const baseKey = [proposal.kind ?? "update", proposal.entityType, proposal.entityId].join("|");
+
+  if ((proposal.fields?.length ?? 0) > 0) {
+    const fieldKey = mergeProposalFields(proposal.fields)
+      .map((field) => `${field.path}=>${stableSerialize(field.after)}`)
+      .sort((left, right) => left.localeCompare(right))
+      .join("||");
+    return `${baseKey}|fields|${fieldKey}`;
+  }
+
+  if ((proposal.mergeCandidates?.length ?? 0) > 0) {
+    const mergeKey = mergeProposalMergeCandidates(proposal.mergeCandidates)
+      .map((candidate) => `${candidate.targetId}=>${candidate.reason}`)
+      .sort((left, right) => left.localeCompare(right))
+      .join("||");
+    return `${baseKey}|merge|${mergeKey}`;
+  }
+
+  if ((proposal.imageCandidates?.length ?? 0) > 0) {
+    const imageKey = mergeProposalImages(proposal.imageCandidates)
+      .map((candidate) => candidate.sourceUrl || candidate.src)
+      .filter(Boolean)
+      .sort((left, right) => left.localeCompare(right))
+      .join("||");
+    return `${baseKey}|images|${imageKey}`;
+  }
+
+  if ((proposal.linkCandidates?.length ?? 0) > 0) {
+    const linkKey = mergeProposalLinks(proposal.linkCandidates)
+      .map((candidate) => candidate.url)
+      .sort((left, right) => left.localeCompare(right))
+      .join("||");
+    return `${baseKey}|links|${linkKey}`;
+  }
+
+  return `${baseKey}|summary|${normalizeSummaryKey(proposal.summary)}`;
+}
+
+function mergeAutomationProposal(existing: AutomationProposal, incoming: AutomationProposal): AutomationProposal {
+  const nextReviewState =
+    getReviewStatePriority(existing.reviewState) >= getReviewStatePriority(incoming.reviewState)
+      ? existing.reviewState
+      : incoming.reviewState;
+
+  return {
+    ...existing,
+    summary: existing.summary.length >= incoming.summary.length ? existing.summary : incoming.summary,
+    risk:
+      existing.risk === "high" || incoming.risk === "high"
+        ? "high"
+        : existing.risk === "medium" || incoming.risk === "medium"
+          ? "medium"
+          : "low",
+    status:
+      existing.status === "applied" || incoming.status === "applied"
+        ? "applied"
+        : existing.status === "ignored" && incoming.status === "ignored"
+          ? "ignored"
+          : "pending",
+    reviewState: nextReviewState ?? "unseen",
+    sources: uniqueStrings([...(existing.sources || []), ...(incoming.sources || [])]),
+    fields: mergeProposalFields([...(existing.fields || []), ...(incoming.fields || [])]),
+    warnings: uniqueStrings([...(existing.warnings || []), ...(incoming.warnings || [])]),
+    imageCandidates: mergeProposalImages([...(existing.imageCandidates || []), ...(incoming.imageCandidates || [])]),
+    mergeCandidates: mergeProposalMergeCandidates([
+      ...(existing.mergeCandidates || []),
+      ...(incoming.mergeCandidates || []),
+    ]),
+    evidence: mergeProposalEvidence([...(existing.evidence || []), ...(incoming.evidence || [])]),
+    linkCandidates: mergeProposalLinks([...(existing.linkCandidates || []), ...(incoming.linkCandidates || [])]),
+    selectedImageCandidateId: existing.selectedImageCandidateId || incoming.selectedImageCandidateId || "",
+  };
+}
+
 function summarizeAutomationRunCore(run: AutomationRun): AutomationRun {
   const pending = run.proposals.filter((proposal) => proposal.status === "pending").length;
   const applied = run.proposals.filter((proposal) => proposal.status === "applied").length;
@@ -156,6 +265,7 @@ function summarizeAutomationRunCore(run: AutomationRun): AutomationRun {
 
 export function normalizeAutomationProposals(proposals: AutomationProposal[] = []) {
   const mergedById = new Map<string, AutomationProposal>();
+  const mergedBySemanticKey = new Map<string, AutomationProposal>();
 
   for (const proposal of proposals) {
     const normalizedProposal: AutomationProposal = {
@@ -172,9 +282,10 @@ export function normalizeAutomationProposals(proposals: AutomationProposal[] = [
       evidence: [...(proposal.evidence || [])],
       linkCandidates: [...(proposal.linkCandidates || [])],
     };
-    const existing = mergedById.get(normalizedProposal.id);
+    const semanticKey = getSemanticProposalKey(normalizedProposal);
+    const existing = mergedById.get(normalizedProposal.id) ?? mergedBySemanticKey.get(semanticKey);
     if (!existing) {
-      mergedById.set(normalizedProposal.id, {
+      const mergedProposal = {
         ...normalizedProposal,
         sources: uniqueStrings(normalizedProposal.sources),
         fields: mergeProposalFields(normalizedProposal.fields),
@@ -183,54 +294,20 @@ export function normalizeAutomationProposals(proposals: AutomationProposal[] = [
         mergeCandidates: mergeProposalMergeCandidates(normalizedProposal.mergeCandidates),
         evidence: mergeProposalEvidence(normalizedProposal.evidence),
         linkCandidates: mergeProposalLinks(normalizedProposal.linkCandidates),
-      });
+      };
+      mergedById.set(normalizedProposal.id, mergedProposal);
+      mergedBySemanticKey.set(semanticKey, mergedProposal);
       continue;
     }
 
-    mergedById.set(normalizedProposal.id, {
-      ...existing,
-      summary: existing.summary.length >= normalizedProposal.summary.length ? existing.summary : normalizedProposal.summary,
-      risk:
-        existing.risk === "high" || normalizedProposal.risk === "high"
-          ? "high"
-          : existing.risk === "medium" || normalizedProposal.risk === "medium"
-            ? "medium"
-            : "low",
-      status:
-        existing.status === "applied" || normalizedProposal.status === "applied"
-          ? "applied"
-          : existing.status === "ignored" && normalizedProposal.status === "ignored"
-            ? "ignored"
-            : "pending",
-      reviewState:
-        existing.reviewState === "confirmed" || normalizedProposal.reviewState === "confirmed"
-          ? "confirmed"
-          : existing.reviewState === "edited" || normalizedProposal.reviewState === "edited"
-            ? "edited"
-            : existing.reviewState === "viewed" || normalizedProposal.reviewState === "viewed"
-              ? "viewed"
-              : existing.reviewState === "discarded" && normalizedProposal.reviewState === "discarded"
-                ? "discarded"
-                : existing.reviewState || normalizedProposal.reviewState || "unseen",
-      sources: uniqueStrings([...(existing.sources || []), ...(normalizedProposal.sources || [])]),
-      fields: mergeProposalFields([...(existing.fields || []), ...(normalizedProposal.fields || [])]),
-      warnings: uniqueStrings([...(existing.warnings || []), ...(normalizedProposal.warnings || [])]),
-      imageCandidates: mergeProposalImages([
-        ...(existing.imageCandidates || []),
-        ...(normalizedProposal.imageCandidates || []),
-      ]),
-      mergeCandidates: mergeProposalMergeCandidates([
-        ...(existing.mergeCandidates || []),
-        ...(normalizedProposal.mergeCandidates || []),
-      ]),
-      evidence: mergeProposalEvidence([...(existing.evidence || []), ...(normalizedProposal.evidence || [])]),
-      linkCandidates: mergeProposalLinks([...(existing.linkCandidates || []), ...(normalizedProposal.linkCandidates || [])]),
-      selectedImageCandidateId:
-        existing.selectedImageCandidateId || normalizedProposal.selectedImageCandidateId || "",
-    });
+    const mergedProposal = mergeAutomationProposal(existing, normalizedProposal);
+    mergedById.set(existing.id, mergedProposal);
+    mergedById.set(normalizedProposal.id, mergedProposal);
+    mergedBySemanticKey.set(semanticKey, mergedProposal);
+    mergedBySemanticKey.set(getSemanticProposalKey(mergedProposal), mergedProposal);
   }
 
-  return [...mergedById.values()];
+  return [...new Set(mergedBySemanticKey.values())];
 }
 
 export function normalizeAutomationRun(run: AutomationRun): AutomationRun {

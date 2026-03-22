@@ -1,6 +1,7 @@
 import {
   createAutomationRun,
   isSuspiciousImageCandidate,
+  normalizeAutomationProposals,
   rankImageCandidates,
   type AutomationCheckCategory,
   type AutomationImageCandidate,
@@ -2117,9 +2118,14 @@ export async function runAutomationChecks(
   notes.push(`自动检查来源：Wikipedia / Baidu Baike${isLlmConfigured(llmConfig) ? " / LLM" : ""} / Baidu Search`);
   notes.push(isLlmConfigured(llmConfig) ? "LLM 已启用，并作为仅次于 Wikipedia / Baidu Baike 的候选来源参与字段判定。" : "LLM 未启用，当前为纯规则模式。");
 
+  const normalizedProposals = normalizeAutomationProposals(proposals);
+  if (normalizedProposals.length !== proposals.length) {
+    notes.push(`自动检查入口已去重：${proposals.length - normalizedProposals.length} 条重复候选已被合并。`);
+  }
+
   return createAutomationRun(library, {
     categories,
-    proposals,
+    proposals: normalizedProposals,
     notes,
     provider,
   });
