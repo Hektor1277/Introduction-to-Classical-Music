@@ -18,11 +18,15 @@
 import {
   REVIEW_PAGE_SIZE,
   applyProposalDraft,
+  buildBlockedReviewActionMessage,
   buildDataAttributeSelector,
   buildExcerpt,
   filterPendingProposalsForDisplay,
+  getBlockedProposalsForReviewAction,
+  getProposalApplyBlockers,
   getProposalsForReviewAction,
   hasProposalDraftChanges,
+  isProposalDirectlyApplicable,
   paginateItems,
   resolveProposalDraft,
 } from "./review-utils.js";
@@ -2877,10 +2881,8 @@ const buildProposalCardsHtml = (run, proposals, options = {}) => {
         const effectiveProposal = draft ? applyProposalDraft(comparableProposal, draft) : comparableProposal;
         const entity = getEntityByTypeAndId(effectiveProposal.entityType, effectiveProposal.entityId, proposalLibrary);
         const editableFields = effectiveProposal.fields || [];
-        const canApply =
-          allowDirectApply &&
-          effectiveProposal.kind !== "merge" &&
-          ((effectiveProposal.fields?.length || 0) > 0 || (effectiveProposal.imageCandidates?.length || 0) > 0);
+        const applyBlockers = getProposalApplyBlockers(effectiveProposal);
+        const canApply = allowDirectApply && isProposalDirectlyApplicable(effectiveProposal);
         const sourceLabels = [...new Set((effectiveProposal.sources || []).map(hostLabel))];
         const summaryExcerpt = buildExcerpt(effectiveProposal.summary, 84);
         const summaryAction =
@@ -2892,6 +2894,7 @@ const buildProposalCardsHtml = (run, proposals, options = {}) => {
         const proposalClasses = [
           "owner-proposal",
           `owner-proposal--${escapeHtml(effectiveProposal.reviewState || "unseen")}`,
+          applyBlockers.length ? "owner-proposal--blocked" : "",
           draft && hasProposalDraftChanges(comparableProposal, draft) ? "owner-proposal--dirty" : "",
         ]
           .filter(Boolean)
@@ -2936,6 +2939,14 @@ const buildProposalCardsHtml = (run, proposals, options = {}) => {
             ${buildImageCandidatesHtml(effectiveProposal, options)}
             ${buildProposalLinkCandidatesHtml(effectiveProposal)}
             ${buildProposalEvidenceHtml(effectiveProposal)}
+            ${
+              applyBlockers.length
+                ? `<section class="owner-proposal__warnings owner-proposal__warnings--blocked">
+                    <h4>阻止应用</h4>
+                    <ul>${applyBlockers.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>
+                  </section>`
+                : ""
+            }
             ${
               effectiveProposal.warnings?.length
                 ? `<section class="owner-proposal__warnings">
@@ -4295,6 +4306,20 @@ const getReviewActionProposals = (run, action, scope = "all") =>
     scopeIds: scope === "page" ? getRunPageProposals(run).items.map((proposal) => proposal.id) : [],
   });
 
+const getBlockedReviewActionProposals = (run, action, scope = "all") =>
+  getBlockedProposalsForReviewAction(run?.proposals || [], action, {
+    scope,
+    scopeIds: scope === "page" ? getRunPageProposals(run).items.map((proposal) => proposal.id) : [],
+  });
+
+const assertNoBlockedReviewActionProposals = (run, action, scope = "all") => {
+  const blocked = getBlockedReviewActionProposals(run, action, scope);
+  if (blocked.length) {
+    throw new Error(buildBlockedReviewActionMessage(blocked, action));
+  }
+  return blocked;
+};
+
 const updateProposalState = async (proposalId, reviewState, options = {}) => {
   const runId = options.runId || reviewRunSelect.value || state.inlineCheck.runId;
   const imageCandidateId =
@@ -4404,6 +4429,12 @@ const handleUnifiedProposalAction = async (button) => {
     return;
   }
   if (action === "apply") {
+    const blockers = getProposalApplyBlockers(proposal);
+    if (blockers.length) {
+      throw new Error(
+        buildBlockedReviewActionMessage([{ proposal, reasons: blockers }], "apply-confirmed"),
+      );
+    }
     await applyProposal(proposalId, nextOptions);
   }
 };
@@ -4518,8 +4549,16 @@ const applyInlineConfirmedProposals = async () => {
     getEntityScopedProposals(run, state.inlineCheck.entityType, state.inlineCheck.entityId),
     { inline: true, runId: run.id },
   ));
-  const proposals = getEntityScopedProposals(run, state.inlineCheck.entityType, state.inlineCheck.entityId).filter(
-    (proposal) => proposal.reviewState === "confirmed" && proposal.status === "pending",
+  const scopedProposals = getEntityScopedProposals(run, state.inlineCheck.entityType, state.inlineCheck.entityId);
+  const blocked = scopedProposals
+    .filter((proposal) => proposal.reviewState === "confirmed" && proposal.status === "pending")
+    .map((proposal) => ({ proposal, reasons: getProposalApplyBlockers(proposal) }))
+    .filter((entry) => entry.reasons.length > 0);
+  if (blocked.length) {
+    throw new Error(buildBlockedReviewActionMessage(blocked, "apply-confirmed"));
+  }
+  const proposals = scopedProposals.filter(
+    (proposal) => proposal.reviewState === "confirmed" && proposal.status === "pending" && isProposalDirectlyApplicable(proposal),
   );
   if (!proposals.length) {
     throw new Error("当前条目没有已确认且可应用的候选。");
@@ -4559,9 +4598,11 @@ const applyCurrentPageConfirmedProposals = async () => {
     throw new Error("请先选择候选 run。");
   }
   let { run } = await fetchJson(`/api/automation/runs/${encodeURIComponent(reviewRunSelect.value)}`);
+  assertNoBlockedReviewActionProposals(run, "apply-confirmed", "page");
   ({ run } = await persistProposalDrafts(run, getReviewActionProposals(run, "apply-confirmed", "page"), {
     runId: run.id,
   }));
+  assertNoBlockedReviewActionProposals(run, "apply-confirmed", "page");
   const proposals = getReviewActionProposals(run, "apply-confirmed", "page");
   if (!proposals.length) {
     throw new Error("当前页没有已确认且可应用的候选。");
@@ -5407,9 +5448,11 @@ applyConfirmedButton.addEventListener("click", async () => {
   }
   try {
     let { run } = await fetchJson(`/api/automation/runs/${encodeURIComponent(reviewRunSelect.value)}`);
+    assertNoBlockedReviewActionProposals(run, "apply-confirmed", "all");
     ({ run } = await persistProposalDrafts(run, getReviewActionProposals(run, "apply-confirmed", "all"), {
       runId: run.id,
     }));
+    assertNoBlockedReviewActionProposals(run, "apply-confirmed", "all");
     const result = await fetchJson(`/api/automation/runs/${encodeURIComponent(run.id)}/apply-confirmed`, {
       method: "POST",
     });
@@ -5427,9 +5470,11 @@ applyConfirmedButtonFooter.addEventListener("click", async () => {
   }
   try {
     let { run } = await fetchJson(`/api/automation/runs/${encodeURIComponent(reviewRunSelect.value)}`);
+    assertNoBlockedReviewActionProposals(run, "apply-confirmed", "all");
     ({ run } = await persistProposalDrafts(run, getReviewActionProposals(run, "apply-confirmed", "all"), {
       runId: run.id,
     }));
+    assertNoBlockedReviewActionProposals(run, "apply-confirmed", "all");
     const result = await fetchJson(`/api/automation/runs/${encodeURIComponent(run.id)}/apply-confirmed`, {
       method: "POST",
     });

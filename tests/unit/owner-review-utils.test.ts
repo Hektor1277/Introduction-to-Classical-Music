@@ -5,9 +5,13 @@ import {
   applyProposalDraft,
   buildDataAttributeSelector,
   buildExcerpt,
+  buildBlockedReviewActionMessage,
   filterPendingProposalsForDisplay,
+  getBlockedProposalsForReviewAction,
+  getProposalApplyBlockers,
   getProposalsForReviewAction,
   hasProposalDraftChanges,
+  isProposalDirectlyApplicable,
   paginateItems,
   resolveProposalDraft,
 } from "../../apps/owner/web/review-utils.js";
@@ -189,6 +193,72 @@ describe("owner review utils", () => {
         scopeIds: ["p-1"],
       }).map((proposal) => proposal.id),
     ).toEqual(["p-1", "p-merge", "p-2", "p-3"]);
+  });
+
+  it("blocks high-risk, merge and review-only proposals from bulk apply and exposes reasons", () => {
+    const proposals = [
+      {
+        id: "p-allowed",
+        reviewState: "confirmed",
+        status: "pending",
+        risk: "low",
+        fields: [{ path: "name", before: "a", after: "b" }],
+      },
+      {
+        id: "p-merge",
+        reviewState: "confirmed",
+        status: "pending",
+        kind: "merge",
+        risk: "high",
+        fields: [],
+      },
+      {
+        id: "p-review-only",
+        reviewState: "confirmed",
+        status: "pending",
+        risk: "medium",
+        fields: [],
+        imageCandidates: [],
+      },
+      {
+        id: "p-high-risk",
+        reviewState: "confirmed",
+        status: "pending",
+        risk: "high",
+        fields: [{ path: "country", before: "", after: "Austria" }],
+      },
+    ];
+
+    expect(
+      getProposalsForReviewAction(proposals, "apply-confirmed", {
+        scope: "all",
+      }).map((proposal) => proposal.id),
+    ).toEqual(["p-allowed"]);
+
+    expect(
+      getBlockedProposalsForReviewAction(proposals, "apply-confirmed", {
+        scope: "all",
+      }).map((entry) => ({
+        id: entry.proposal.id,
+        reasons: entry.reasons,
+      })),
+    ).toEqual([
+      { id: "p-merge", reasons: ["合并候选不能直接应用，请先人工处理关联关系。"] },
+      { id: "p-review-only", reasons: ["该候选没有可直接写入的字段或图片，只能人工复核。"] },
+      { id: "p-high-risk", reasons: ["高风险候选不能直接应用，请先人工复核。"] },
+    ]);
+
+    expect(getProposalApplyBlockers(proposals[0])).toEqual([]);
+    expect(isProposalDirectlyApplicable(proposals[0])).toBe(true);
+    expect(isProposalDirectlyApplicable(proposals[3])).toBe(false);
+    expect(
+      buildBlockedReviewActionMessage(
+        getBlockedProposalsForReviewAction(proposals, "apply-confirmed", {
+          scope: "all",
+        }),
+        "apply-confirmed",
+      ),
+    ).toContain("已确认候选中包含 3 条被阻止的候选");
   });
 
   it("deduplicates proposals by id before rendering or bulk actions", () => {

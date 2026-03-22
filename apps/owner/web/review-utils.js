@@ -20,6 +20,28 @@ const dedupeProposalsById = (proposals) => {
 
 const stableSerialize = (value) => JSON.stringify(value ?? null);
 
+export const getProposalApplyBlockers = (proposal) => {
+  if (!proposal) {
+    return ["候选不存在，无法直接应用。"];
+  }
+
+  if (proposal?.kind === "merge") {
+    return ["合并候选不能直接应用，请先人工处理关联关系。"];
+  }
+  const reasons = [];
+  const hasDirectChanges = (proposal?.fields?.length ?? 0) > 0 || (proposal?.imageCandidates?.length ?? 0) > 0;
+  if (!hasDirectChanges) {
+    reasons.push("该候选没有可直接写入的字段或图片，只能人工复核。");
+  }
+  if (proposal?.risk === "high") {
+    reasons.push("高风险候选不能直接应用，请先人工复核。");
+  }
+
+  return [...new Set(reasons)];
+};
+
+export const isProposalDirectlyApplicable = (proposal) => getProposalApplyBlockers(proposal).length === 0;
+
 export const buildExcerpt = (value, maxLength = 120) => {
   const normalized = String(value ?? "").trim();
   if (!normalized) {
@@ -63,8 +85,7 @@ export const getProposalsForReviewAction = (proposals, action, options = {}) => 
       (proposal) =>
         proposal?.reviewState === "confirmed" &&
         proposal?.status === "pending" &&
-        proposal?.kind !== "merge" &&
-        ((proposal?.fields?.length ?? 0) > 0 || (proposal?.imageCandidates?.length ?? 0) > 0),
+        isProposalDirectlyApplicable(proposal),
     );
   }
 
@@ -73,6 +94,42 @@ export const getProposalsForReviewAction = (proposals, action, options = {}) => 
   }
 
   return [];
+};
+
+export const getBlockedProposalsForReviewAction = (proposals, action, options = {}) => {
+  if (action !== "apply-confirmed") {
+    return [];
+  }
+
+  const scope = options.scope === "page" ? "page" : "all";
+  const scopeIds = new Set((options.scopeIds || []).map((value) => String(value)));
+  const normalizedProposals = dedupeProposalsById(proposals);
+  const scopedProposals =
+    scope === "page"
+      ? normalizedProposals.filter((proposal) => scopeIds.has(String(proposal?.id || "")))
+      : normalizedProposals;
+
+  return scopedProposals
+    .filter((proposal) => proposal?.reviewState === "confirmed" && proposal?.status === "pending")
+    .map((proposal) => ({
+      proposal,
+      reasons: getProposalApplyBlockers(proposal),
+    }))
+    .filter((entry) => entry.reasons.length > 0);
+};
+
+export const buildBlockedReviewActionMessage = (blockedEntries, action = "apply-confirmed") => {
+  if (!Array.isArray(blockedEntries) || blockedEntries.length === 0) {
+    return "";
+  }
+
+  const actionLabel = action === "apply-confirmed" ? "已确认候选" : "当前候选";
+  const lines = blockedEntries.slice(0, 5).map((entry) => {
+    const summary = String(entry?.proposal?.summary || entry?.proposal?.id || "未命名候选").trim();
+    return `${summary}：${(entry?.reasons || []).join("；")}`;
+  });
+  const suffix = blockedEntries.length > 5 ? `；其余 ${blockedEntries.length - 5} 条请先逐条处理。` : "";
+  return `${actionLabel}中包含 ${blockedEntries.length} 条被阻止的候选：${lines.join("；")}${suffix}`;
 };
 
 export const filterPendingProposalsForDisplay = (proposals) =>

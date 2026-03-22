@@ -3,6 +3,7 @@
 import {
   applyAutomationProposal,
   applyPendingAutomationProposals,
+  canApplyAutomationProposal,
   createAutomationRun,
   ignoreAutomationProposal,
   ignorePendingAutomationProposals,
@@ -244,6 +245,45 @@ describe("automation proposals", () => {
 
     const ignored = ignorePendingAutomationProposals(run);
     expect(ignored.summary.ignored).toBe(2);
+  });
+
+  it("rejects high-risk and merge proposals from direct apply eligibility", () => {
+    expect(
+      canApplyAutomationProposal({
+        id: "proposal-safe",
+        entityType: "person",
+        entityId: "kleiber",
+        summary: "安全候选",
+        risk: "low",
+        sources: [],
+        fields: [{ path: "country", before: "Germany", after: "Austria" }],
+      }),
+    ).toBe(true);
+
+    expect(
+      canApplyAutomationProposal({
+        id: "proposal-high-risk",
+        entityType: "person",
+        entityId: "kleiber",
+        summary: "高风险候选",
+        risk: "high",
+        sources: [],
+        fields: [{ path: "country", before: "Germany", after: "Austria" }],
+      }),
+    ).toBe(false);
+
+    expect(
+      canApplyAutomationProposal({
+        id: "proposal-merge",
+        entityType: "person",
+        entityId: "kleiber",
+        summary: "合并候选",
+        kind: "merge",
+        risk: "high",
+        sources: [],
+        fields: [],
+      }),
+    ).toBe(false);
   });
 
   it("synchronizes proposal status with review state", () => {

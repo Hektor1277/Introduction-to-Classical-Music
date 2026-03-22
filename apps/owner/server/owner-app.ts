@@ -6,6 +6,7 @@ import {
   applyAutomationProposal,
   applyPendingAutomationProposals,
   canApplyAutomationProposal,
+  collectAutomationProposalApplyBlockers,
   ignoreAutomationProposal,
   ignorePendingAutomationProposals,
   revertAutomationProposal,
@@ -326,6 +327,22 @@ function getWorkGroupLabel(library, work) {
     work.id,
   );
   return `作品 / ${getRecordingWorkTypeHintLabel(resolvedWorkType)}`;
+}
+
+function buildBlockedProposalApplyMessage(blockedEntries, scopeLabel = "已确认候选") {
+  if (!Array.isArray(blockedEntries) || blockedEntries.length === 0) {
+    return "";
+  }
+  const details = blockedEntries
+    .slice(0, 5)
+    .map((entry) => {
+      const summary = String(entry?.proposal?.summary || entry?.proposal?.id || "未命名候选").trim();
+      const reasons = Array.isArray(entry?.reasons) ? entry.reasons.join("；") : "不允许直接应用";
+      return `${summary}：${reasons}`;
+    })
+    .join("；");
+  const suffix = blockedEntries.length > 5 ? `；其余 ${blockedEntries.length - 5} 条请先逐条处理。` : "";
+  return `${scopeLabel}中包含 ${blockedEntries.length} 条被阻止的候选：${details}${suffix}`;
 }
 
 function getPersonGroupLabel(person) {
@@ -1910,7 +1927,12 @@ app.post("/api/automation/proposals/:proposalId/apply", async (request, response
       return;
     }
     if (!canApplyAutomationProposal(proposal)) {
-      response.status(400).json({ error: "This proposal is for review only and cannot be applied directly." });
+      response.status(400).json({
+        error: buildBlockedProposalApplyMessage(
+          [{ proposal, reasons: collectAutomationProposalApplyBlockers(proposal) }],
+          "当前候选",
+        ),
+      });
       return;
     }
 
@@ -1960,6 +1982,18 @@ app.post("/api/automation/proposals/:proposalId/ignore", async (request, respons
 app.post("/api/automation/runs/:runId/apply-confirmed", async (_request, response) => {
   try {
     const [library, run] = await Promise.all([loadLibraryFromDisk(), loadAutomationRun(_request.params.runId)]);
+    const blockedProposals = run.proposals
+      .filter((proposal) => proposal.status === "pending" && proposal.reviewState === "confirmed")
+      .map((proposal) => ({
+        proposal,
+        reasons: collectAutomationProposalApplyBlockers(proposal),
+      }))
+      .filter((entry) => entry.reasons.length > 0);
+    if (blockedProposals.length) {
+      response.status(400).json({ error: buildBlockedProposalApplyMessage(blockedProposals) });
+      return;
+    }
+
     let preparedRun = run;
     for (const proposal of preparedRun.proposals) {
       if (proposal.status !== "pending" || proposal.reviewState !== "confirmed" || !canApplyAutomationProposal(proposal)) {

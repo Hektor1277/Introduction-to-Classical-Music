@@ -413,8 +413,24 @@ export function createAutomationRun(_library: LibraryData, input: AutomationRunI
   });
 }
 
+export function collectAutomationProposalApplyBlockers(proposal: AutomationProposal) {
+  if (proposal.kind === "merge") {
+    return ["合并候选不能直接应用，请先人工处理关联关系。"];
+  }
+  const reasons: string[] = [];
+  const hasDirectChanges = (proposal.fields?.length ?? 0) > 0 || (proposal.imageCandidates?.length ?? 0) > 0;
+  if (!hasDirectChanges) {
+    reasons.push("该候选没有可直接写入的字段或图片，只能人工复核。");
+  }
+  if (proposal.risk === "high") {
+    reasons.push("高风险候选不能直接应用，请先人工复核。");
+  }
+
+  return [...new Set(reasons)];
+}
+
 export function canApplyAutomationProposal(proposal: AutomationProposal) {
-  return proposal.kind !== "merge" && (proposal.fields.length > 0 || (proposal.imageCandidates?.length ?? 0) > 0);
+  return collectAutomationProposalApplyBlockers(proposal).length === 0;
 }
 
 export function applyAutomationProposal(library: LibraryData, run: AutomationRun, proposalId: string) {

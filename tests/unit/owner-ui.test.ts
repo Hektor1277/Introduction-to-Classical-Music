@@ -380,5 +380,18 @@ describe("owner ui helpers", () => {
 
     expect(script).toContain("run.summary.pending");
   });
+
+  it("marks blocked proposals in the review UI and checks them before bulk apply", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+    const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
+    const ownerServer = await fs.readFile(path.resolve("apps/owner/server/owner-app.ts"), "utf8");
+
+    expect(script).toContain("getBlockedProposalsForReviewAction");
+    expect(script).toContain("buildBlockedReviewActionMessage");
+    expect(script).toContain("owner-proposal--blocked");
+    expect(script).toContain("阻止应用");
+    expect(css).toMatch(/\.owner-proposal--blocked\s*\{/i);
+    expect(ownerServer).toContain("collectAutomationProposalApplyBlockers");
+  });
 });
 

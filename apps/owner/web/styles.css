@@ -1019,6 +1019,14 @@ button {
   box-shadow: inset 0 0 0 1px rgba(194, 156, 99, 0.35);
 }
 
+.owner-proposal--blocked {
+  border-width: 2px;
+  border-color: rgba(162, 82, 82, 0.82);
+  box-shadow:
+    inset 0 0 0 1px rgba(162, 82, 82, 0.16),
+    0 14px 36px rgba(64, 44, 19, 0.08);
+}
+
 .owner-proposal--discarded,
 .owner-log-entry--error {
   border-width: 2px;
