@@ -4,6 +4,7 @@ import {
   defaultLlmConfig,
   generateEntityKnowledgeCandidate,
   mergeLlmConfigPatch,
+  reviewAutomationProposalWithLlm,
   sanitizeLlmConfig,
   testOpenAiCompatibleConfig,
 } from "@/lib/llm";
@@ -267,5 +268,63 @@ describe("llm config", () => {
       displayLatinName: "Anton Bruckner",
       country: "Austria",
     });
+  });
+  it("parses structured proposal review verdicts with rejection reasons and normalized suggestions", async () => {
+    const result = await reviewAutomationProposalWithLlm({
+      config: {
+        ...defaultLlmConfig,
+        enabled: true,
+        baseUrl: "https://api.example.com/v1",
+        apiKey: "secret-key",
+        model: "test-model",
+      },
+      entityType: "person",
+      title: "Anton Bruckner",
+      roles: ["composer"],
+      current: { name: "布鲁克纳", country: "" },
+      preview: { name: "布鲁克纳", country: "Austria" },
+      fields: [{ path: "country", before: "", after: "Austria" }],
+      sources: ["en.wikipedia.org"],
+      evidence: [
+        {
+          field: "country",
+          sourceLabel: "Wikipedia",
+          sourceUrl: "https://en.wikipedia.org/wiki/Anton_Bruckner",
+          confidence: 0.93,
+        },
+      ],
+      fetchImpl: async () =>
+        ({
+          ok: true,
+          json: async () => ({
+            choices: [
+              {
+                message: {
+                  content: JSON.stringify({
+                    verdict: "reject",
+                    reasons: ["候选值与现有规范字段冲突"],
+                    rejectBecause: "现有中文全名已经是高质量规范值",
+                    normalizedValue: {
+                      country: "Austria",
+                    },
+                    confidence: 0.91,
+                    rationale: "应阻止低价值覆盖。",
+                  }),
+                },
+              },
+            ],
+          }),
+        }) as Response,
+    });
+
+    expect(result).toMatchObject({
+      verdict: "reject",
+      status: "needs-attention",
+      rejectBecause: "现有中文全名已经是高质量规范值",
+      normalizedValue: { country: "Austria" },
+      confidence: 0.91,
+    });
+    expect(result?.reasons).toContain("候选值与现有规范字段冲突");
+    expect(result?.issues).toContain("现有中文全名已经是高质量规范值");
   });
 });

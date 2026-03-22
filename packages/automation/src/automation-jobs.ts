@@ -8,6 +8,7 @@ import {
 } from "./automation-checks.js";
 import { getDisplayData, getWebsiteDisplay } from "../../shared/src/display.js";
 import { reviewAutomationProposalWithLlm, type LlmConfig } from "./llm.js";
+import { mergeProposalReviewResults } from "./proposal-review.js";
 import type { Composer, LibraryData, Person, Work } from "../../shared/src/schema.js";
 
 export type AutomationJobStatus = "queued" | "preparing" | "running" | "completed" | "cancelled";
@@ -435,31 +436,6 @@ function findWorkForItem(library: LibraryData, item: AutomationJobSelectionItem)
   return library.works.find((work) => work.id === item.entityId);
 }
 
-function mergeReviewResults<T extends { ok: boolean; status: string; issues: string[]; preview: unknown; hasChanges: boolean }>(
-  review: T,
-  llmReview: Awaited<ReturnType<typeof reviewAutomationProposalWithLlm>> | null,
-) {
-  if (!llmReview) {
-    return review;
-  }
-  const issues = [...review.issues];
-  if (llmReview.status === "needs-attention") {
-    issues.push(...llmReview.issues);
-  }
-  const status =
-    llmReview.status === "needs-attention"
-      ? "needs-attention"
-      : review.status === "already-complete" && review.hasChanges
-        ? "ok"
-        : review.status;
-  return {
-    ...review,
-    ok: status === "ok",
-    status,
-    issues: [...new Set(issues)],
-  };
-}
-
 export function createAutomationJobManager() {
   const jobs = new Map<string, AutomationJobRecord>();
 
@@ -614,7 +590,7 @@ export function createAutomationJobManager() {
           evidence: proposals.flatMap((proposal) => proposal.evidence || []),
           fetchImpl: input.fetchImpl ?? fetch,
         });
-        review = mergeReviewResults(review, llmReview);
+        review = mergeProposalReviewResults(review, llmReview);
       }
 
       item.reviewIssues = review.issues;

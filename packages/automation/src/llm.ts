@@ -37,10 +37,14 @@ export type LlmWorkKnowledgeCandidate = {
 };
 
 export type LlmProposalReview = {
+  verdict: "accept" | "needs-attention" | "reject";
   status: "ok" | "needs-attention";
   issues: string[];
+  reasons: string[];
   confidence?: number;
   rationale?: string;
+  rejectBecause?: string;
+  normalizedValue?: Record<string, unknown>;
 };
 
 type EntityKnowledgePromptInput = {
@@ -357,11 +361,36 @@ function buildWorkKnowledgeMessages(input: WorkKnowledgePromptInput, attempt: "p
 }
 
 function coerceProposalReview(parsed: Record<string, unknown>) {
+  const verdict =
+    parsed.verdict === "reject"
+      ? "reject"
+      : parsed.verdict === "needs-attention"
+        ? "needs-attention"
+        : parsed.status === "needs-attention"
+          ? "needs-attention"
+          : "accept";
+  const reasons = normalizeStringList(parsed.reasons ?? parsed.issues).slice(0, 5);
+  const rejectBecause = pickString(parsed.rejectBecause, parsed.blockReason);
+  const normalizedValue =
+    parsed.normalizedValue && typeof parsed.normalizedValue === "object" && !Array.isArray(parsed.normalizedValue)
+      ? (parsed.normalizedValue as Record<string, unknown>)
+      : undefined;
+  const issues =
+    verdict === "reject"
+      ? normalizeStringList([rejectBecause, ...reasons]).slice(0, 5)
+      : verdict === "needs-attention"
+        ? reasons
+        : [];
+
   return {
-    status: parsed.status === "needs-attention" ? "needs-attention" : "ok",
-    issues: normalizeStringList(parsed.issues).slice(0, 5),
+    verdict,
+    status: verdict === "accept" ? "ok" : "needs-attention",
+    issues,
+    reasons,
     confidence: Number.isFinite(Number(parsed.confidence)) ? Number(parsed.confidence) : undefined,
     rationale: pickString(parsed.rationale, parsed.reason),
+    rejectBecause,
+    normalizedValue,
   } satisfies LlmProposalReview;
 }
 
@@ -387,7 +416,7 @@ function buildProposalReviewMessages(input: ProposalReviewPromptInput) {
     {
       role: "system",
       content:
-        "You review classical music catalog patches. Decide whether the proposal is grounded, internally consistent, and appropriate for the entity role. Return exactly one JSON object with only: status,issues,confidence,rationale. issues must be short Chinese phrases. If the proposal is acceptable, return status ok and an empty issues array.",
+        "You review classical music catalog patches. Decide whether the proposal is grounded, internally consistent, and appropriate for the entity role. Return exactly one JSON object with only: verdict,status,issues,reasons,confidence,rationale,rejectBecause,normalizedValue. verdict must be one of accept, needs-attention, reject. issues and reasons must be short Chinese phrases. normalizedValue must be an object containing only field names and normalized candidate values when a safer normalized suggestion exists. If the proposal is acceptable, return verdict accept, status ok, and empty issues.",
     },
     {
       role: "user",
