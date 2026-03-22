@@ -585,4 +585,90 @@ describe("person cleanup", () => {
 
     expect(nextLibrary.people.some((person) => person.id === "person-orchestra-bayreuth-festival-orchestra-and-chorus")).toBe(false);
   });
+
+  it("downgrades referenced ambiguous composite ensemble people back to text credits", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-hko-and-ro",
+          slug: "hko-and-ro",
+          name: "HKO & RO",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-schn-evoigt",
+          slug: "schneevoigt",
+          name: "乔治·施内沃伊特",
+          nameLatin: "Georg Schnéevoigt",
+          country: "Finland",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0040",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-ignatius-1945",
+          workId: "work-beethoven-9",
+          slug: "ignatius-1945",
+          title: "施内沃伊特 - 伊格内修斯 - HKO & RO - 1945.12.8",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-hko-and-ro",
+              displayName: "HKO & RO",
+              label: "乐团",
+            }),
+            credit({
+              role: "conductor",
+              personId: "person-schn-evoigt",
+              displayName: "乔治·施内沃伊特",
+              label: "指挥",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1945.12.8",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+    const orchestraCredit = nextLibrary.recordings[0].credits.find((item) => item.role === "orchestra");
+
+    expect(orchestraCredit).toMatchObject({
+      role: "orchestra",
+      personId: "",
+      displayName: "HKO & RO",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-hko-and-ro")).toBe(false);
+  });
 });

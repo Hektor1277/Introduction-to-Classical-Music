@@ -25,6 +25,11 @@ function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, " ").replace(/\u00a0/g, " ").trim();
 }
 
+function isPlaceholderCreditValue(value: string) {
+  const normalized = normalizeWhitespace(value).toLowerCase();
+  return !normalized || normalized === "-" || normalized === "unknown" || normalized === "未知";
+}
+
 function hasAnyKeyword(value: string, keywords: string[]) {
   return keywords.some((keyword) => value.includes(keyword));
 }
@@ -240,10 +245,14 @@ export function parseLegacyRecordingHtml(html: string): ParsedLegacyRecording {
       ])
     ) {
       const localLink = $(element).find("a").first();
+      const displayName = normalizeWhitespace(localLink.text() || valueText);
+      if (isPlaceholderCreditValue(displayName)) {
+        return;
+      }
       credits.push({
         role: roleFromLabel(labelText),
         personId: "",
-        displayName: normalizeWhitespace(localLink.text() || valueText),
+        displayName,
         label: labelText,
       });
     }

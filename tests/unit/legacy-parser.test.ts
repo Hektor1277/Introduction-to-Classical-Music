@@ -76,4 +76,54 @@ describe("legacy parser", () => {
 
     expect(parsed.credits).toEqual([]);
   });
+
+  it("skips placeholder ensemble values instead of emitting unusable credits", () => {
+    const parsed = parseLegacyRecordingHtml(`
+      <html>
+        <body>
+          <p>乐团：-</p>
+          <p>乐团：未知</p>
+          <p>指挥：康科迪・杰拉伯特</p>
+          <p>时间、地点：1916</p>
+        </body>
+      </html>
+    `);
+
+    expect(parsed.credits).toEqual([
+      {
+        role: "conductor",
+        personId: "",
+        displayName: "康科迪・杰拉伯特",
+        label: "指挥",
+      },
+    ]);
+  });
+
+  it("parses styled composite ensemble abbreviations without dropping the raw text", () => {
+    const parsed = parseLegacyRecordingHtml(`
+      <html>
+        <body>
+          <p><font size=3>乐团：<span><font color=#000000 face=Arial> HPO &amp; RO</font></span></font></p>
+          <p><font size=3>指挥：Georg Schnéevoigt（乔治·施内沃伊特）</font></p>
+          <p><font size=3>时间、地点：1945.12.8</font></p>
+        </body>
+      </html>
+    `);
+
+    expect(parsed.credits).toEqual([
+      {
+        role: "orchestra",
+        personId: "",
+        displayName: "HPO & RO",
+        label: "乐团",
+      },
+      {
+        role: "conductor",
+        personId: "",
+        displayName: "Georg Schnéevoigt（乔治·施内沃伊特）",
+        label: "指挥",
+      },
+    ]);
+    expect(parsed.performanceDateText).toBe("1945.12.8");
+  });
 });

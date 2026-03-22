@@ -2633,7 +2633,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-hko-and-ro",
+        "personId": "",
         "displayName": "HKO & RO",
         "label": "乐团"
       },
@@ -10514,7 +10514,7 @@
     ],
     "notes": "",
     "performanceDateText": "1999",
-    "venueText": "",
+    "venueText": "Sächsische Staatskapelle Dresden",
     "albumTitle": "",
     "label": "",
     "releaseDate": "",

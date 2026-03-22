@@ -433,11 +433,15 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
   const nextCredits: Recording["credits"] = [];
   let nextVenueText = recording.venueText;
   const redirectedThinGroupIds = new Map<string, Person>();
+  const suspiciousCompositeGroupIds = new Map<string, Person>();
 
   for (const person of nextLibrary.people || []) {
     const replacement = findCanonicalReplacementForThinGroup(nextLibrary, person);
     if (replacement) {
       redirectedThinGroupIds.set(person.id, replacement);
+    }
+    if (isSuspiciousCompositeEnsemblePerson(person)) {
+      suspiciousCompositeGroupIds.set(person.id, person);
     }
   }
 
@@ -459,11 +463,21 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
       };
     }
 
+    const ambiguousCompositePerson = suspiciousCompositeGroupIds.get(compact(nextCredit.personId));
+    if (ambiguousCompositePerson) {
+      nextCredit = {
+        ...nextCredit,
+        role: primaryRoleFromPerson(ambiguousCompositePerson),
+        personId: "",
+        displayName: compact(nextCredit.displayName) || canonicalCreditDisplayName(ambiguousCompositePerson),
+      };
+    }
+
     if (!isPlaceholderValue(nextCredit.displayName)) {
-      if (["orchestra", "ensemble", "chorus"].includes(nextCredit.role)) {
+      if (["orchestra", "ensemble", "chorus"].includes(nextCredit.role) && !ambiguousCompositePerson) {
         nextLibrary = ensurePeopleForCredits(nextLibrary, [nextCredit]);
       }
-      const matchedPerson = findPersonForCredit(nextLibrary, nextCredit.role, nextCredit.displayName);
+      const matchedPerson = ambiguousCompositePerson ? null : findPersonForCredit(nextLibrary, nextCredit.role, nextCredit.displayName);
       if (matchedPerson) {
         nextCredit = {
           ...nextCredit,

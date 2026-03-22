@@ -4686,30 +4686,6 @@
     ]
   },
   {
-    "id": "person-hko-and-ro",
-    "slug": "hko-and-ro",
-    "name": "HKO & RO",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1870",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
     "id": "person-georg-schne-evoigt-乔治施内沃伊特",
     "slug": "georg-schne-evoigt-乔治施内沃伊特",
     "name": "乔治·施内沃伊特",
@@ -7138,7 +7114,8 @@
     "infoPanel": {
       "text": "",
       "articleId": "",
-      "collectionLinks": []
+      "collectionLinks": [],
+      "collectionUrl": ""
     },
     "roles": [
       "orchestra"
