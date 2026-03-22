@@ -10,6 +10,7 @@ export type LibraryAuditSeverity = "info" | "warning" | "error";
 export type LibraryAuditEntityType = "composer" | "person" | "work" | "recording";
 export type LibraryAuditIssueCode =
   | "placeholder-entity"
+  | "person-suspicious-ensemble-name"
   | "recording-missing-credit-role"
   | "recording-work-type-conflict"
   | "recording-title-credit-mismatch";
@@ -113,6 +114,42 @@ function auditPlaceholderEntities(library: LibraryData) {
         message: `版本条目仍引用占位 credit：${compact(placeholderCredit.displayName) || compact(placeholderCredit.personId)}`,
         source: "recordings.credits",
         suggestedFix: "回读原始 archive 并为该 credit 绑定正式人物/团体条目。",
+      }),
+    );
+  }
+
+  return issues;
+}
+
+function hasCompositeEnsembleMarker(value: string) {
+  const normalized = compact(value);
+  return /(?:\s+\/\s+|\s+&\s+|\bcurrently\b|\([^)]+\))/.test(normalized);
+}
+
+function looksAmbiguousUppercaseAbbreviation(value: string) {
+  return /\b[A-Z]{2,5}\b(?:\s*&\s*\b[A-Z]{1,5}\b)+/.test(compact(value));
+}
+
+function auditSuspiciousEnsemblePeople(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const person of library.people || []) {
+    const roles = new Set(person.roles || []);
+    if (!roles.has("orchestra") && !roles.has("ensemble") && !roles.has("chorus")) {
+      continue;
+    }
+    if (!hasCompositeEnsembleMarker(person.name) && !looksAmbiguousUppercaseAbbreviation(person.name)) {
+      continue;
+    }
+    issues.push(
+      issue({
+        code: "person-suspicious-ensemble-name",
+        severity: "warning",
+        entityType: "person",
+        entityId: person.id,
+        message: `团体条目名称疑似包含复合署名或历史注记：${compact(person.name)}`,
+        source: "people.name",
+        suggestedFix: "优先拆分为多个结构化 credit；若只是历史别名或括注，则回绑到正式团体条目并将当前值降为 alias。",
       }),
     );
   }
@@ -253,6 +290,7 @@ function auditRecordingTitleCreditMismatches(library: LibraryData) {
 export function auditLibraryData(library: LibraryData): LibraryAuditIssue[] {
   return [
     ...auditPlaceholderEntities(library),
+    ...auditSuspiciousEnsemblePeople(library),
     ...auditRecordingRequiredCredits(library),
     ...auditRecordingWorkTypeConflicts(library),
     ...auditRecordingTitleCreditMismatches(library),

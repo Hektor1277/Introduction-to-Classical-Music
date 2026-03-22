@@ -77,11 +77,12 @@ describe("person cleanup", () => {
       }),
     ]);
 
-    expect(nextLibrary.people).toHaveLength(1);
-    expect(nextLibrary.people[0]).toMatchObject({
-      name: "Bayreuth Festival Orchestra & Chorus",
-      roles: ["orchestra"],
-    });
+    expect(nextLibrary.people).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "Bayreuth Festival Orchestra", roles: ["orchestra"] }),
+        expect.objectContaining({ name: "Bayreuth Festival Chorus", roles: ["chorus"] }),
+      ]),
+    );
   });
 
   it("rebinds placeholder ensemble credits to formal people and removes unused placeholders", () => {
@@ -140,10 +141,11 @@ describe("person cleanup", () => {
     const nextRecording = nextLibrary.recordings[0];
 
     expect(nextLibrary.people.some((person) => person.name === "未知")).toBe(false);
-    expect(nextLibrary.people.some((person) => person.name === "Bayreuth Festival Orchestra & Chorus")).toBe(true);
+    expect(nextLibrary.people.some((person) => person.name === "Bayreuth Festival Orchestra")).toBe(true);
+    expect(nextLibrary.people.some((person) => person.name === "Bayreuth Festival Chorus")).toBe(true);
     expect(nextRecording.credits[0]).toMatchObject({
       role: "orchestra",
-      displayName: "Bayreuth Festival Orchestra & Chorus",
+      displayName: "Bayreuth Festival Orchestra",
     });
     expect(nextRecording.credits[0].personId).not.toBe("person-orchestra-unknown");
   });
@@ -347,5 +349,159 @@ describe("person cleanup", () => {
       displayName: "维也纳爱乐乐团",
     });
     expect(nextLibrary.people.some((person) => person.id === "person-orchestra-wiener-philharmoniker")).toBe(false);
+  });
+
+  it("splits composite orchestra and chorus credits into separate structured group entries", () => {
+    const library = createBaseLibrary({
+      recordings: [
+        {
+          id: "recording-furt-1951",
+          workId: "work-beethoven-9",
+          slug: "furt-1951",
+          title: "富特文格勒 - Bayreuth Festival Orchestra & Chorus - 1951",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "orchestra", displayName: "Bayreuth Festival Orchestra & Chorus", label: "乐团" })],
+          links: [],
+          notes: "",
+          performanceDateText: "1951",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+    const nextCredits = nextLibrary.recordings[0].credits;
+
+    expect(nextCredits).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ role: "orchestra", displayName: "Bayreuth Festival Orchestra" }),
+        expect.objectContaining({ role: "chorus", displayName: "Bayreuth Festival Chorus" }),
+      ]),
+    );
+    expect(nextLibrary.people).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "Bayreuth Festival Orchestra", roles: ["orchestra"] }),
+        expect.objectContaining({ name: "Bayreuth Festival Chorus", roles: ["chorus"] }),
+      ]),
+    );
+  });
+
+  it("rebinds parenthetical legacy orchestra aliases to the canonical group entry", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-ndr",
+          slug: "ndr-sinfonieorchester",
+          name: "北德广播交响乐团",
+          nameLatin: "NDR Elbphilharmonie Orchestra",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["NDRSO", "NDR Elbphilharmonie Orchestra"],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-1970",
+          workId: "work-beethoven-9",
+          slug: "1970",
+          title: "汉斯施密特 - NDRSO (currently NDR Elbphilharmonie Orchestra) - 1970",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "orchestra", displayName: "NDRSO (currently NDR Elbphilharmonie Orchestra)", label: "乐团" })],
+          links: [],
+          notes: "",
+          performanceDateText: "1970",
+          venueText: "Hamburg",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ role: "orchestra", personId: "person-ndr", displayName: "北德广播交响乐团" }),
+      ]),
+    );
+  });
+
+  it("removes unreferenced composite ensemble placeholder entries after credits are split and rebound", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-orchestra-bayreuth-festival-orchestra-and-chorus",
+          slug: "bayreuth-festival-orchestra-and-chorus",
+          name: "Bayreuth Festival Orchestra & Chorus",
+          nameLatin: "Bayreuth Festival Orchestra & Chorus",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-furt-1951",
+          workId: "work-beethoven-9",
+          slug: "furt-1951",
+          title: "富特文格勒 - Bayreuth Festival Orchestra & Chorus - 1951",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-orchestra-bayreuth-festival-orchestra-and-chorus",
+              displayName: "Bayreuth Festival Orchestra & Chorus",
+              label: "乐团",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1951",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.people.some((person) => person.id === "person-orchestra-bayreuth-festival-orchestra-and-chorus")).toBe(false);
   });
 });

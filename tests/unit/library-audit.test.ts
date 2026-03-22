@@ -214,6 +214,47 @@ describe("auditLibraryData", () => {
     );
   });
 
+  it("flags suspicious ensemble names that should stay in manual cleanup queue", () => {
+    const library = {
+      ...buildBaseLibrary(),
+      people: [
+        ...buildBaseLibrary().people,
+        {
+          id: "person-hko-and-ro",
+          slug: "hko-and-ro",
+          name: "HKO & RO",
+          fullName: "HKO & RO",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          roles: ["orchestra" as const],
+          aliases: [],
+          sortKey: "9998",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+    };
+
+    const issues = auditLibraryData(validateLibrary(library));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "person-suspicious-ensemble-name",
+          severity: "warning",
+          entityType: "person",
+          entityId: "person-hko-and-ro",
+          source: "people.name",
+        }),
+      ]),
+    );
+  });
+
   it("flags conflicts between recording work type and related work groups", () => {
     const library = buildBaseLibrary();
     const conflictingRecording = {

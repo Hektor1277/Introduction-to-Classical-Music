@@ -4845,7 +4845,7 @@
     "id": "recording-第九交响曲合唱-富特1951",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "富特1951",
-    "title": "富特文格勒 - Bayreuth Festival Orchestra & Chorus - 29 July 1951, at Festspielhaus",
+    "title": "富特文格勒 - Bayreuth Festival Orchestra - Bayreuth Festival Chorus - 29 July 1951, at Festspielhaus",
     "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
@@ -4860,9 +4860,15 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-bayreuth-festival-orchestra-and-chorus",
-        "displayName": "Bayreuth Festival Orchestra & Chorus",
-        "label": "乐团"
+        "personId": "person-orchestra-bayreuth-festival-orchestra",
+        "displayName": "Bayreuth Festival Orchestra",
+        "label": "乐团拆分"
+      },
+      {
+        "role": "chorus",
+        "personId": "person-chorus-bayreuth-festival-chorus",
+        "displayName": "Bayreuth Festival Chorus",
+        "label": "乐团拆分"
       }
     ],
     "links": [
@@ -5200,7 +5206,7 @@
     "id": "recording-第九交响曲合唱-汉斯施密特1970",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "汉斯施密特1970",
-    "title": "汉斯施密特 - NDRSO (currently NDR Elbphilharmonie Orchestra) - Hamburg, 1970",
+    "title": "汉斯施密特 - 北德广播交响乐团 - Hamburg, 1970",
     "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
@@ -5215,8 +5221,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-ndrso-currently-ndr-elbphilharmonie-orchestra",
-        "displayName": "NDRSO (currently NDR Elbphilharmonie Orchestra)",
+        "personId": "person-ndr-sinfonieorchester",
+        "displayName": "北德广播交响乐团",
         "label": "乐团"
       }
     ],
@@ -5250,7 +5256,7 @@
     "id": "recording-第九交响曲合唱-纽曼1989",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "纽曼1989",
-    "title": "纽曼 - Czech Philharmonic Orchestra / Prague Philharmonic Choir - at the Smetana Hall of the Community House, Prague, on 14 December, 1989",
+    "title": "纽曼 - Czech Philharmonic Orchestra - Prague Philharmonic Choir - at the Smetana Hall of the Community House, Prague, on 14 December, 1989",
     "workTypeHint": "orchestral",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
@@ -5265,9 +5271,15 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-czech-philharmonic-orchestra-prague-philharmonic-choir",
-        "displayName": "Czech Philharmonic Orchestra / Prague Philharmonic Choir",
-        "label": "乐团"
+        "personId": "person-orchestra-czech-philharmonic-orchestra",
+        "displayName": "Czech Philharmonic Orchestra",
+        "label": "乐团拆分"
+      },
+      {
+        "role": "chorus",
+        "personId": "person-chorus-prague-philharmonic-choir",
+        "displayName": "Prague Philharmonic Choir",
+        "label": "乐团拆分"
       }
     ],
     "links": [

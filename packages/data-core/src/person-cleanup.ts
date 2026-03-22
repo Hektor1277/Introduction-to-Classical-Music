@@ -17,6 +17,16 @@ export function isPlaceholderValue(value: unknown) {
   return !normalized || normalized === "-" || normalized === "unknown" || normalized === "未知" || normalized === "未填写";
 }
 
+function expandSearchCandidates(value: string) {
+  const original = compact(value);
+  const withoutParentheses = compact(original.replace(/\([^)]*\)/g, " "));
+  const parentheticalMatches = [...original.matchAll(/\(([^)]+)\)/g)].map((match) => compact(match[1]));
+  const sanitized = [original, withoutParentheses, ...parentheticalMatches]
+    .map((candidate) => compact(candidate).replace(/\bcurrently\b/gi, " ").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+  return [...new Set(sanitized)];
+}
+
 export function isPlaceholderPerson(person: Pick<Person, "id" | "name">) {
   return compact(person.id) === "person-item" || isPlaceholderValue(person.name);
 }
@@ -41,8 +51,8 @@ function dedupeCredits(credits: Recording["credits"]) {
 }
 
 function personMatchesName(person: Person, value: string) {
-  const target = normalizeNameKey(value);
-  if (!target) {
+  const targets = [...new Set(expandSearchCandidates(value).map((candidate) => normalizeNameKey(candidate)).filter(Boolean))];
+  if (targets.length === 0) {
     return false;
   }
   const candidates = [
@@ -54,7 +64,110 @@ function personMatchesName(person: Person, value: string) {
     person.displayLatinName,
     ...(person.aliases || []),
   ];
-  return candidates.some((candidate) => normalizeNameKey(candidate) === target);
+  return candidates.some((candidate) => targets.includes(normalizeNameKey(candidate)));
+}
+
+const ORCHESTRA_HINTS = [
+  "orchestra",
+  "philharmonic",
+  "philharmoniker",
+  "symphony",
+  "sinfonieorchester",
+  "orkester",
+  "orquesta",
+  "orchestre",
+  "kapelle",
+  "zenekara",
+  "乐团",
+  "乐队",
+];
+
+const CHORUS_HINTS = ["chorus", "choir", "合唱"];
+const ENSEMBLE_HINTS = ["ensemble", "quartet", "trio", "重奏", "组合"];
+
+function classifyEnsemblePart(value: string): Credit["role"] | null {
+  const normalized = compact(value).toLowerCase();
+  if (!normalized) {
+    return null;
+  }
+  if (CHORUS_HINTS.some((hint) => normalized.includes(hint))) {
+    return "chorus";
+  }
+  if (ORCHESTRA_HINTS.some((hint) => normalized.includes(hint))) {
+    return "orchestra";
+  }
+  if (ENSEMBLE_HINTS.some((hint) => normalized.includes(hint))) {
+    return "ensemble";
+  }
+  return null;
+}
+
+function deriveSharedEnsemblePrefix(value: string) {
+  const normalized = compact(value);
+  return compact(
+    normalized.replace(
+      /\s+(?:orchestra|philharmonic(?:\s+orchestra)?|symphony(?:\s+orchestra)?|sinfonieorchester|philharmoniker|orkester|orquesta|orchestre|kapelle|zenekara|乐团|乐队)$/i,
+      "",
+    ),
+  );
+}
+
+function expandGenericEnsemblePart(value: string, siblingParts: string[]) {
+  const normalized = compact(value);
+  if (!/^(chorus|choir|合唱)$/i.test(normalized)) {
+    return normalized;
+  }
+  const orchestraPart = siblingParts.find((part) => classifyEnsemblePart(part) === "orchestra");
+  const prefix = orchestraPart ? deriveSharedEnsemblePrefix(orchestraPart) : "";
+  return prefix ? `${prefix} ${normalized}` : normalized;
+}
+
+function splitCompositeEnsembleCredit(credit: Credit): Credit[] {
+  if (!isEnsembleRole(credit.role)) {
+    return [credit];
+  }
+
+  const displayName = compact(credit.displayName);
+  if (!displayName || !/[\/&]/.test(displayName)) {
+    return [credit];
+  }
+
+  const rawParts = displayName
+    .split(/\s*(?:\/|&)\s*/g)
+    .map((part) => compact(part))
+    .filter(Boolean);
+  if (rawParts.length < 2) {
+    return [credit];
+  }
+
+  const expandedParts = rawParts.map((part) => expandGenericEnsemblePart(part, rawParts));
+  const splitCredits = expandedParts.map((part) => {
+    const role = classifyEnsemblePart(part);
+    if (!role) {
+      return null;
+    }
+    return {
+      ...credit,
+      role,
+      personId: "",
+      displayName: part,
+      label: compact(credit.label) ? `${compact(credit.label)}拆分` : "复合署名拆分",
+    } satisfies Credit;
+  });
+
+  if (splitCredits.some((entry) => entry === null)) {
+    return [credit];
+  }
+
+  return splitCredits as Credit[];
+}
+
+function isSuspiciousCompositeEnsemblePerson(person: Person) {
+  if (!person.roles.some((role) => isEnsembleRole(role))) {
+    return false;
+  }
+  const name = compact(person.name);
+  return /(?:\s+\/\s+|\s+&\s+|\bcurrently\b|\([^)]+\))/.test(name) || /\b[A-Z]{2,5}\b(?:\s*&\s*\b[A-Z]{1,5}\b)+/.test(name);
 }
 
 function isEnsembleRole(role: Credit["role"] | PersonRole) {
@@ -231,7 +344,7 @@ function createFormalPersonForCredit(library: LibraryData, credit: Credit) {
 
 export function ensurePeopleForCredits(library: LibraryData, credits: Credit[]) {
   let nextLibrary = library;
-  for (const credit of credits) {
+  for (const credit of credits.flatMap((entry) => splitCompositeEnsembleCredit(entry))) {
     if (!["orchestra", "ensemble", "chorus"].includes(credit.role)) {
       continue;
     }
@@ -291,7 +404,7 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
     }
   }
 
-  for (const currentCredit of recording.credits || []) {
+  for (const currentCredit of (recording.credits || []).flatMap((entry) => splitCompositeEnsembleCredit(entry))) {
     let nextCredit: Credit = {
       ...currentCredit,
       personId: compact(currentCredit.personId),
@@ -360,6 +473,9 @@ export function stripUnusedPlaceholderPeople(library: LibraryData) {
         return true;
       }
       if (isPlaceholderPerson(person)) {
+        return false;
+      }
+      if (isSuspiciousCompositeEnsemblePerson(person)) {
         return false;
       }
       if (isThinDuplicateGroupPerson(person) && findCanonicalReplacementForThinGroup(library, person)) {
