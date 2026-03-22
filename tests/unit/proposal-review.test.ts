@@ -3,34 +3,66 @@ import { describe, expect, it } from "vitest";
 import { mergeProposalReviewResults } from "@/lib/proposal-review";
 
 describe("proposal review merge", () => {
-  it("surfaces llm rejection reasons and normalized suggestions as review issues", () => {
+  it("keeps normalized values as suggestions instead of mutating the preview payload", () => {
+    const preview = {
+      country: "Germany",
+      displayFullName: "安东·布鲁克纳",
+    };
+    const review = {
+      ok: true,
+      status: "ok",
+      issues: [] as string[],
+      preview,
+      hasChanges: true,
+    };
+
+    const merged = mergeProposalReviewResults(review, {
+      verdict: "reject",
+      status: "needs-attention",
+      issues: ["候选值与现有规范字段冲突"],
+      reasons: ["现有中文全名已经完整"],
+      rejectBecause: "禁止低质量候选覆盖正式字段",
+      normalizedValue: { country: "Austria" },
+      confidence: 0.91,
+    });
+
+    expect(merged.status).toBe("needs-attention");
+    expect(merged.ok).toBe(false);
+    expect(merged.preview).toBe(preview);
+    expect(merged.preview).toEqual({
+      country: "Germany",
+      displayFullName: "安东·布鲁克纳",
+    });
+    expect(merged.issues).toEqual(
+      expect.arrayContaining([
+        "候选值与现有规范字段冲突",
+        "现有中文全名已经完整",
+        "禁止低质量候选覆盖正式字段",
+        "建议标准化：country=Austria",
+      ]),
+    );
+  });
+
+  it("forces manual review when llm confidence is below the safety floor", () => {
     const merged = mergeProposalReviewResults(
       {
         ok: true,
         status: "ok",
-        issues: [],
-        preview: { country: "Austria" },
+        issues: [] as string[],
+        preview: { titleLatin: "Symphony No. 7" },
         hasChanges: true,
       },
       {
-        verdict: "reject",
-        status: "needs-attention",
-        issues: ["现有规范字段质量更高"],
-        reasons: ["候选值与现有规范字段冲突"],
-        rejectBecause: "现有中文全名已经是高质量规范值",
-        normalizedValue: {
-          country: "Austria",
-          displayFullName: "安东·布鲁克纳",
-        },
-        confidence: 0.93,
-        rationale: "应阻止低价值覆盖。",
+        verdict: "accept",
+        status: "ok",
+        issues: [],
+        reasons: [],
+        confidence: 0.42,
       },
     );
 
-    expect(merged.ok).toBe(false);
     expect(merged.status).toBe("needs-attention");
-    expect(merged.issues).toContain("现有中文全名已经是高质量规范值");
-    expect(merged.issues).toContain("候选值与现有规范字段冲突");
-    expect(merged.issues).toContain("建议标准化：country=Austria；displayFullName=安东·布鲁克纳");
+    expect(merged.ok).toBe(false);
+    expect(merged.issues).toContain("LLM 复核置信度过低：0.42");
   });
 });

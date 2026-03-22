@@ -291,6 +291,117 @@ describe("automation jobs", () => {
     expect(current?.items[0]?.reviewIssues).toContain("仅有 LLM 来源，缺少可交叉验证的外部依据。");
   });
 
+  it("keeps a proposal in attention state when llm accepts it with low confidence", async () => {
+    const workLibrary = validateLibrary({
+      composers: [
+        {
+          id: "beethoven",
+          slug: "beethoven",
+          name: "Beethoven",
+          fullName: "Ludwig van Beethoven",
+          nameLatin: "Ludwig van Beethoven",
+          displayName: "Beethoven",
+          displayFullName: "Ludwig van Beethoven",
+          displayLatinName: "Ludwig van Beethoven",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          abbreviations: [],
+          sortKey: "0010",
+          summary: "German composer.",
+        },
+      ],
+      people: [],
+      workGroups: [
+        {
+          id: "group-symphony",
+          composerId: "beethoven",
+          title: "Symphony",
+          slug: "symphony",
+          path: ["Symphony"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "beethoven-5",
+          composerId: "beethoven",
+          groupIds: ["group-symphony"],
+          slug: "beethoven-5",
+          title: "Symphony No. 5",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionUrl: "" },
+          sortKey: "0020",
+          updatedAt: "2026-03-17T00:00:00.000Z",
+        },
+      ],
+      recordings: [],
+    });
+
+    const manager = createAutomationJobManager();
+    const job = manager.createJob({
+      library: workLibrary,
+      request: { categories: ["work"], workIds: ["beethoven-5"] },
+      llmConfig: {
+        enabled: true,
+        baseUrl: "https://api.example.com/v1",
+        apiKey: "secret-key",
+        model: "deepseek-chat",
+        timeoutMs: 30000,
+      },
+      fetchImpl: async (url) => {
+        const value = String(url);
+        if (value.includes("/chat/completions")) {
+          return new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      verdict: "accept",
+                      status: "ok",
+                      issues: [],
+                      reasons: [],
+                      confidence: 0.42,
+                      rationale: "Low-confidence normalization.",
+                    }),
+                  },
+                },
+              ],
+            }),
+            { status: 200 },
+          );
+        }
+        throw new Error(`unexpected fetch: ${value}`);
+      },
+      runChecksImpl: async () =>
+        createAutomationRun(workLibrary, {
+          categories: ["work"],
+          proposals: [
+            {
+              id: "beethoven-5-proposal",
+              entityType: "work",
+              entityId: "beethoven-5",
+              summary: "fill work fields",
+              risk: "low",
+              sources: ["https://api.example.com/v1/chat/completions"],
+              fields: [{ path: "titleLatin", before: "", after: "Symphony No. 5 in C minor, Op. 67" }],
+              evidence: [{ field: "titleLatin", sourceLabel: "LLM", sourceUrl: "https://api.example.com/v1/chat/completions" }],
+            },
+          ],
+        }),
+    });
+
+    await manager.waitForJob(job.id);
+    const current = manager.getJob(job.id);
+
+    expect(current?.items[0]?.status).toBe("needs-attention");
+    expect(current?.items[0]?.reviewIssues).toContain("LLM 复核置信度过低：0.42");
+  });
+
   it("builds a concrete selection preview before running a job", () => {
     const manager = createAutomationJobManager();
     const preview = manager.previewSelection(library, {

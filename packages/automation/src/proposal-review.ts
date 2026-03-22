@@ -8,6 +8,8 @@ type ReviewBase = {
   hasChanges: boolean;
 };
 
+const PROPOSAL_REVIEW_CONFIDENCE_FLOOR = 0.75;
+
 function formatNormalizedValueSuggestion(normalizedValue: Record<string, unknown> | undefined) {
   if (!normalizedValue) {
     return "";
@@ -29,6 +31,11 @@ export function mergeProposalReviewResults<T extends ReviewBase>(review: T, llmR
   }
 
   const issues = [...review.issues];
+  const lowConfidence =
+    typeof llmReview.confidence === "number" &&
+    Number.isFinite(llmReview.confidence) &&
+    llmReview.confidence < PROPOSAL_REVIEW_CONFIDENCE_FLOOR;
+
   if (llmReview.status === "needs-attention") {
     issues.push(...llmReview.issues);
     issues.push(...llmReview.reasons);
@@ -41,8 +48,12 @@ export function mergeProposalReviewResults<T extends ReviewBase>(review: T, llmR
     }
   }
 
+  if (lowConfidence) {
+    issues.push(`LLM 复核置信度过低：${llmReview.confidence?.toFixed(2)}`);
+  }
+
   const status =
-    llmReview.status === "needs-attention"
+    llmReview.status === "needs-attention" || lowConfidence
       ? "needs-attention"
       : review.status === "already-complete" && review.hasChanges
         ? "ok"
