@@ -382,19 +382,56 @@ function extractMetadataCandidates(recording: Pick<Recording, "performanceDateTe
 }
 
 function inferEnsemblePersonFromMetadata(library: LibraryData, recording: Recording) {
+  let nextLibrary = library;
+  const venueCandidates = new Set(extractMetadataCandidates({ venueText: recording.venueText, performanceDateText: "" }));
+  const performanceDateCandidates = new Set(
+    extractMetadataCandidates({ venueText: "", performanceDateText: recording.performanceDateText }),
+  );
   const candidates = extractMetadataCandidates(recording);
   for (const candidate of candidates) {
-    const matched = findPersonForCredit(library, "orchestra", candidate);
-    if (matched && ensembleCompatible("orchestra", matched)) {
-      return matched;
+    const inferredRole = classifyEnsemblePart(candidate);
+    if (!inferredRole) {
+      continue;
+    }
+    const sourceField = venueCandidates.has(candidate)
+      ? "venueText"
+      : performanceDateCandidates.has(candidate)
+        ? "performanceDateText"
+        : null;
+    const matched = findPersonForCredit(nextLibrary, inferredRole, candidate);
+    if (matched && ensembleCompatible(inferredRole, matched)) {
+      return {
+        library: nextLibrary,
+        person: matched,
+        sourceField,
+      };
+    }
+    nextLibrary = createFormalPersonForCredit(nextLibrary, {
+      role: inferredRole,
+      personId: "",
+      displayName: candidate,
+      label: "元数据推断乐团",
+    });
+    const created = findPersonForCredit(nextLibrary, inferredRole, candidate);
+    if (created && ensembleCompatible(inferredRole, created)) {
+      return {
+        library: nextLibrary,
+        person: created,
+        sourceField,
+      };
     }
   }
-  return null;
+  return {
+    library: nextLibrary,
+    person: null,
+    sourceField: null,
+  };
 }
 
 export function repairRecordingPeople(library: LibraryData, recording: Recording) {
   let nextLibrary = library;
   const nextCredits: Recording["credits"] = [];
+  let nextVenueText = recording.venueText;
   const redirectedThinGroupIds = new Map<string, Person>();
 
   for (const person of nextLibrary.people || []) {
@@ -442,12 +479,16 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
 
   const hasEnsembleCredit = nextCredits.some((credit) => ["orchestra", "ensemble", "chorus"].includes(credit.role));
   if (!hasEnsembleCredit) {
-    const inferredPerson = inferEnsemblePersonFromMetadata(nextLibrary, recording);
-    if (inferredPerson) {
+    const inferred = inferEnsemblePersonFromMetadata(nextLibrary, recording);
+    nextLibrary = inferred.library;
+    if (inferred.person) {
+      if (inferred.sourceField === "venueText") {
+        nextVenueText = "";
+      }
       nextCredits.push({
-        role: primaryRoleFromPerson(inferredPerson),
-        personId: inferredPerson.id,
-        displayName: canonicalCreditDisplayName(inferredPerson),
+        role: primaryRoleFromPerson(inferred.person),
+        personId: inferred.person.id,
+        displayName: canonicalCreditDisplayName(inferred.person),
         label: "元数据推断",
       });
     }
@@ -458,6 +499,7 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
     recording: {
       ...recording,
       credits: dedupeCredits(nextCredits),
+      venueText: nextVenueText,
     },
   };
 }

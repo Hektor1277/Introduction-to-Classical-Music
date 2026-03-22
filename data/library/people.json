@@ -7120,5 +7120,28 @@
     "roles": [
       "chorus"
     ]
+  },
+  {
+    "id": "person-orchestra-sa-chsische-staatskapelle-dresden",
+    "slug": "sa-chsische-staatskapelle-dresden",
+    "name": "Sächsische Staatskapelle Dresden",
+    "nameLatin": "Sächsische Staatskapelle Dresden",
+    "country": "",
+    "avatarSrc": "",
+    "aliases": [],
+    "sortKey": "2950",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    },
+    "roles": [
+      "orchestra"
+    ]
   }
 ]

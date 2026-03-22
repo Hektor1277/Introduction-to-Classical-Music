@@ -448,6 +448,87 @@ describe("person cleanup", () => {
     );
   });
 
+  it("creates a formal orchestra entry when venue metadata actually contains the ensemble name", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-sinopoli",
+          slug: "sinopoli",
+          name: "Giuseppe Sinopoli",
+          nameLatin: "Giuseppe Sinopoli",
+          country: "Italy",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0015",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+      ],
+      works: [
+        {
+          id: "work-mahler-5",
+          composerId: "composer-beethoven",
+          groupIds: ["work-group-symphony"],
+          slug: "mahler-5",
+          title: "Symphony No. 5",
+          titleLatin: "Symphony No. 5",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          sortKey: "0020",
+          updatedAt: "2026-03-22T00:00:00.000Z",
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-sinopoli-1999",
+          workId: "work-mahler-5",
+          slug: "sinopoli-1999",
+          title: "Sinopoli - 1999",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "conductor", personId: "person-sinopoli", displayName: "Giuseppe Sinopoli", label: "指挥" })],
+          links: [],
+          notes: "",
+          performanceDateText: "1999",
+          venueText: "Sächsische Staatskapelle Dresden",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+    const repairedRecording = nextLibrary.recordings[0];
+    const createdPerson = nextLibrary.people.find((person) => person.nameLatin === "Sächsische Staatskapelle Dresden");
+
+    expect(createdPerson).toMatchObject({
+      roles: ["orchestra"],
+      name: "Sächsische Staatskapelle Dresden",
+    });
+    expect(repairedRecording.credits).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "orchestra",
+          personId: createdPerson?.id,
+          displayName: "Sächsische Staatskapelle Dresden",
+        }),
+      ]),
+    );
+    expect(repairedRecording.venueText).toBe("");
+  });
+
   it("removes unreferenced composite ensemble placeholder entries after credits are split and rebound", () => {
     const library = createBaseLibrary({
       people: [

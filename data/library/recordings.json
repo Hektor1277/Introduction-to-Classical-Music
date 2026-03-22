@@ -10485,7 +10485,7 @@
     "id": "recording-第五交响曲-西诺波利1999",
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "西诺波利1999",
-    "title": "西诺波利 - 1999",
+    "title": "西诺波利 - Sächsische Staatskapelle Dresden - 1999",
     "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
@@ -10497,6 +10497,12 @@
         "personId": "person-朱塞佩西诺波利",
         "displayName": "朱塞佩·西诺波利",
         "label": "文件名推断"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-sa-chsische-staatskapelle-dresden",
+        "displayName": "Sächsische Staatskapelle Dresden",
+        "label": "元数据推断"
       }
     ],
     "links": [
@@ -10508,7 +10514,7 @@
     ],
     "notes": "",
     "performanceDateText": "1999",
-    "venueText": "Sächsische Staatskapelle Dresden",
+    "venueText": "",
     "albumTitle": "",
     "label": "",
     "releaseDate": "",
