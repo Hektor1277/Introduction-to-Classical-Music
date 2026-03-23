@@ -5,6 +5,10 @@ import { buildRecordingDisplayTitle } from "../../shared/src/display.js";
 import { findPersonForCredit, isPlaceholderValue } from "./person-cleanup.js";
 
 type ParsedLegacyRecording = ReturnType<typeof parseLegacyRecordingHtml>;
+export type RecordingLegacyRepairHint = {
+  resolutionHint: "auto-fixable" | "manual-backfill";
+  details?: string[];
+};
 
 function compact(value: unknown) {
   return String(value ?? "").trim();
@@ -183,6 +187,26 @@ function getMissingRequiredCreditRoles(recording: Pick<Recording, "credits" | "w
   }
 
   return missingRoles;
+}
+
+export function classifyRecordingLegacyRepairHint(
+  library: LibraryData,
+  recording: Recording,
+  parsed: ParsedLegacyRecording,
+): RecordingLegacyRepairHint {
+  const preview = repairRecordingFromLegacyParse(library, recording, parsed);
+  const missingRoles = getMissingRequiredCreditRoles(preview);
+
+  if (missingRoles.length === 0) {
+    return {
+      resolutionHint: "auto-fixable",
+    };
+  }
+
+  return {
+    resolutionHint: "manual-backfill",
+    details: [`archive 中缺少可解析的关键署名：${missingRoles.join(", ")}`],
+  };
 }
 
 export function recordingNeedsLegacyRepair(
