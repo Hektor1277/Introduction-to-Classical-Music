@@ -6,6 +6,7 @@ import path from "node:path";
 import { loadLibraryFromDisk, loadReviewQueue } from "../packages/data-core/src/library-store.js";
 import {
   auditLibraryData,
+  buildManualBackfillReference,
   buildManualBackfillQueue,
   groupManualBackfillQueue,
   summarizeLibraryAuditIssues,
@@ -15,6 +16,12 @@ import { classifyRecordingLegacyRepairHint } from "../packages/data-core/src/rec
 
 const SOURCE_ROOT_NAME = "an incomplete guide to classical music";
 const defaultSources = [path.join(process.cwd(), "materials", "archive", "an incomplete guide to classical music.rar")];
+const unresolvedManualBackfillPath = path.join(
+  process.cwd(),
+  "materials",
+  "references",
+  "manual-recording-backfills.unresolved.json",
+);
 
 async function exists(targetPath: string) {
   try {
@@ -119,6 +126,12 @@ async function main() {
   const summary = summarizeLibraryAuditIssues(issues);
   const manualBackfillQueue = buildManualBackfillQueue(library, issues);
   const manualBackfillGroups = groupManualBackfillQueue(manualBackfillQueue);
+  const manualBackfillReference = buildManualBackfillReference(manualBackfillQueue);
+
+  if (process.argv.includes("--write-manual-backfill-reference")) {
+    await fs.mkdir(path.dirname(unresolvedManualBackfillPath), { recursive: true });
+    await fs.writeFile(unresolvedManualBackfillPath, `${JSON.stringify(manualBackfillReference, null, 2)}\n`, "utf8");
+  }
 
   console.log(
     JSON.stringify(
@@ -127,6 +140,7 @@ async function main() {
         sample: issues.slice(0, 20),
         manualBackfillQueue,
         manualBackfillGroups,
+        manualBackfillReference,
       },
       null,
       2,

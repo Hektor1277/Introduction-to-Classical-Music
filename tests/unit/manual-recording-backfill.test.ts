@@ -231,4 +231,112 @@ describe("manual recording backfill", () => {
       ]),
     );
   });
+  it("can remove wrong derived credits and move venue-only legacy text out of performance date", () => {
+    const base = createLibrary();
+    const library = validateLibrary({
+      ...base,
+      people: [
+        ...base.people,
+        {
+          id: "person-rudin",
+          slug: "rudin",
+          name: "浜氬巻灞卞ぇ路椴佷竵",
+          fullName: "浜氬巻灞卞ぇ路椴佷竵",
+          nameLatin: "Alexander Rudin",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-virsaladze",
+          slug: "virsaladze",
+          name: "鍩冭幈绱㈢淮灏旇惃鎷夋辰",
+          fullName: "鍩冭幈绱㈢淮灏旇惃鎷夋辰",
+          nameLatin: "Eliso Virsaladze",
+          country: "Georgia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0021",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-rudin-short",
+          slug: "rudin-short",
+          name: "椴佷竵",
+          fullName: "椴佷竵",
+          nameLatin: "Rudin",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0022",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-rudin-virsaladze",
+          workId: "work-beethoven-9",
+          slug: "rudin-virsaladze",
+          title: "浜氬巻灞卞ぇ路椴佷竵 - 鍩冭幈绱㈢淮灏旇惃鎷夋辰 - 椴佷竵 - 鑾柉绉戥煶涔愬闄㈠ぇ闊充箰鍘�",
+          workTypeHint: "concerto",
+          sortKey: "0011",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-23T00:00:00.000Z",
+          images: [],
+          credits: [
+            { role: "conductor", personId: "person-rudin", displayName: "浜氬巻灞卞ぇ路椴佷竵", label: "鎸囨尌" },
+            { role: "soloist", personId: "person-virsaladze", displayName: "鍩冭幈绱㈢淮灏旇惃鎷夋辰", label: "鏂囦欢鍚嶈ˉ褰�" },
+            { role: "soloist", personId: "person-rudin-short", displayName: "椴佷竵", label: "鏂囦欢鍚嶈ˉ褰�" },
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "鑾柉绉戥煶涔愬闄㈠ぇ闊充箰鍘�",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          legacyPath: "legacy/rudin-virsaladze.htm",
+        },
+      ],
+    });
+
+    const repaired = applyManualRecordingBackfills(library, [
+      {
+        recordingId: "recording-rudin-virsaladze",
+        removeCredits: [{ role: "soloist", personId: "person-rudin-short" }],
+        metadata: {
+          performanceDateText: "",
+          venueText: "鑾柉绉戥煶涔愬闄㈠ぇ闊充箰鍘�",
+        },
+      },
+    ]);
+
+    const recording = repaired.recordings[0];
+    expect(recording.performanceDateText).toBe("");
+    expect(recording.venueText).toBe("鑾柉绉戥煶涔愬闄㈠ぇ闊充箰鍘�");
+    expect(recording.credits).toHaveLength(2);
+    expect(recording.credits).not.toEqual(expect.arrayContaining([expect.objectContaining({ personId: "person-rudin-short" })]));
+    expect(recording.title).toBe("浜氬巻灞卞ぇ路椴佷竵 - 鍩冭幈绱㈢淮灏旇惃鎷夋辰 - 鑾柉绉戥煶涔愬闄㈠ぇ闊充箰鍘�");
+  });
 });

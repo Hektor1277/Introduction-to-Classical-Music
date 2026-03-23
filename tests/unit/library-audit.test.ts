@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { validateLibrary, type LibraryData, type Recording } from "@/lib/schema";
 import type { ReviewQueueEntry } from "../../packages/data-core/src/library-store.js";
-import { auditLibraryData, buildManualBackfillQueue, groupManualBackfillQueue } from "../../packages/data-core/src/library-audit.js";
+import {
+  auditLibraryData,
+  buildManualBackfillQueue,
+  buildManualBackfillReference,
+  groupManualBackfillQueue,
+} from "../../packages/data-core/src/library-audit.js";
 
 function buildBaseLibrary(): LibraryData {
   return validateLibrary({
@@ -431,5 +436,38 @@ describe("auditLibraryData", () => {
         ],
       }),
     ]);
+  });
+
+  it("builds a stable unresolved manual backfill reference payload", () => {
+    const queue = [
+      {
+        entityId: "recording-1",
+        issueCode: "recording-missing-credit-role" as const,
+        composerId: "composer-beethoven",
+        composerName: "璐濆鑺�",
+        workId: "work-beethoven-7",
+        workTitle: "绗竷浜ゅ搷鏇�",
+        recordingId: "recording-1",
+        recordingTitle: "鍗℃媺鎵?- 鏌忔灄鐖变箰涔愬洟 - 1977",
+        workTypeHint: "orchestral",
+        missingRoles: ["orchestra_or_ensemble"],
+        sourcePath: "legacy/recording-1.htm",
+        details: ["archive 缂哄皯鍏抽敭缃插悕"],
+      },
+    ];
+
+    const reference = buildManualBackfillReference(queue);
+
+    expect(reference).toEqual({
+      total: 1,
+      groups: [
+        expect.objectContaining({
+          composerId: "composer-beethoven",
+          workId: "work-beethoven-7",
+          itemCount: 1,
+        }),
+      ],
+      entries: queue,
+    });
   });
 });

@@ -60,5 +60,22 @@
         "label": "乐团"
       }
     ]
+  },
+  {
+    "recordingId": "recording-a小调钢琴协奏曲-维尔萨拉泽-and-鲁丁",
+    "notes": "原始 HTML 仅给出指挥亚历山大·鲁丁与地点“莫斯科音乐学院大音乐厅”，并未给出第二独奏者；当前“鲁丁”独奏 credit 为文件名误补，需移除，同时把地点从时间字段移回 venue。",
+    "sources": [
+      "archive HTML: 维尔萨拉泽&鲁丁.htm"
+    ],
+    "removeCredits": [
+      {
+        "role": "soloist",
+        "personId": "person-鲁丁"
+      }
+    ],
+    "metadata": {
+      "performanceDateText": "",
+      "venueText": "莫斯科音乐学院大音乐厅"
+    }
   }
 ]

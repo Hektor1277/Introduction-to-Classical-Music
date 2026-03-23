@@ -1,11 +1,14 @@
-import type { Credit, LibraryData } from "../../shared/src/schema.js";
+import type { Credit, LibraryData, Recording } from "../../shared/src/schema.js";
 import { ensurePeopleForCredits, findPersonForCredit } from "./person-cleanup.js";
 import { rebuildRecordingDerivedFields } from "./recording-repair.js";
+
+type ManualRecordingMetadata = Partial<Pick<Recording, "performanceDateText" | "venueText" | "albumTitle" | "label" | "releaseDate">>;
 
 export type ManualRecordingBackfillEntry = {
   recordingId: string;
   removeCredits?: Array<Partial<Pick<Credit, "role" | "displayName" | "personId">>>;
   credits?: Array<Pick<Credit, "role" | "displayName"> & Partial<Pick<Credit, "label" | "personId">>>;
+  metadata?: ManualRecordingMetadata;
 };
 
 function compact(value: unknown) {
@@ -49,6 +52,20 @@ function removeCredits(existing: Credit[], removals: Array<Partial<Pick<Credit, 
   });
 }
 
+function normalizeManualMetadata(metadata: ManualRecordingMetadata | undefined) {
+  if (!metadata) {
+    return {};
+  }
+
+  const nextMetadata: ManualRecordingMetadata = {};
+  for (const key of ["performanceDateText", "venueText", "albumTitle", "label", "releaseDate"] as const) {
+    if (Object.prototype.hasOwnProperty.call(metadata, key)) {
+      nextMetadata[key] = compact(metadata[key]);
+    }
+  }
+  return nextMetadata;
+}
+
 export function applyManualRecordingBackfills(library: LibraryData, entries: ManualRecordingBackfillEntry[]) {
   let nextLibrary = library;
   let changed = false;
@@ -65,7 +82,8 @@ export function applyManualRecordingBackfills(library: LibraryData, entries: Man
       displayName: compact(credit.displayName),
       personId: compact(credit.personId),
     }));
-    if (normalizedCredits.length === 0 && removals.length === 0) {
+    const metadata = normalizeManualMetadata(entry.metadata);
+    if (normalizedCredits.length === 0 && removals.length === 0 && Object.keys(metadata).length === 0) {
       continue;
     }
 
@@ -92,6 +110,7 @@ export function applyManualRecordingBackfills(library: LibraryData, entries: Man
     const mergedCredits = mergeCredits(cleanedCredits, resolvedCredits);
     const rebuiltRecording = rebuildRecordingDerivedFields(nextLibrary, {
       ...currentRecording,
+      ...metadata,
       credits: mergedCredits,
     });
     nextRecordings[recordingIndex] = rebuiltRecording;

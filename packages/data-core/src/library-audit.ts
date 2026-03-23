@@ -64,6 +64,12 @@ export type ManualBackfillQueueGroup = {
   entries: ManualBackfillQueueEntry[];
 };
 
+export type ManualBackfillReference = {
+  total: number;
+  groups: ManualBackfillQueueGroup[];
+  entries: ManualBackfillQueueEntry[];
+};
+
 function compact(value: unknown) {
   return String(value ?? "").trim();
 }
@@ -500,4 +506,12 @@ export function groupManualBackfillQueue(entries: ManualBackfillQueueEntry[]): M
       entries: [...group.entries].sort((left, right) => compareText(left.recordingTitle, right.recordingTitle)),
     }))
     .sort((left, right) => compareText(left.composerName, right.composerName) || compareText(left.workTitle, right.workTitle));
+}
+
+export function buildManualBackfillReference(entries: ManualBackfillQueueEntry[]): ManualBackfillReference {
+  return {
+    total: entries.length,
+    groups: groupManualBackfillQueue(entries),
+    entries,
+  };
 }

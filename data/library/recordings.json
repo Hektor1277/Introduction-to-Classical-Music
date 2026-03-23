@@ -2273,7 +2273,7 @@
     "id": "recording-a小调钢琴协奏曲-维尔萨拉泽-and-鲁丁",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "维尔萨拉泽-and-鲁丁",
-    "title": "亚历山大·鲁丁 - 维尔萨拉泽 - 鲁丁 - 莫斯科音乐学院大音乐厅",
+    "title": "亚历山大·鲁丁 - 维尔萨拉泽 - 莫斯科音乐学院大音乐厅",
     "workTypeHint": "concerto",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
@@ -2291,12 +2291,6 @@
         "personId": "person-埃莉索维尔萨拉泽",
         "displayName": "埃莉索·维尔萨拉泽",
         "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-鲁丁",
-        "displayName": "鲁丁",
-        "label": "文件名补录"
       }
     ],
     "links": [
@@ -2312,8 +2306,8 @@
       }
     ],
     "notes": "",
-    "performanceDateText": "莫斯科音乐学院大音乐厅",
-    "venueText": "",
+    "performanceDateText": "",
+    "venueText": "莫斯科音乐学院大音乐厅",
     "albumTitle": "",
     "label": "",
     "releaseDate": "",

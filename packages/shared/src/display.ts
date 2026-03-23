@@ -445,6 +445,7 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
   const groupSecondary = joinDisplayValues(credits.groups, "secondary");
   const combinedEnsemblePrimary = dedupe([orchestraPrimary, groupPrimary]).join(shortTitleDelimiter);
   const combinedEnsembleSecondary = dedupe([orchestraSecondary, groupSecondary]).join(shortTitleDelimiter);
+  const titleEventPrimary = eventMeta.primary || eventMeta.secondary;
 
   let title = "";
   let subtitle = "";
@@ -460,15 +461,15 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
     principalSecondary = conductorSecondary;
     supportingPrimary = soloistPrimary;
     supportingSecondary = soloistSecondary;
-    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
-    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
+    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, titleEventPrimary]);
+    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, titleEventPrimary]);
   } else if (presentationFamily === "opera") {
     principalPrimary = conductorPrimary;
     principalSecondary = conductorSecondary;
     supportingPrimary = singerPrimary || soloistPrimary;
     supportingSecondary = singerSecondary || soloistSecondary;
-    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, eventMeta.primary]);
-    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, eventMeta.primary]);
+    title = joinRecordingTitleParts([principalPrimary, supportingPrimary, ensemblePrimary, titleEventPrimary]);
+    subtitle = joinRecordingTitleParts([principalSecondary, supportingSecondary, ensembleSecondary, titleEventPrimary]);
   } else if (presentationFamily === "solo" || presentationFamily === "chamber") {
     const leadPrimary = groupPrimary || soloistPrimary || singerPrimary;
     const leadSecondary = groupSecondary || soloistSecondary || singerSecondary;
@@ -492,8 +493,8 @@ export function buildRecordingDisplayModel(recording: Recording, library: Librar
     principalSecondary = conductorSecondary;
     supportingPrimary = soloistPrimary || singerPrimary;
     supportingSecondary = soloistSecondary || singerSecondary;
-    title = joinRecordingTitleParts([principalPrimary, ensemblePrimary, eventMeta.primary]) || compact(recording.title);
-    subtitle = joinRecordingTitleParts([principalSecondary, ensembleSecondary, eventMeta.primary]);
+    title = joinRecordingTitleParts([principalPrimary, ensemblePrimary, titleEventPrimary]) || compact(recording.title);
+    subtitle = joinRecordingTitleParts([principalSecondary, ensembleSecondary, titleEventPrimary]);
   }
 
   const safeTitle = title || compact(recording.title) || "*";
