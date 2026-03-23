@@ -4,7 +4,12 @@ import os from "node:os";
 import path from "node:path";
 
 import { loadLibraryFromDisk, loadReviewQueue } from "../packages/data-core/src/library-store.js";
-import { auditLibraryData, summarizeLibraryAuditIssues } from "../packages/data-core/src/library-audit.js";
+import {
+  auditLibraryData,
+  buildManualBackfillQueue,
+  groupManualBackfillQueue,
+  summarizeLibraryAuditIssues,
+} from "../packages/data-core/src/library-audit.js";
 import { parseLegacyRecordingHtml } from "../packages/data-core/src/legacy-parser.js";
 import { classifyRecordingLegacyRepairHint } from "../packages/data-core/src/recording-repair.js";
 
@@ -112,12 +117,16 @@ async function main() {
   const recordingIssueHints = await buildArchiveIssueHints(library);
   const issues = auditLibraryData(library, { reviewQueue, recordingIssueHints });
   const summary = summarizeLibraryAuditIssues(issues);
+  const manualBackfillQueue = buildManualBackfillQueue(library, issues);
+  const manualBackfillGroups = groupManualBackfillQueue(manualBackfillQueue);
 
   console.log(
     JSON.stringify(
       {
         summary,
         sample: issues.slice(0, 20),
+        manualBackfillQueue,
+        manualBackfillGroups,
       },
       null,
       2,

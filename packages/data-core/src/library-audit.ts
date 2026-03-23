@@ -40,8 +40,36 @@ export type LibraryAuditOptions = {
   recordingIssueHints?: Record<string, RecordingIssueHint>;
 };
 
+export type ManualBackfillQueueEntry = {
+  entityId: string;
+  issueCode: LibraryAuditIssueCode;
+  composerId: string;
+  composerName: string;
+  workId: string;
+  workTitle: string;
+  recordingId: string;
+  recordingTitle: string;
+  workTypeHint: string;
+  missingRoles: string[];
+  sourcePath: string;
+  details: string[];
+};
+
+export type ManualBackfillQueueGroup = {
+  composerId: string;
+  composerName: string;
+  workId: string;
+  workTitle: string;
+  itemCount: number;
+  entries: ManualBackfillQueueEntry[];
+};
+
 function compact(value: unknown) {
   return String(value ?? "").trim();
+}
+
+function compareText(left: string, right: string) {
+  return left.localeCompare(right, "zh-Hans-CN-u-co-pinyin");
 }
 
 function isPlaceholderValue(value: unknown) {
@@ -388,4 +416,88 @@ export function summarizeLibraryAuditIssues(issues: LibraryAuditIssue[]) {
     byEntityType,
     byResolutionHint,
   };
+}
+
+export function buildManualBackfillQueue(
+  library: LibraryData,
+  issues: LibraryAuditIssue[],
+): ManualBackfillQueueEntry[] {
+  const composerMap = new Map(library.composers.map((composer) => [composer.id, composer]));
+  const workMap = new Map(library.works.map((work) => [work.id, work]));
+  const entries: ManualBackfillQueueEntry[] = [];
+
+  for (const auditIssue of issues) {
+    if (auditIssue.resolutionHint !== "manual-backfill" || auditIssue.entityType !== "recording") {
+      continue;
+    }
+    if (auditIssue.code !== "recording-missing-credit-role") {
+      continue;
+    }
+
+    const recording = library.recordings.find((entry) => entry.id === auditIssue.entityId);
+    if (!recording) {
+      continue;
+    }
+    const work = workMap.get(recording.workId);
+    if (!work) {
+      continue;
+    }
+    const composer = composerMap.get(work.composerId);
+    if (!composer) {
+      continue;
+    }
+
+    entries.push({
+      entityId: auditIssue.entityId,
+      issueCode: auditIssue.code,
+      composerId: composer.id,
+      composerName: compact(composer.name),
+      workId: work.id,
+      workTitle: compact(work.title),
+      recordingId: recording.id,
+      recordingTitle: compact(buildRecordingDisplayTitle(recording, library)) || compact(recording.title),
+      workTypeHint: normalizeRecordingWorkTypeHintValue(recording.workTypeHint),
+      missingRoles: getRecordingMissingCreditRoles(recording),
+      sourcePath: compact(auditIssue.sourcePath) || compact(recording.legacyPath),
+      details: auditIssue.details || [],
+    });
+  }
+
+  return entries.sort((left, right) => {
+    return (
+      compareText(left.composerName, right.composerName) ||
+      compareText(left.workTitle, right.workTitle) ||
+      compareText(left.recordingTitle, right.recordingTitle) ||
+      compareText(left.entityId, right.entityId)
+    );
+  });
+}
+
+export function groupManualBackfillQueue(entries: ManualBackfillQueueEntry[]): ManualBackfillQueueGroup[] {
+  const groups = new Map<string, ManualBackfillQueueGroup>();
+
+  for (const entry of entries) {
+    const key = `${entry.composerId}::${entry.workId}`;
+    const existing = groups.get(key);
+    if (existing) {
+      existing.entries.push(entry);
+      existing.itemCount += 1;
+      continue;
+    }
+    groups.set(key, {
+      composerId: entry.composerId,
+      composerName: entry.composerName,
+      workId: entry.workId,
+      workTitle: entry.workTitle,
+      itemCount: 1,
+      entries: [entry],
+    });
+  }
+
+  return [...groups.values()]
+    .map((group) => ({
+      ...group,
+      entries: [...group.entries].sort((left, right) => compareText(left.recordingTitle, right.recordingTitle)),
+    }))
+    .sort((left, right) => compareText(left.composerName, right.composerName) || compareText(left.workTitle, right.workTitle));
 }

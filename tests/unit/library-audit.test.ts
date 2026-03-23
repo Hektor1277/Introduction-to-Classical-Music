@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { validateLibrary, type LibraryData, type Recording } from "@/lib/schema";
 import type { ReviewQueueEntry } from "../../packages/data-core/src/library-store.js";
-import { auditLibraryData } from "../../packages/data-core/src/library-audit.js";
+import { auditLibraryData, buildManualBackfillQueue, groupManualBackfillQueue } from "../../packages/data-core/src/library-audit.js";
 
 function buildBaseLibrary(): LibraryData {
   return validateLibrary({
@@ -381,5 +381,55 @@ describe("auditLibraryData", () => {
         }),
       ]),
     );
+  });
+
+  it("builds a structured manual backfill queue for unresolved recording credit gaps", () => {
+    const library = buildBaseLibrary();
+    const brokenRecording = {
+      ...library.recordings[0],
+      id: "recording-choral-missing-ensemble",
+      slug: "choral-gap",
+      title: "浼仼鏂潶",
+      workTypeHint: "orchestral" as const,
+      legacyPath: "浣滄洸瀹?璐濆鑺?浜ゅ搷鏇?绗節浜ゅ搷鏇测€滃悎鍞扁€?浼仼鏂潶1989.htm",
+      credits: [{ role: "conductor", personId: "person-karajan", displayName: "鍗℃媺鎵?", label: "鎸囨尌" }],
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, brokenRecording), {
+      recordingIssueHints: {
+        "recording-choral-missing-ensemble": {
+          resolutionHint: "manual-backfill",
+          details: ["archive 涓己灏戝彲瑙ｆ瀽鐨勪箰鍥㈢讲鍚?"],
+        },
+      },
+    });
+
+    const queue = buildManualBackfillQueue(replaceRecording(library, brokenRecording), issues);
+    const groups = groupManualBackfillQueue(queue);
+
+    expect(queue).toEqual([
+      expect.objectContaining({
+        entityId: "recording-choral-missing-ensemble",
+        composerId: "composer-beethoven",
+        workId: "work-beethoven-7",
+        workTypeHint: "orchestral",
+        missingRoles: ["orchestra_or_ensemble"],
+        sourcePath: "浣滄洸瀹?璐濆鑺?浜ゅ搷鏇?绗節浜ゅ搷鏇测€滃悎鍞扁€?浼仼鏂潶1989.htm",
+        details: ["archive 涓己灏戝彲瑙ｆ瀽鐨勪箰鍥㈢讲鍚?"],
+      }),
+    ]);
+
+    expect(groups).toEqual([
+      expect.objectContaining({
+        composerId: "composer-beethoven",
+        workId: "work-beethoven-7",
+        itemCount: 1,
+        entries: [
+          expect.objectContaining({
+            entityId: "recording-choral-missing-ensemble",
+          }),
+        ],
+      }),
+    ]);
   });
 });
