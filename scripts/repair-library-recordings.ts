@@ -198,6 +198,7 @@ async function main() {
       ).length;
     }
   }
+  library = cleanupLibraryPeople(library);
   library = backfillRecordingWorkTypeHints(library);
   library = stripUnusedPlaceholderPeople(library);
   if (!dryRun) {

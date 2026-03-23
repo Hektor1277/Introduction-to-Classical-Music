@@ -4,6 +4,7 @@ import { rebuildRecordingDerivedFields } from "./recording-repair.js";
 
 export type ManualRecordingBackfillEntry = {
   recordingId: string;
+  removeCredits?: Array<Partial<Pick<Credit, "role" | "displayName" | "personId">>>;
   credits?: Array<Pick<Credit, "role" | "displayName"> & Partial<Pick<Credit, "label" | "personId">>>;
 };
 
@@ -34,6 +35,20 @@ function mergeCredits(existing: Credit[], additions: Credit[]) {
   return merged;
 }
 
+function removeCredits(existing: Credit[], removals: Array<Partial<Pick<Credit, "role" | "displayName" | "personId">>>) {
+  if (!removals.length) {
+    return existing;
+  }
+  return existing.filter((credit) => {
+    return !removals.some((removal) => {
+      const roleMatches = compact(removal.role) ? compact(removal.role) === compact(credit.role) : true;
+      const displayNameMatches = compact(removal.displayName) ? compact(removal.displayName) === compact(credit.displayName) : true;
+      const personIdMatches = compact(removal.personId) ? compact(removal.personId) === compact(credit.personId) : true;
+      return roleMatches && displayNameMatches && personIdMatches;
+    });
+  });
+}
+
 export function applyManualRecordingBackfills(library: LibraryData, entries: ManualRecordingBackfillEntry[]) {
   let nextLibrary = library;
   let changed = false;
@@ -45,11 +60,18 @@ export function applyManualRecordingBackfills(library: LibraryData, entries: Man
     }
 
     const normalizedCredits = (entry.credits || []).map(normalizeManualCredit).filter((credit) => compact(credit.displayName));
-    if (normalizedCredits.length === 0) {
+    const removals: Array<Partial<Pick<Credit, "role" | "displayName" | "personId">>> = (entry.removeCredits || []).map((credit) => ({
+      role: credit.role,
+      displayName: compact(credit.displayName),
+      personId: compact(credit.personId),
+    }));
+    if (normalizedCredits.length === 0 && removals.length === 0) {
       continue;
     }
 
-    nextLibrary = ensurePeopleForCredits(nextLibrary, normalizedCredits);
+    if (normalizedCredits.length > 0) {
+      nextLibrary = ensurePeopleForCredits(nextLibrary, normalizedCredits);
+    }
 
     const resolvedCredits = normalizedCredits.map((credit) => {
       const matchedPerson = compact(credit.personId)
@@ -66,7 +88,8 @@ export function applyManualRecordingBackfills(library: LibraryData, entries: Man
 
     const nextRecordings = [...nextLibrary.recordings];
     const currentRecording = nextRecordings[recordingIndex];
-    const mergedCredits = mergeCredits(currentRecording.credits || [], resolvedCredits);
+    const cleanedCredits = removeCredits(currentRecording.credits || [], removals);
+    const mergedCredits = mergeCredits(cleanedCredits, resolvedCredits);
     const rebuiltRecording = rebuildRecordingDerivedFields(nextLibrary, {
       ...currentRecording,
       credits: mergedCredits,

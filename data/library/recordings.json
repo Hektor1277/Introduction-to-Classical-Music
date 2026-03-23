@@ -2624,19 +2624,13 @@
     "id": "recording-d小调小提琴协奏曲-伊格内修斯-and-施内沃伊特1945",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "伊格内修斯-and-施内沃伊特1945",
-    "title": "施内沃伊特 - 伊格内修斯 - HKO & RO - 1945.12.8",
+    "title": "施内沃伊特 - 伊格内修斯 - 赫尔辛基爱乐乐团 - 芬兰广播乐团 - 1945.12.8",
     "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
     "updatedAt": "2026-03-07T15:13:50.637Z",
     "images": [],
     "credits": [
-      {
-        "role": "orchestra",
-        "personId": "person-orchestra-hko-and-ro",
-        "displayName": "HKO & RO",
-        "label": "乐团"
-      },
       {
         "role": "conductor",
         "personId": "person-georg-schne-evoigt-乔治施内沃伊特",
@@ -2650,10 +2644,16 @@
         "label": "文件名补录"
       },
       {
-        "role": "soloist",
-        "personId": "person-georg-schne-evoigt-乔治施内沃伊特",
-        "displayName": "乔治·施内沃伊特",
-        "label": "文件名补录"
+        "role": "orchestra",
+        "personId": "person-helsinki-philharmonic-orchestra",
+        "displayName": "赫尔辛基爱乐乐团",
+        "label": "乐团"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-芬兰广播乐团",
+        "displayName": "芬兰广播乐团",
+        "label": "乐团"
       }
     ],
     "links": [
@@ -4731,15 +4731,15 @@
       },
       {
         "role": "ensemble",
+        "personId": "person-ensemble-柏林自由音乐会联合乐团",
         "displayName": "柏林自由音乐会联合乐团",
-        "label": "联合乐团",
-        "personId": "person-ensemble-柏林自由音乐会联合乐团"
+        "label": "联合乐团"
       },
       {
         "role": "chorus",
+        "personId": "person-chorus-柏林自由音乐会联合合唱团",
         "displayName": "柏林自由音乐会联合合唱团",
-        "label": "联合合唱团",
-        "personId": "person-chorus-柏林自由音乐会联合合唱团"
+        "label": "联合合唱团"
       }
     ],
     "links": [
@@ -8963,9 +8963,9 @@
       },
       {
         "role": "orchestra",
+        "personId": "person-orchestra-巴塞罗那交响乐团",
         "displayName": "巴塞罗那交响乐团",
-        "label": "乐团",
-        "personId": "person-orchestra-巴塞罗那交响乐团"
+        "label": "乐团"
       }
     ],
     "links": [

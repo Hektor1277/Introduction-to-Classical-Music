@@ -31,5 +31,34 @@
         "label": "乐团"
       }
     ]
+  },
+  {
+    "recordingId": "recording-d小调小提琴协奏曲-伊格内修斯-and-施内沃伊特1945",
+    "notes": "HKO & RO 为联合署名，可安全拆分为赫尔辛基爱乐乐团与芬兰广播乐团；同时移除文件名误补出的第二独奏者。",
+    "sources": [
+      "Yle Living Archive: Schnéevoigt, Ignatius ja kaksi orkesteria"
+    ],
+    "removeCredits": [
+      {
+        "role": "orchestra",
+        "displayName": "HKO & RO"
+      },
+      {
+        "role": "soloist",
+        "personId": "person-georg-schne-evoigt-乔治施内沃伊特"
+      }
+    ],
+    "credits": [
+      {
+        "role": "orchestra",
+        "displayName": "赫尔辛基爱乐乐团",
+        "label": "乐团"
+      },
+      {
+        "role": "orchestra",
+        "displayName": "芬兰广播乐团",
+        "label": "乐团"
+      }
+    ]
   }
 ]

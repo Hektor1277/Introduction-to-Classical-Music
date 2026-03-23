@@ -142,4 +142,93 @@ describe("manual recording backfill", () => {
 
     expect(repaired).toEqual(library);
   });
+
+  it("can replace a legacy compound credit with structured multiple credits", () => {
+    const library = createLibrary({
+      people: [
+        {
+          id: "person-bernstein",
+          slug: "bernstein",
+          name: "伯恩斯坦",
+          fullName: "伦纳德·伯恩斯坦",
+          nameLatin: "Leonard Bernstein",
+          country: "United States",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-hko-ro",
+          slug: "hko-and-ro",
+          name: "HKO & RO",
+          fullName: "HKO & RO",
+          nameLatin: "HKO & RO",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-bernstein-1989",
+          workId: "work-beethoven-9",
+          slug: "bernstein-1989",
+          title: "伯恩斯坦",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-23T00:00:00.000Z",
+          images: [],
+          credits: [
+            { role: "conductor", personId: "person-bernstein", displayName: "伯恩斯坦", label: "指挥" },
+            { role: "orchestra", personId: "person-hko-ro", displayName: "HKO & RO", label: "乐团" },
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1945.12.8",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          legacyPath: "legacy/bernstein-1989.htm",
+        },
+      ],
+    });
+
+    const repaired = applyManualRecordingBackfills(library, [
+      {
+        recordingId: "recording-bernstein-1989",
+        removeCredits: [{ role: "orchestra", displayName: "HKO & RO" }],
+        credits: [
+          { role: "orchestra", displayName: "赫尔辛基爱乐乐团", label: "乐团" },
+          { role: "orchestra", displayName: "芬兰广播乐团", label: "乐团" },
+        ],
+      },
+    ]);
+
+    const recording = repaired.recordings[0];
+    expect(recording.credits).not.toEqual(expect.arrayContaining([expect.objectContaining({ displayName: "HKO & RO" })]));
+    expect(recording.credits).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ role: "orchestra", displayName: "赫尔辛基爱乐乐团" }),
+        expect.objectContaining({ role: "orchestra", displayName: "芬兰广播乐团" }),
+      ]),
+    );
+  });
 });
