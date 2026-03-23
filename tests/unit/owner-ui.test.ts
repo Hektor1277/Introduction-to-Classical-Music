@@ -312,6 +312,29 @@ describe("owner ui helpers", () => {
     expect(script).toContain("syncRecordingCreditsField");
   });
 
+  it("keeps recording credits in a hidden canonical payload while primary conductor and orchestra selects only sync shortcut rows", async () => {
+    const html = await fs.readFile(path.resolve("apps/owner/web/index.html"), "utf8");
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(html).toContain('name="credits" type="hidden"');
+    expect(script).toContain("readRecordingCreditsFromEditor");
+    expect(script).toContain("upsertPrimaryRecordingCredit(form, \"conductor\"");
+    expect(script).toContain("upsertPrimaryRecordingCredit(form, \"orchestra\"");
+    expect(script).toContain("syncPrimaryRecordingCreditSelects");
+  });
+
+  it("exposes the full recording credit role set for multi-person and multi-group versions", async () => {
+    const script = await fs.readFile(path.resolve("apps/owner/web/app.js"), "utf8");
+
+    expect(script).toContain('["conductor", "指挥"]');
+    expect(script).toContain('["orchestra", "乐团"]');
+    expect(script).toContain('["chorus", "合唱"]');
+    expect(script).toContain('["ensemble", "组合"]');
+    expect(script).toContain('["soloist", "独奏"]');
+    expect(script).toContain('["singer", "歌手"]');
+    expect(script).toContain('["instrumentalist", "器乐"]');
+  });
+
   it("keeps empty review content aligned to the top instead of pushing controls downward", async () => {
     const css = await fs.readFile(path.resolve("apps/owner/web/styles.css"), "utf8");
 
