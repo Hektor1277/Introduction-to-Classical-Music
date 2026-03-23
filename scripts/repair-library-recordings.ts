@@ -5,6 +5,10 @@ import path from "node:path";
 
 import { loadLibraryFromDisk, saveLibraryToDisk, writeGeneratedArtifacts } from "../packages/data-core/src/library-store.js";
 import { parseLegacyRecordingHtml } from "../packages/data-core/src/legacy-parser.js";
+import {
+  applyManualRecordingBackfills,
+  type ManualRecordingBackfillEntry,
+} from "../packages/data-core/src/manual-recording-backfill.js";
 import { cleanupLibraryPeople, ensurePeopleForCredits, isPlaceholderPerson } from "../packages/data-core/src/person-cleanup.js";
 import {
   backfillRecordingWorkTypeHints,
@@ -16,6 +20,7 @@ const SOURCE_ROOT_NAME = "an incomplete guide to classical music";
 const defaultSources = [
   path.join(process.cwd(), "materials", "archive", "an incomplete guide to classical music.rar"),
 ];
+const manualBackfillFilePath = path.join(process.cwd(), "materials", "references", "manual-recording-backfills.json");
 
 function compact(value: unknown) {
   return String(value ?? "").trim();
@@ -28,6 +33,15 @@ async function exists(targetPath: string) {
   } catch {
     return false;
   }
+}
+
+async function loadManualRecordingBackfills() {
+  if (!(await exists(manualBackfillFilePath))) {
+    return [] as ManualRecordingBackfillEntry[];
+  }
+  const raw = await fs.readFile(manualBackfillFilePath, "utf8");
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed) ? (parsed as ManualRecordingBackfillEntry[]) : [];
 }
 
 async function extractArchive(sourcePath: string) {
@@ -105,6 +119,7 @@ async function main() {
 
   const recordingsToRepair = library.recordings.filter((recording) => recordingNeedsLegacyRepair(library, recording));
   let repairedCount = 0;
+  let manualBackfillAppliedCount = 0;
   let backfilledCount = library.recordings.filter((recording, index) => recording.workTypeHint !== originalLibrary.recordings[index]?.workTypeHint).length;
   let normalizedTitleCount = library.recordings.filter((recording, index) => compact(recording.title) !== compact(originalLibrary.recordings[index]?.title)).length;
   let normalizedMetadataCount = library.recordings.filter(
@@ -154,6 +169,35 @@ async function main() {
   }
 
   library = cleanupLibraryPeople(library);
+  const manualBackfills = await loadManualRecordingBackfills();
+  if (manualBackfills.length > 0) {
+    const beforeKey = JSON.stringify(library.recordings.map((recording) => ({ id: recording.id, credits: recording.credits, title: recording.title })));
+    library = applyManualRecordingBackfills(library, manualBackfills);
+    const afterMap = new Map(library.recordings.map((recording) => [recording.id, recording]));
+    for (const entry of manualBackfills) {
+      const nextRecording = afterMap.get(entry.recordingId);
+      if (!nextRecording) {
+        continue;
+      }
+      const hadAllCredits = (entry.credits || []).every((credit) =>
+        (nextRecording.credits || []).some(
+          (candidate) => compact(candidate.role) === compact(credit.role) && compact(candidate.displayName) === compact(credit.displayName),
+        ),
+      );
+      if (hadAllCredits) {
+        manualBackfillAppliedCount += 1;
+      }
+    }
+    const afterKey = JSON.stringify(library.recordings.map((recording) => ({ id: recording.id, credits: recording.credits, title: recording.title })));
+    if (beforeKey !== afterKey) {
+      normalizedTitleCount = library.recordings.filter((recording, index) => compact(recording.title) !== compact(originalLibrary.recordings[index]?.title)).length;
+      normalizedMetadataCount = library.recordings.filter(
+        (recording, index) =>
+          compact(recording.performanceDateText) !== compact(originalLibrary.recordings[index]?.performanceDateText) ||
+          compact(recording.venueText) !== compact(originalLibrary.recordings[index]?.venueText),
+      ).length;
+    }
+  }
   library = backfillRecordingWorkTypeHints(library);
   library = stripUnusedPlaceholderPeople(library);
   if (!dryRun) {
@@ -173,6 +217,7 @@ async function main() {
         dryRun,
         workTypeBackfilled: backfilledCount,
         recordingsRepairedFromLegacy: repairedCount,
+        manualRecordingBackfillsApplied: manualBackfillAppliedCount,
         normalizedTitles: normalizedTitleCount,
         normalizedMetadata: normalizedMetadataCount,
         remainingUnknownWorkTypeHints: remainingUnknown,

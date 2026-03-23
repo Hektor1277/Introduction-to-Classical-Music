@@ -1,0 +1,35 @@
+[
+  {
+    "recordingId": "recording-第九交响曲合唱-伯恩斯坦1989",
+    "notes": "1989 柏林自由音乐会并非单一常设乐团与合唱团，采用最小正式条目回填联合乐团与联合合唱团，以保留该场特殊编制。",
+    "sources": [
+      "Bernstein in Berlin"
+    ],
+    "credits": [
+      {
+        "role": "ensemble",
+        "displayName": "柏林自由音乐会联合乐团",
+        "label": "联合乐团"
+      },
+      {
+        "role": "chorus",
+        "displayName": "柏林自由音乐会联合合唱团",
+        "label": "联合合唱团"
+      }
+    ]
+  },
+  {
+    "recordingId": "recording-d大调小提琴协奏曲-马宁-and-杰拉伯特1916",
+    "notes": "根据现存巴塞罗那音乐会资料，这场 1916 年录音所用乐团可安全回填为巴塞罗那交响乐团。",
+    "sources": [
+      "Concert de Juan Manén (10 Desembre 1916)"
+    ],
+    "credits": [
+      {
+        "role": "orchestra",
+        "displayName": "巴塞罗那交响乐团",
+        "label": "乐团"
+      }
+    ]
+  }
+]

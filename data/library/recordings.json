@@ -2633,7 +2633,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "",
+        "personId": "person-orchestra-hko-and-ro",
         "displayName": "HKO & RO",
         "label": "乐团"
       },
@@ -4716,7 +4716,7 @@
     "id": "recording-第九交响曲合唱-伯恩斯坦1989",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "伯恩斯坦1989",
-    "title": "伯恩斯坦",
+    "title": "伯恩斯坦 - 柏林自由音乐会联合乐团 - 柏林自由音乐会联合合唱团",
     "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -4728,6 +4728,18 @@
         "personId": "person-伯恩斯坦1977",
         "displayName": "伦纳德·伯恩斯坦",
         "label": "文件名推断"
+      },
+      {
+        "role": "ensemble",
+        "displayName": "柏林自由音乐会联合乐团",
+        "label": "联合乐团",
+        "personId": "person-ensemble-柏林自由音乐会联合乐团"
+      },
+      {
+        "role": "chorus",
+        "displayName": "柏林自由音乐会联合合唱团",
+        "label": "联合合唱团",
+        "personId": "person-chorus-柏林自由音乐会联合合唱团"
       }
     ],
     "links": [
@@ -8924,7 +8936,7 @@
     "id": "recording-d大调小提琴协奏曲-马宁-and-杰拉伯特1916",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "马宁-and-杰拉伯特1916",
-    "title": "康科迪・杰拉伯特 - 马宁 - 杰拉伯特1916 - 1916",
+    "title": "康科迪・杰拉伯特 - 马宁 - 杰拉伯特1916 - 巴塞罗那交响乐团 - 1916",
     "workTypeHint": "concerto",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
@@ -8948,6 +8960,12 @@
         "personId": "person-杰拉伯特1916",
         "displayName": "杰拉伯特1916",
         "label": "文件名补录"
+      },
+      {
+        "role": "orchestra",
+        "displayName": "巴塞罗那交响乐团",
+        "label": "乐团",
+        "personId": "person-orchestra-巴塞罗那交响乐团"
       }
     ],
     "links": [
