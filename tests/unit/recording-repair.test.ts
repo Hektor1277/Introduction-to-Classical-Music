@@ -311,6 +311,106 @@ describe("recording repair helpers", () => {
     expect(recordingNeedsLegacyRepair(library, library.recordings[0])).toBe(true);
   });
 
+  it("does not flag structurally valid recordings only because optional venue or release metadata is blank", () => {
+    const library = validateLibrary({
+      composers: [
+        {
+          id: "composer-beethoven",
+          slug: "beethoven",
+          name: "贝多芬",
+          fullName: "路德维希·凡·贝多芬",
+          nameLatin: "Ludwig van Beethoven",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+      ],
+      people: [
+        {
+          id: "person-karajan",
+          slug: "karajan",
+          name: "卡拉扬",
+          fullName: "赫伯特·冯·卡拉扬",
+          nameLatin: "Herbert von Karajan",
+          country: "Austria",
+          avatarSrc: "",
+          roles: ["conductor"],
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+        },
+        {
+          id: "person-bpo",
+          slug: "berliner-philharmoniker",
+          name: "柏林爱乐乐团",
+          fullName: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          country: "Germany",
+          avatarSrc: "",
+          roles: ["orchestra"],
+          aliases: [],
+          sortKey: "0011",
+          summary: "",
+        },
+      ],
+      workGroups: [
+        {
+          id: "group-beethoven-symphony",
+          composerId: "composer-beethoven",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "work-beethoven-7",
+          composerId: "composer-beethoven",
+          groupIds: ["group-beethoven-symphony"],
+          slug: "symphony-7",
+          title: "第七交响曲",
+          titleLatin: "Symphony No. 7 in A major, Op. 92",
+          aliases: [],
+          catalogue: "Op. 92",
+          summary: "",
+          sortKey: "0010",
+          updatedAt: "2026-03-22T00:00:00.000Z",
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-beethoven-7-karajan-1963",
+          workId: "work-beethoven-7",
+          slug: "karajan-1963",
+          title: "卡拉扬 - 柏林爱乐乐团 - 1963",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-22T00:00:00.000Z",
+          images: [],
+          credits: [
+            { role: "conductor", personId: "person-karajan", displayName: "卡拉扬", label: "指挥" },
+            { role: "orchestra", personId: "person-bpo", displayName: "柏林爱乐乐团", label: "乐团" },
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1963",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          legacyPath: "legacy/beethoven-7-karajan-1963.htm",
+        },
+      ],
+    });
+
+    expect(recordingNeedsLegacyRepair(library, library.recordings[0])).toBe(false);
+  });
+
   it("promotes venueText that actually names an orchestra into a structured orchestra credit", () => {
     const library = validateLibrary({
       composers: [

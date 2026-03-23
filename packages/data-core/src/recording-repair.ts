@@ -228,7 +228,7 @@ export function recordingNeedsLegacyRepair(
     return false;
   }
 
-  if (hasPlaceholderCredits(recording) || isMetadataIncomplete(recording)) {
+  if (hasPlaceholderCredits(recording)) {
     return true;
   }
 
@@ -289,10 +289,6 @@ export function backfillRecordingWorkTypeHints(library: LibraryData): LibraryDat
 
 function hasPlaceholderCredits(recording: Pick<Recording, "credits">) {
   return (recording.credits || []).some((credit) => isPlaceholderCredit(credit));
-}
-
-function isMetadataIncomplete(recording: Pick<Recording, "performanceDateText" | "venueText" | "albumTitle" | "label" | "releaseDate">) {
-  return !compact(recording.performanceDateText) || !compact(recording.venueText) || (!compact(recording.albumTitle) && !compact(recording.label) && !compact(recording.releaseDate));
 }
 
 export function repairRecordingFromLegacyParse(library: LibraryData, recording: Recording, parsed: ParsedLegacyRecording): Recording {
