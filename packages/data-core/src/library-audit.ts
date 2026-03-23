@@ -5,6 +5,7 @@ import {
   resolveRecordingWorkTypeHintValue,
 } from "../../shared/src/recording-rules.js";
 import type { Composer, LibraryData, Person, Recording } from "../../shared/src/schema.js";
+import type { ReviewQueueEntry } from "./library-store.js";
 
 export type LibraryAuditSeverity = "info" | "warning" | "error";
 export type LibraryAuditEntityType = "composer" | "person" | "work" | "recording";
@@ -14,6 +15,7 @@ export type LibraryAuditIssueCode =
   | "recording-missing-credit-role"
   | "recording-work-type-conflict"
   | "recording-title-credit-mismatch";
+export type LibraryAuditResolutionHint = "auto-fixable" | "manual-backfill";
 
 export type LibraryAuditIssue = {
   code: LibraryAuditIssueCode;
@@ -23,6 +25,19 @@ export type LibraryAuditIssue = {
   message: string;
   source: string;
   suggestedFix: string;
+  resolutionHint?: LibraryAuditResolutionHint;
+  sourcePath?: string;
+  details?: string[];
+};
+
+export type RecordingIssueHint = {
+  resolutionHint: LibraryAuditResolutionHint;
+  details?: string[];
+};
+
+export type LibraryAuditOptions = {
+  reviewQueue?: ReviewQueueEntry[];
+  recordingIssueHints?: Record<string, RecordingIssueHint>;
 };
 
 function compact(value: unknown) {
@@ -42,7 +57,7 @@ function issue(input: LibraryAuditIssue): LibraryAuditIssue {
   return input;
 }
 
-function countCredits(recording: Recording) {
+function countCredits(recording: Pick<Recording, "credits">) {
   const credits = recording.credits || [];
   return {
     conductorCount: credits.filter((credit) => credit.role === "conductor").length,
@@ -59,6 +74,78 @@ function getRecordingWorkContext(library: LibraryData, recording: Recording) {
     .map((groupId) => (library.workGroups || []).find((group) => group.id === groupId))
     .filter((group): group is LibraryData["workGroups"][number] => Boolean(group));
   return { work, workGroups };
+}
+
+function findReviewQueueSourcePath(
+  reviewQueue: ReviewQueueEntry[] | undefined,
+  entityType: LibraryAuditEntityType,
+  entityId: string,
+) {
+  return (
+    reviewQueue?.find((entry) => entry.entityType === entityType && entry.entityId === entityId && compact(entry.sourcePath))
+      ?.sourcePath || ""
+  );
+}
+
+export function getRecordingMissingCreditRoles(recording: Pick<Recording, "credits" | "workTypeHint">) {
+  const counts = countCredits(recording);
+  const family = deriveRecordingPresentationFamily({
+    workTypeHint: recording.workTypeHint,
+    ...counts,
+  });
+  const ensembleCount = counts.orchestraCount + counts.ensembleCount;
+  const featuredCount = counts.soloistCount + counts.singerCount;
+  const missingRoles: string[] = [];
+
+  if (family === "orchestral") {
+    if (counts.conductorCount === 0) {
+      missingRoles.push("conductor");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "concerto") {
+    if (featuredCount === 0) {
+      missingRoles.push("soloist");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "opera") {
+    if (counts.conductorCount === 0) {
+      missingRoles.push("conductor");
+    }
+    if (featuredCount === 0) {
+      missingRoles.push("singer_or_soloist");
+    }
+    if (ensembleCount === 0) {
+      missingRoles.push("orchestra_or_ensemble");
+    }
+  } else if (family === "solo") {
+    if (featuredCount === 0 && ensembleCount === 0) {
+      missingRoles.push("soloist");
+    }
+  } else if (family === "chamber") {
+    if (ensembleCount === 0 && featuredCount < 2) {
+      missingRoles.push("ensemble_or_multiple_soloists");
+    }
+  }
+
+  return missingRoles;
+}
+
+function buildRecordingIssueHint(recording: Recording, options: LibraryAuditOptions) {
+  const sourcePath =
+    findReviewQueueSourcePath(options.reviewQueue, "recording", recording.id) || compact(recording.legacyPath);
+  const explicitHint = options.recordingIssueHints?.[recording.id];
+
+  return {
+    sourcePath,
+    resolutionHint:
+      explicitHint?.resolutionHint ||
+      (sourcePath || compact(recording.legacyPath) ? ("auto-fixable" as const) : ("manual-backfill" as const)),
+    details: explicitHint?.details || [],
+  };
 }
 
 function auditPlaceholderEntities(library: LibraryData) {
@@ -91,7 +178,7 @@ function auditPlaceholderEntities(library: LibraryData) {
         severity: "error",
         entityType: "person",
         entityId: person.id,
-        message: `人物/团体条目仍是占位值：${compact(person.name) || person.id}`,
+        message: `人物或团体条目仍是占位值：${compact(person.name) || person.id}`,
         source: "people",
         suggestedFix: "将该占位人物或团体迁移为正式实体，或在清理引用后删除。",
       }),
@@ -113,7 +200,7 @@ function auditPlaceholderEntities(library: LibraryData) {
         entityId: recording.id,
         message: `版本条目仍引用占位 credit：${compact(placeholderCredit.displayName) || compact(placeholderCredit.personId)}`,
         source: "recordings.credits",
-        suggestedFix: "回读原始 archive 并为该 credit 绑定正式人物/团体条目。",
+        suggestedFix: "回读原始 archive 并为该 credit 绑定正式人物或团体条目。",
       }),
     );
   }
@@ -147,9 +234,9 @@ function auditSuspiciousEnsemblePeople(library: LibraryData) {
         severity: "warning",
         entityType: "person",
         entityId: person.id,
-        message: `团体条目名称疑似包含复合署名或历史注记：${compact(person.name)}`,
+        message: `团体名称疑似混入复合署名或历史注记：${compact(person.name)}`,
         source: "people.name",
-        suggestedFix: "优先拆分为多个结构化 credit；若只是历史别名或括注，则回绑到正式团体条目并将当前值降为 alias。",
+        suggestedFix: "优先拆分为多个结构化 credit；若只是历史别名或括注，则回绑到正式团体条目并降为 alias。",
       }),
     );
   }
@@ -157,7 +244,7 @@ function auditSuspiciousEnsemblePeople(library: LibraryData) {
   return issues;
 }
 
-function auditRecordingRequiredCredits(library: LibraryData) {
+function auditRecordingRequiredCredits(library: LibraryData, options: LibraryAuditOptions) {
   const issues: LibraryAuditIssue[] = [];
 
   for (const recording of library.recordings || []) {
@@ -166,47 +253,13 @@ function auditRecordingRequiredCredits(library: LibraryData) {
       workTypeHint: recording.workTypeHint,
       ...counts,
     });
-    const ensembleCount = counts.orchestraCount + counts.ensembleCount;
-    const featuredCount = counts.soloistCount + counts.singerCount;
-
-    const missing: string[] = [];
-    if (family === "orchestral") {
-      if (counts.conductorCount === 0) {
-        missing.push("conductor");
-      }
-      if (ensembleCount === 0) {
-        missing.push("orchestra_or_ensemble");
-      }
-    } else if (family === "concerto") {
-      if (featuredCount === 0) {
-        missing.push("soloist");
-      }
-      if (ensembleCount === 0) {
-        missing.push("orchestra_or_ensemble");
-      }
-    } else if (family === "opera") {
-      if (counts.conductorCount === 0) {
-        missing.push("conductor");
-      }
-      if (featuredCount === 0) {
-        missing.push("singer_or_soloist");
-      }
-      if (ensembleCount === 0) {
-        missing.push("orchestra_or_ensemble");
-      }
-    } else if (family === "solo") {
-      if (featuredCount === 0 && ensembleCount === 0) {
-        missing.push("soloist");
-      }
-    } else if (family === "chamber") {
-      if (ensembleCount === 0 && featuredCount < 2) {
-        missing.push("ensemble_or_multiple_soloists");
-      }
-    }
+    const missing = getRecordingMissingCreditRoles(recording);
 
     if (missing.length === 0) {
       continue;
     }
+
+    const hint = buildRecordingIssueHint(recording, options);
 
     issues.push(
       issue({
@@ -216,7 +269,10 @@ function auditRecordingRequiredCredits(library: LibraryData) {
         entityId: recording.id,
         message: `版本缺少 ${family} 体裁所需的关键署名：${missing.join(", ")}`,
         source: "recordings.credits",
-        suggestedFix: `补齐 ${missing.join(", ")} 对应的 credit，并优先从正式人物/团体条目中选择。`,
+        suggestedFix: `补齐 ${missing.join(", ")} 对应的 credit，并优先从正式人物或团体条目中选择。`,
+        resolutionHint: hint.resolutionHint,
+        sourcePath: hint.sourcePath || undefined,
+        details: hint.details?.length ? hint.details : undefined,
       }),
     );
   }
@@ -287,11 +343,11 @@ function auditRecordingTitleCreditMismatches(library: LibraryData) {
   return issues;
 }
 
-export function auditLibraryData(library: LibraryData): LibraryAuditIssue[] {
+export function auditLibraryData(library: LibraryData, options: LibraryAuditOptions = {}): LibraryAuditIssue[] {
   return [
     ...auditPlaceholderEntities(library),
     ...auditSuspiciousEnsemblePeople(library),
-    ...auditRecordingRequiredCredits(library),
+    ...auditRecordingRequiredCredits(library, options),
     ...auditRecordingWorkTypeConflicts(library),
     ...auditRecordingTitleCreditMismatches(library),
   ];
@@ -316,11 +372,20 @@ export function summarizeLibraryAuditIssues(issues: LibraryAuditIssue[]) {
       issues.filter((entry) => entry.entityType === entityType).length,
     ]),
   );
+  const byResolutionHint = Object.fromEntries(
+    [...new Set(issues.map((entry) => entry.resolutionHint).filter(Boolean) as LibraryAuditResolutionHint[])]
+      .sort()
+      .map((resolutionHint) => [
+        resolutionHint,
+        issues.filter((entry) => entry.resolutionHint === resolutionHint).length,
+      ]),
+  );
 
   return {
     total: issues.length,
     byCode,
     bySeverity,
     byEntityType,
+    byResolutionHint,
   };
 }

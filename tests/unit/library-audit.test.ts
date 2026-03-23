@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { validateLibrary, type LibraryData, type Recording } from "@/lib/schema";
+import type { ReviewQueueEntry } from "../../packages/data-core/src/library-store.js";
 import { auditLibraryData } from "../../packages/data-core/src/library-audit.js";
 
 function buildBaseLibrary(): LibraryData {
@@ -209,6 +210,83 @@ describe("auditLibraryData", () => {
           entityId: "recording-concerto-missing-soloist",
           source: "recordings.credits",
           suggestedFix: expect.stringContaining("soloist"),
+        }),
+      ]),
+    );
+  });
+
+  it("annotates missing credit issues with source path and default auto-fixable hint when legacy source exists", () => {
+    const library = buildBaseLibrary();
+    const brokenRecording = {
+      ...library.recordings[0],
+      id: "recording-concerto-missing-orchestra",
+      workId: "work-beethoven-op54",
+      slug: "broken-concerto",
+      title: "安妮·费舍尔 - 1977",
+      workTypeHint: "concerto" as const,
+      legacyPath: "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm",
+      credits: [{ role: "soloist", personId: "person-anne", displayName: "安妮·费舍尔", label: "钢琴" }],
+    };
+    const reviewQueue: ReviewQueueEntry[] = [
+      {
+        entityId: "recording-concerto-missing-orchestra",
+        entityType: "recording",
+        issue: "missing-image",
+        sourcePath: "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm",
+      },
+    ];
+
+    const issues = auditLibraryData(replaceRecording(library, brokenRecording), { reviewQueue });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-missing-credit-role",
+          entityId: "recording-concerto-missing-orchestra",
+          sourcePath: "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm",
+          resolutionHint: "auto-fixable",
+        }),
+      ]),
+    );
+  });
+
+  it("allows audit hints to downgrade unresolved credit gaps to manual backfill", () => {
+    const library = buildBaseLibrary();
+    const brokenRecording = {
+      ...library.recordings[0],
+      id: "recording-choral-missing-ensemble",
+      slug: "choral-gap",
+      title: "伯恩斯坦",
+      workTypeHint: "orchestral" as const,
+      legacyPath: "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1989.htm",
+      credits: [{ role: "conductor", personId: "person-karajan", displayName: "卡拉扬", label: "指挥" }],
+    };
+    const reviewQueue: ReviewQueueEntry[] = [
+      {
+        entityId: "recording-choral-missing-ensemble",
+        entityType: "recording",
+        issue: "missing-performance-date",
+        sourcePath: "作曲家/贝多芬/交响曲/第九交响曲“合唱”/伯恩斯坦1989.htm",
+      },
+    ];
+
+    const issues = auditLibraryData(replaceRecording(library, brokenRecording), {
+      reviewQueue,
+      recordingIssueHints: {
+        "recording-choral-missing-ensemble": {
+          resolutionHint: "manual-backfill",
+          details: ["archive 中没有可解析的乐团或合唱署名"],
+        },
+      },
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-missing-credit-role",
+          entityId: "recording-choral-missing-ensemble",
+          resolutionHint: "manual-backfill",
+          details: ["archive 中没有可解析的乐团或合唱署名"],
         }),
       ]),
     );

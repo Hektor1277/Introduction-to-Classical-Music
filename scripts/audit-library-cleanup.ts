@@ -1,9 +1,9 @@
-import { loadLibraryFromDisk } from "../packages/data-core/src/library-store.js";
+import { loadLibraryFromDisk, loadReviewQueue } from "../packages/data-core/src/library-store.js";
 import { auditLibraryData, summarizeLibraryAuditIssues } from "../packages/data-core/src/library-audit.js";
 
 async function main() {
-  const library = await loadLibraryFromDisk();
-  const issues = auditLibraryData(library);
+  const [library, reviewQueue] = await Promise.all([loadLibraryFromDisk(), loadReviewQueue()]);
+  const issues = auditLibraryData(library, { reviewQueue });
   const summary = summarizeLibraryAuditIssues(issues);
 
   console.log(
