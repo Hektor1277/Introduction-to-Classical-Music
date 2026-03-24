@@ -251,6 +251,7 @@
 费城交响乐团 = 费城管弦乐团 = 费城乐团 = Philadelphia Orchestra = PpO
 芬兰广播乐团 = 芬兰广播交响乐团 = Finnish Radio Symphony Orchestra = FRSO = Radio-orkesteri
 哥德堡交响乐团 = Göteborgs Symfoniker
+哥伦比亚交响乐团 = Columbia Symphony Orchestra = COLUABIA SYMPHONY ORCHESTRA = CoSO
 国家音乐会古乐团 = 国家音乐会 = 国家音乐会乐团 = Le Concert des Nations = CDN
 海牙爱乐乐团 = 海牙管弦乐团 = 海牙交响乐团 = Hague Philharmonic Orchestra = Residentie Orkest = RO = The Hague Philharmonic
 赫尔辛基爱乐乐团 = 赫尔辛基管弦乐团 = 赫尔辛基交响乐团 = Helsinki Philharmonic Orchestra = Helsingin kaupunginorkesteri = HPO
@@ -288,8 +289,6 @@ BBC Symphony Orchestra = BBCSO
 BeSO = Berliner Sinfonie-Orchester
 Boston Symphony Orchestra
 City of Birmingham Symphony Orchestra = CBSO
-COLUABIA SYMPHONY ORCHESTRA
-CoSO = Columbia Symphony Orchestra
 Czech Philharmonic Orchestra
 Danmarks Radios Symfoniorkester = DR RadioSymfoniOrkestret = DR SymfoniOrkestret = DRSO
 Detroit Symphony Orchestra = DSO

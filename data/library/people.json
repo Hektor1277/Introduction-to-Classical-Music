@@ -6059,8 +6059,8 @@
     ]
   },
   {
-    "id": "person-ko-lner-rundfunk-sinfonie-orchester",
-    "slug": "ko-lner-rundfunk-sinfonie-orchester",
+    "id": "person-kolner-rundfunk-sinfonie-orchester",
+    "slug": "kolner-rundfunk-sinfonie-orchester",
     "name": "科隆西德广播交响乐团",
     "nameLatin": "Kölner Rundfunk-Sinfonie-Orchester",
     "country": "Germany",
@@ -6286,13 +6286,16 @@
     ]
   },
   {
-    "id": "person-orchestra-coluabia-symphony-orchestra",
-    "slug": "coluabia-symphony-orchestra",
-    "name": "COLUABIA SYMPHONY ORCHESTRA",
-    "nameLatin": "COLUABIA SYMPHONY ORCHESTRA",
-    "country": "",
+    "id": "person-orchestra-columbia-symphony-orchestra",
+    "slug": "columbia-symphony-orchestra",
+    "name": "哥伦比亚交响乐团",
+    "nameLatin": "Columbia Symphony Orchestra",
+    "country": "United States",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "COLUABIA SYMPHONY ORCHESTRA",
+      "CoSO"
+    ],
     "sortKey": "2730",
     "summary": "",
     "imageSourceUrl": "",

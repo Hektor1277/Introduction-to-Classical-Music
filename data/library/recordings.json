@@ -6125,7 +6125,7 @@
     "id": "recording-第六交响曲田园-瓦尔特1960",
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "瓦尔特1960",
-    "title": "瓦尔特 - COLUABIA SYMPHONY ORCHESTRA - 1960",
+    "title": "瓦尔特 - 哥伦比亚交响乐团 - 1960",
     "workTypeHint": "orchestral",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
@@ -6140,8 +6140,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-coluabia-symphony-orchestra",
-        "displayName": "COLUABIA SYMPHONY ORCHESTRA",
+        "personId": "person-orchestra-columbia-symphony-orchestra",
+        "displayName": "哥伦比亚交响乐团",
         "label": "乐团"
       }
     ],
@@ -9713,7 +9713,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-ko-lner-rundfunk-sinfonie-orchester",
+        "personId": "person-kolner-rundfunk-sinfonie-orchester",
         "displayName": "科隆西德广播交响乐团",
         "label": "乐团"
       },
@@ -10398,7 +10398,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-ko-lner-rundfunk-sinfonie-orchester",
+        "personId": "person-kolner-rundfunk-sinfonie-orchester",
         "displayName": "科隆西德广播交响乐团",
         "label": "乐团"
       },
