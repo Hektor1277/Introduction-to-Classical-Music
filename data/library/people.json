@@ -5570,18 +5570,21 @@
     ]
   },
   {
-    "id": "person-rundfunk-sinfonie-orchester",
-    "slug": "rundfunk-sinfonie-orchester",
-    "name": "德国广播交响乐团",
+    "id": "person-frankfurt-radio-symphony",
+    "slug": "frankfurt-radio-symphony",
+    "name": "法兰克福广播交响乐团",
     "nameLatin": "Frankfurt Radio Symphony",
     "country": "Germany",
     "avatarSrc": "",
     "aliases": [
       "FRS",
-      "德国广播交响乐团"
+      "德国广播交响乐团",
+      "Radio-Sinfonie-Orchester Frankfurt",
+      "hr-Sinfonieorchester Frankfurt",
+      "Sinfonie-Orchester des Hessischen Rundfunks"
     ],
     "sortKey": "2280",
-    "summary": "法兰克福广播交响乐团是德国黑森州广播电台的乐团，常驻老歌剧院和广播音乐厅，现任音乐总监为法国指挥家阿兰·阿尔蒂诺格鲁。乐团以演绎马勒和布鲁克纳作品闻名，是德国历史第三悠久的ARD广播乐团。",
+    "summary": "法兰克福广播交响乐团是德国黑森州广播电台（Hessischer Rundfunk, hr）的交响乐团，现代正式对外名称为 Frankfurt Radio Symphony，德文常见名称为 hr-Sinfonieorchester Frankfurt。乐团创建于1929年，历史上曾使用 Sinfonie-Orchester des Hessischen Rundfunks 与 Radio-Sinfonie-Orchester Frankfurt 等名称，常驻法兰克福老歌剧院和 hr-Sendesaal，以演绎马勒、布鲁克纳与现代作品闻名。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -6545,30 +6548,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "2860",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-orchestra-radio-sinfonie-orchester-frankfurt",
-    "slug": "radio-sinfonie-orchester-frankfurt",
-    "name": "Radio-Sinfonie-Orchester Frankfurt",
-    "nameLatin": "Radio-Sinfonie-Orchester Frankfurt",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2870",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",

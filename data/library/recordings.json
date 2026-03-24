@@ -5415,7 +5415,7 @@
     "id": "recording-第九交响曲合唱-阿本德罗特1950",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "阿本德罗特1950",
-    "title": "阿本德罗特 - 德国广播交响乐团 - 1950",
+    "title": "阿本德罗特 - 法兰克福广播交响乐团 - 1950",
     "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
@@ -5424,8 +5424,8 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-rundfunk-sinfonie-orchester",
-        "displayName": "德国广播交响乐团",
+        "personId": "person-frankfurt-radio-symphony",
+        "displayName": "法兰克福广播交响乐团",
         "label": "乐团"
       },
       {
@@ -9474,7 +9474,7 @@
     "id": "recording-第七交响曲-殷巴尔1986",
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "殷巴尔1986",
-    "title": "殷巴尔 - Radio-Sinfonie-Orchester Frankfurt - 1986",
+    "title": "殷巴尔 - 法兰克福广播交响乐团 - 1986",
     "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
@@ -9489,8 +9489,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-radio-sinfonie-orchester-frankfurt",
-        "displayName": "Radio-Sinfonie-Orchester Frankfurt",
+        "personId": "person-frankfurt-radio-symphony",
+        "displayName": "法兰克福广播交响乐团",
         "label": "乐团"
       }
     ],
