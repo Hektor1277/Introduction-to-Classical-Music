@@ -3,6 +3,12 @@ import path from "node:path";
 
 import { detectPlatformFromUrl } from "../../data-core/src/resource-links.js";
 import {
+  lookupOrchestraReference,
+  lookupPersonReference,
+  parseOrchestraReferenceText,
+  type ReferenceRegistry,
+} from "../../data-core/src/reference-registry.js";
+import {
   buildBatchRecordingCredits,
   buildBatchRecordingTitle,
   getBatchRecordingTemplateSpec,
@@ -57,6 +63,7 @@ type AnalyzeBatchImportOptions = {
   composerId?: string;
   workId?: string;
   workTypeHint?: string;
+  referenceRegistry?: ReferenceRegistry;
 };
 
 function compact(value: unknown) {
@@ -186,16 +193,13 @@ function buildStrictBatchParseNotes(workTypeHint: string) {
 
 export function parseOrchestraAbbreviationText(sourceText: string) {
   const entries = Object.create(null) as Record<string, string>;
-  for (const rawLine of String(sourceText ?? "").split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (!line || line.startsWith("#")) {
-      continue;
+  for (const entry of parseOrchestraReferenceText(sourceText)) {
+    for (const abbreviation of entry.abbreviations) {
+      const key = abbreviation.toUpperCase();
+      if (!entries[key]) {
+        entries[key] = entry.preferredValue || entry.canonicalLatin;
+      }
     }
-    const match = line.match(/^([A-Za-z0-9]+)\s*=\s*(.+)$/);
-    if (!match) {
-      continue;
-    }
-    entries[match[1].toUpperCase()] = match[2].trim();
   }
   return entries;
 }
@@ -215,6 +219,74 @@ export async function loadOrchestraAbbreviationMap(
   }
 
   return {};
+}
+
+function normalizeBatchValue(value: string, resolver: (input: string) => string) {
+  const normalized = compact(value);
+  if (!normalized || normalized === "-") {
+    return normalized;
+  }
+  return normalized
+    .split(/\s*\+\s*/g)
+    .map((item) => compact(item))
+    .filter(Boolean)
+    .map((item) => resolver(item))
+    .join(" + ");
+}
+
+function normalizeBatchSlotsWithReferenceRegistry(workTypeHint: string, slots: string[], referenceRegistry?: ReferenceRegistry) {
+  if (!referenceRegistry) {
+    return slots;
+  }
+
+  const resolvePerson = (value: string, roles: string | string[]) =>
+    lookupPersonReference(referenceRegistry, value, roles)?.preferredValue || compact(value);
+  const resolveOrchestra = (value: string) =>
+    lookupOrchestraReference(referenceRegistry, value)?.preferredValue ||
+    lookupPersonReference(referenceRegistry, value, ["ensemble", "global"])?.preferredValue ||
+    compact(value);
+
+  if (workTypeHint === "concerto") {
+    return [
+      normalizeBatchValue(slots[0] || "", (value) => resolvePerson(value, ["soloist", "instrumentalist", "pianist", "violinist", "global"])),
+      normalizeBatchValue(slots[1] || "", (value) => resolvePerson(value, ["conductor", "global"])),
+      normalizeBatchValue(slots[2] || "", resolveOrchestra),
+      slots[3] || "",
+      slots[4] || "",
+    ];
+  }
+
+  if (workTypeHint === "opera_vocal") {
+    return [
+      normalizeBatchValue(slots[0] || "", (value) => resolvePerson(value, ["conductor", "global"])),
+      normalizeBatchValue(slots[1] || "", (value) => resolvePerson(value, ["singer", "soloist", "soprano", "tenor", "baritone", "global"])),
+      normalizeBatchValue(slots[2] || "", resolveOrchestra),
+      slots[3] || "",
+      slots[4] || "",
+    ];
+  }
+
+  if (workTypeHint === "chamber_solo") {
+    return [
+      normalizeBatchValue(slots[0] || "", (value) => resolvePerson(value, ["soloist", "instrumentalist", "singer", "global"])),
+      normalizeBatchValue(slots[1] || "", (value) => {
+        const orchestraMatch = resolveOrchestra(value);
+        if (orchestraMatch !== compact(value)) {
+          return orchestraMatch;
+        }
+        return resolvePerson(value, ["ensemble", "soloist", "instrumentalist", "singer", "global"]);
+      }),
+      slots[2] || "",
+      slots[3] || "",
+    ];
+  }
+
+  return [
+    normalizeBatchValue(slots[0] || "", (value) => resolvePerson(value, ["conductor", "global"])),
+    normalizeBatchValue(slots[1] || "", resolveOrchestra),
+    slots[2] || "",
+    slots[3] || "",
+  ];
 }
 
 function collectBatchSelections(baseLibrary: LibraryData, fullDraftLibrary: LibraryData, draftEntities: BatchDraftEntities) {
@@ -298,7 +370,7 @@ export async function analyzeBatchImport(options: AnalyzeBatchImportOptions): Pr
   const parseNotes = [...buildStrictBatchParseNotes(workTypeHint), `已选作曲家：${composer.name}`, `已选作品：${work.title}`];
 
   for (const line of lines) {
-    const slots = splitStrictBatchLine(line);
+    const slots = normalizeBatchSlotsWithReferenceRegistry(workTypeHint, splitStrictBatchLine(line), options.referenceRegistry);
     const fieldCount = strictTemplateFieldCount(workTypeHint);
     if (slots.length !== fieldCount) {
       throw new Error(`批量导入模板不合法：${line}。当前 ${workTypeHint} 模板要求 ${fieldCount} 个字段，并使用 | 分隔。`);

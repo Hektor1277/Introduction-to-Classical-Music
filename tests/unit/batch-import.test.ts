@@ -8,6 +8,7 @@ import {
   normalizeBatchImportSource,
   parseOrchestraAbbreviationText,
 } from "@/lib/batch-import";
+import { buildReferenceRegistry } from "@/lib/reference-registry";
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -191,6 +192,29 @@ describe("batch import", () => {
     expect(result.draftEntities.recordings).toHaveLength(2);
     expect(result.draftEntities.recordings[0]?.entity.credits.map((item) => item.role)).toEqual(["conductor", "orchestra"]);
     expect(result.draftEntities.recordings[1]?.entity.links[0]?.url).toBe("https://example.com");
+  });
+
+  it("normalizes conductor and orchestra slots through the reference registry before drafting", async () => {
+    const result = await analyzeBatchImport({
+      sourceText: "Kletzki | VPO | 1975 | -",
+      library: baseLibrary(),
+      composerId: "composer-beethoven",
+      workId: "work-beethoven-5",
+      workTypeHint: "orchestral",
+      referenceRegistry: buildReferenceRegistry({
+        orchestraSourceText: "VPO = 维也纳爱乐乐团 = 维也纳爱乐 = Wiener Philharmoniker",
+        personSourceText: `
+#conductor
+克莱茨基 = Kletzki = Paul Kletzki
+`,
+      }),
+    });
+
+    expect(result.draftEntities.recordings[0]?.entity.title).toBe("克莱茨基 - 维也纳爱乐乐团 - 1975");
+    expect(result.draftEntities.recordings[0]?.entity.credits).toEqual([
+      { role: "conductor", displayName: "克莱茨基", personId: "", label: "" },
+      { role: "orchestra", displayName: "维也纳爱乐乐团", personId: "", label: "" },
+    ]);
   });
 
   it("supports concerto template slots and explicit missing values", async () => {

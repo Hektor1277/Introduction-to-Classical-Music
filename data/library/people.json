@@ -3622,7 +3622,8 @@
       "维也纳爱乐管弦乐团",
       "维也纳爱乐交响乐团",
       "WPVVPO",
-      "维也纳爱乐乐团"
+      "VPO",
+      "Vienna Philharmonic"
     ],
     "sortKey": "1430",
     "summary": "维也纳爱乐乐团成立于1842年，被公认为世界顶级交响乐团之一。",
@@ -3689,36 +3690,6 @@
     "imageSourceKind": "wikimedia-commons",
     "imageAttribution": "Wikipedia: Konzerthausorchester Berlin",
     "imageUpdatedAt": "2026-03-19T04:14:16.478Z",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-vienna-philharmonic",
-    "slug": "vienna-philharmonic",
-    "name": "维也纳爱乐乐团",
-    "nameLatin": "Vienna Philharmonic",
-    "country": "Austria",
-    "avatarSrc": "",
-    "aliases": [
-      "Vienna Philharmonic Orchestra",
-      "维也纳爱乐管弦乐团",
-      "维也纳爱乐",
-      "维也纳交响乐团",
-      "VPO"
-    ],
-    "sortKey": "1480",
-    "summary": "维也纳爱乐乐团成立于1842年，被公认为世界顶级交响乐团之一。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
     "infoPanel": {
       "text": "",
       "articleId": "",
@@ -3826,7 +3797,10 @@
     "aliases": [
       "皇家音乐厅管弦乐团",
       "RCO",
-      "阿姆斯特丹皇家音乐厅管弦乐团"
+      "阿姆斯特丹管弦乐团",
+      "荷兰皇家音乐厅管弦乐团",
+      "Concertgebouworkest",
+      "The Royal Concertgebouw Orchestra"
     ],
     "sortKey": "1520",
     "summary": "荷兰皇家音乐厅管弦乐团成立于1888年，驻厅于阿姆斯特丹皇家音乐厅，是世界顶尖交响乐团之一。1988年百年庆典时获授“皇家”称号。",
@@ -3854,8 +3828,7 @@
     "birthYear": 1923,
     "aliases": [
       "柏林广播乐团",
-      "RSB",
-      "BRSO"
+      "RSB"
     ],
     "sortKey": "1530",
     "summary": "柏林广播交响乐团是德国柏林的一支交响乐团，拥有114名乐手，是德国历史第二悠久的广播乐团。乐团主要在柏林音乐厅和柏林爱乐音乐厅演出，也在德国其他城市举办音乐会。",
@@ -3886,7 +3859,6 @@
       "斯图加特广播交响乐团",
       "SWR",
       "SWRSO",
-      "SRSO",
       "德国西南广播电台交响乐团"
     ],
     "sortKey": "1540",
@@ -3971,7 +3943,6 @@
       "海牙管弦乐团",
       "海牙交响乐团",
       "HPO",
-      "百度百科是一部内容开放",
       "海牙爱乐乐团"
     ],
     "sortKey": "1570",
@@ -4118,8 +4089,7 @@
       "纽约爱乐",
       "纽约交响乐团",
       "纽约爱乐交响乐团",
-      "NYP",
-      "纽约爱乐乐团"
+      "NYP"
     ],
     "sortKey": "1620",
     "summary": "纽约爱乐乐团是美国纽约的交响乐团，官方名称为纽约爱乐交响乐团协会，常被称为“五大”乐团之一。其驻地为林肯表演艺术中心的戴维·格芬厅。",
@@ -4334,35 +4304,6 @@
     ],
     "sortKey": "1720",
     "summary": "布达佩斯爱乐乐团是匈牙利主要交响乐团之一，成立于1853年，以演奏匈牙利作曲家的作品著称。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-orchestre-de-la-suisse-romande",
-    "slug": "orchestre-de-la-suisse-romande",
-    "name": "瑞士法语区管弦乐团",
-    "nameLatin": "Orchestre de la Suisse Romande",
-    "country": "Switzerland",
-    "avatarSrc": "",
-    "aliases": [
-      "瑞士罗曼德管弦乐团",
-      "瑞士法语区交响乐团",
-      "OSR",
-      "瑞士法语区管弦乐团"
-    ],
-    "sortKey": "1730",
-    "summary": "瑞士罗曼德管弦乐团（OSR）是总部位于日内瓦维多利亚音乐厅的瑞士交响乐团，除交响音乐会外，亦在日内瓦大剧院担任歌剧演出乐团。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -4852,7 +4793,6 @@
     "aliases": [
       "拉赫蒂管弦乐团",
       "拉赫蒂交响管弦乐团",
-      "LSO",
       "拉赫蒂交响乐团"
     ],
     "sortKey": "1940",
@@ -5034,8 +4974,8 @@
       "斯德哥尔摩节庆乐团",
       "斯德哥尔摩节庆管弦乐团",
       "SFO",
-      "斯德哥尔摩节日管弦乐团",
-      "斯德哥尔摩节日乐团"
+      "斯德哥尔摩节日乐团",
+      "The Stockholm Festival Orchestra"
     ],
     "sortKey": "2010",
     "summary": "斯德哥尔摩节日乐团是一支管弦乐团，相关信息收录于百度百科。",
@@ -5272,7 +5212,7 @@
       "瑞士罗曼德交响乐团",
       "日内瓦管弦乐团",
       "OSR",
-      "瑞士罗曼德管弦乐团"
+      "瑞士法语区交响乐团"
     ],
     "sortKey": "2100",
     "summary": "瑞士罗曼德管弦乐团，由指挥家安塞梅于1918年在日内瓦创立，以其对法国和瑞士作曲家作品的精湛演绎而闻名。",
@@ -5375,65 +5315,6 @@
     },
     "roles": [
       "conductor"
-    ]
-  },
-  {
-    "id": "person-the-musicaeterna-orchestra",
-    "slug": "the-musicaeterna-orchestra",
-    "name": "音乐永恒乐团",
-    "nameLatin": "MusicAeterna",
-    "country": "Russia",
-    "avatarSrc": "",
-    "aliases": [
-      "永恒乐团",
-      "musicAeterna",
-      "MO",
-      "音乐永恒乐团"
-    ],
-    "sortKey": "2140",
-    "summary": "MusicAeterna 是位于圣彼得堡的管弦乐团与合唱团，由指挥家泰奥多尔·库伦齐斯创立，以历史考据的演绎风格和涵盖早期至当代古典音乐的曲目多样性而闻名。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-concertgebouworkest",
-    "slug": "concertgebouworkest",
-    "name": "阿姆斯特丹皇家音乐厅管弦乐团",
-    "nameLatin": "Concertgebouworkest",
-    "country": "Netherlands",
-    "avatarSrc": "",
-    "aliases": [
-      "皇家音乐厅管弦乐团",
-      "阿姆斯特丹管弦乐团",
-      "荷兰皇家音乐厅管弦乐团",
-      "RCO",
-      "阿姆斯特丹皇家音乐厅管弦乐团"
-    ],
-    "sortKey": "2150",
-    "summary": "荷兰皇家音乐厅管弦乐团成立于1888年，驻地为阿姆斯特丹皇家音乐厅，是世界顶尖交响乐团之一。1988年百年庆典时获授“皇家”称号。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
     ]
   },
   {
@@ -5714,8 +5595,6 @@
     "country": "Germany",
     "avatarSrc": "",
     "aliases": [
-      "柏林广播交响乐团",
-      "RSB",
       "FRS",
       "德国广播交响乐团"
     ],
@@ -5746,8 +5625,11 @@
       "永恒乐团",
       "永恒音乐",
       "MA",
-      "百度百科是一部内容开放",
-      "永恒音乐乐团"
+      "永恒音乐乐团",
+      "musicAeterna",
+      "MO",
+      "永恒音乐管弦乐团",
+      "OM"
     ],
     "sortKey": "2290",
     "summary": "MusicAeterna是位于圣彼得堡的管弦乐团与合唱团，由指挥家泰奥多尔·库伦齐斯创立，以遵循历史演奏实践、演绎从早期到当代古典音乐的多样风格而闻名。",
@@ -6009,33 +5891,6 @@
     ]
   },
   {
-    "id": "person-the-stockholm-festival-orchestra",
-    "slug": "the-stockholm-festival-orchestra",
-    "name": "斯德哥尔摩节日管弦乐团",
-    "nameLatin": "The Stockholm Festival Orchestra",
-    "country": "Sweden",
-    "avatarSrc": "",
-    "aliases": [
-      "SFO",
-      "斯德哥尔摩节日乐团"
-    ],
-    "sortKey": "2410",
-    "summary": "斯德哥尔摩节日管弦乐团，是一支活跃于古典音乐领域的乐团。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
     "id": "person-门贝尔伯格",
     "slug": "门贝尔伯格",
     "name": "门贝尔伯格",
@@ -6228,35 +6083,6 @@
     ]
   },
   {
-    "id": "person-the-royal-concertgebouw-orchestra",
-    "slug": "the-royal-concertgebouw-orchestra",
-    "name": "荷兰皇家音乐厅管弦乐团",
-    "nameLatin": "The Royal Concertgebouw Orchestra",
-    "country": "Netherlands",
-    "avatarSrc": "",
-    "aliases": [
-      "阿姆斯特丹皇家音乐厅管弦乐团",
-      "荷兰皇家音乐厅管弦乐团",
-      "RCO",
-      "皇家音乐厅管弦乐团"
-    ],
-    "sortKey": "2500",
-    "summary": "荷兰皇家音乐厅管弦乐团成立于1888年，驻地为阿姆斯特丹皇家音乐厅，是世界顶尖交响乐团之一。1988年百年庆典时获授“皇家”称号。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
     "id": "person-ko-lner-rundfunk-sinfonie-orchester-wdr-sinfonieorchester-ko-ln",
     "slug": "ko-lner-rundfunk-sinfonie-orchester-wdr-sinfonieorchester-ko-ln",
     "name": "科隆西德广播交响乐团",
@@ -6270,65 +6096,6 @@
     ],
     "sortKey": "2510",
     "summary": "科隆西德广播交响乐团是德国科隆的广播乐团，主要演出场地为科隆爱乐音乐厅和西德广播公司沃拉夫广场广播大厦音乐厅。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-orchestra-musicaeterna",
-    "slug": "orchestra-musicaeterna",
-    "name": "音乐永恒乐团",
-    "nameLatin": "MusicAeterna",
-    "country": "Russia",
-    "avatarSrc": "",
-    "aliases": [
-      "永恒音乐管弦乐团",
-      "永恒乐团",
-      "OM",
-      "永恒音乐乐团"
-    ],
-    "sortKey": "2520",
-    "summary": "\"Musicaeterna\"是俄罗斯一支致力于演奏巴洛克及古典时期音乐的管弦乐团，以其对历史演奏实践的深入研究而闻名。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-new-york-philharmonic-orchestra",
-    "slug": "new-york-philharmonic-orchestra",
-    "name": "纽约爱乐乐团",
-    "nameLatin": "New York Philharmonic",
-    "country": "United States",
-    "avatarSrc": "",
-    "aliases": [
-      "纽约爱乐",
-      "纽约交响乐团",
-      "纽约爱乐交响乐团",
-      "NYP",
-      "纽约爱乐乐团"
-    ],
-    "sortKey": "2530",
-    "summary": "纽约爱乐乐团是美国主要交响乐团之一，常驻纽约林肯中心大卫·葛芬音乐厅，是“五大乐团”之一。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",

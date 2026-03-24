@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "build:indexes": "npm run runtime:build && node output/runtime/scripts/build-indexes.js",
     "import:legacy": "npm run runtime:build && node output/runtime/scripts/import-legacy.js",
+    "reference:sync": "npm run runtime:build && node output/runtime/scripts/sync-reference-registry.js",
     "owner": "npm run runtime:build && node output/runtime/apps/owner/server/owner-app.js",
     "check": "astro check && vitest run",
     "runtime:build": "tsc -p tsconfig.runtime.json"

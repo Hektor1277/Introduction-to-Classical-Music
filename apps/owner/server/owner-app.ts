@@ -29,7 +29,6 @@ import {
 } from "../../../packages/automation/src/automation-store.js";
 import {
   analyzeBatchImport,
-  loadOrchestraAbbreviationMap,
   type BatchDraftEntities,
 } from "../../../packages/automation/src/batch-import.js";
 import {
@@ -65,6 +64,7 @@ import { runAutomationChecks } from "../../../packages/automation/src/automation
 import { createHttpRecordingRetrievalProvider } from "../../../packages/automation/src/recording-retrieval.js";
 import { mergeBatchSessionIntoLibrary, replaceBatchDraftEntities, resolveConfirmedBatchSelection } from "./batch-session-utils.js";
 import { sanitizeAutomationRunProposalFields, sanitizeProposalPatchMap } from "./proposal-patch-utils.js";
+import { loadReferenceRegistry } from "../../../packages/data-core/src/reference-registry.js";
 
 const app = express();
 const port = Number(process.env.OWNER_PORT || 4322);
@@ -1353,7 +1353,7 @@ app.post("/api/batch-import/analyze", async (request, response) => {
       library,
       llmConfig,
       fetchImpl: automationFetch,
-      orchestraAbbreviations: await loadOrchestraAbbreviationMap(),
+      referenceRegistry: await loadReferenceRegistry(),
     });
 
     const now = new Date().toISOString();
