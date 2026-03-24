@@ -883,7 +883,7 @@
     "id": "recording-第七交响曲-老桑德林1999",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "老桑德林1999",
-    "title": "老桑德林BRSO - 德国西南广播电台交响乐团 - 1999",
+    "title": "老桑德林BRSO - 斯图加特广播交响乐团 - 1999",
     "workTypeHint": "orchestral",
     "sortKey": "0190",
     "isPrimaryRecommendation": false,
@@ -893,7 +893,7 @@
       {
         "role": "orchestra",
         "personId": "person-swr-radio-symphony-orchestra",
-        "displayName": "德国西南广播电台交响乐团",
+        "displayName": "斯图加特广播交响乐团",
         "label": "乐团"
       },
       {
@@ -2645,7 +2645,7 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-芬兰广播乐团",
+        "personId": "person-orchestra-radio-orkesteri",
         "displayName": "芬兰广播乐团",
         "label": "乐团"
       }
@@ -2741,7 +2741,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-swr-symphonieorchester-baden-baden-und-freiburg",
+        "personId": "person-swr-sinfonieorchester-baden-baden-und-freiburg",
         "displayName": "西南德意志广播交响乐团",
         "label": "乐团"
       },
@@ -8104,7 +8104,7 @@
     "id": "recording-d大调小提琴协奏曲-内芙-and-罗斯鲍德1949",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "内芙-and-罗斯鲍德1949",
-    "title": "汉斯·罗斯鲍德 - 内芙 - 罗斯鲍德 - South West German Radio Symphony Orchestra - September 25, 1949",
+    "title": "汉斯·罗斯鲍德 - 内芙 - 罗斯鲍德 - 西南德意志广播交响乐团 - September 25, 1949",
     "workTypeHint": "concerto",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -8131,8 +8131,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-south-west-german-radio-symphony-orchestra",
-        "displayName": "South West German Radio Symphony Orchestra",
+        "personId": "person-swr-sinfonieorchester-baden-baden-und-freiburg",
+        "displayName": "西南德意志广播交响乐团",
         "label": "乐团"
       }
     ],
@@ -8166,7 +8166,7 @@
     "id": "recording-d大调小提琴协奏曲-博贝斯库-and-克雷1960",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "博贝斯库-and-克雷1960",
-    "title": "汉斯·穆勒-克雷 - 博贝斯库 - 克雷 - Stuttgart Radio Symphony Orchestra - Stuttgart, 1960",
+    "title": "汉斯·穆勒-克雷 - 博贝斯库 - 克雷 - 斯图加特广播交响乐团 - Stuttgart, 1960",
     "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
@@ -8193,8 +8193,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-stuttgart-radio-symphony-orchestra",
-        "displayName": "Stuttgart Radio Symphony Orchestra",
+        "personId": "person-swr-radio-symphony-orchestra",
+        "displayName": "斯图加特广播交响乐团",
         "label": "乐团"
       }
     ],
@@ -8999,7 +8999,7 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-巴塞罗那交响乐团",
+        "personId": "person-orchestra-orquesta-sinfonica-de-barcelona",
         "displayName": "巴塞罗那交响乐团",
         "label": "乐团"
       }
@@ -9079,7 +9079,7 @@
     "id": "recording-第七交响曲-吉伦1993",
     "workId": "work-马勒-交响曲-第七交响曲",
     "slug": "吉伦1993",
-    "title": "吉伦 - SWR Sinfonieorchester Baden-Baden und Freiburg - Baden-Baden in April 1993",
+    "title": "吉伦 - 西南德意志广播交响乐团 - Baden-Baden in April 1993",
     "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -9094,8 +9094,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-swr-sinfonieorchester-baden-baden-und-freiburg",
-        "displayName": "SWR Sinfonieorchester Baden-Baden und Freiburg",
+        "personId": "person-swr-sinfonieorchester-baden-baden-und-freiburg",
+        "displayName": "西南德意志广播交响乐团",
         "label": "乐团"
       }
     ],

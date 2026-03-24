@@ -234,22 +234,21 @@
 巴伐利亚广播交响乐团 = 巴伐利亚广播管弦乐团 = Bavarian Radio Symphony Orchestra = BRSO = Symphonie-Orchester des Bayerischen Rundfunks
 巴黎管弦乐团 = Orchestre de Paris = OP
 巴黎音乐学院音乐会协会乐团 = Orchestre de la Société des Concerts du Conservatoire = OSCC
-巴塞罗那交响乐团 = Orquesta Sinfónica de Barcelona
+巴塞罗那交响乐团 = Orquesta Sinfónica de Barcelona = Barcelona Symphony Orchestra
 柏林爱乐乐团 = 柏林爱乐 = 柏林爱乐管弦乐团 = 柏林爱乐交响乐团 = Berliner Philharmoniker = Berlin Philharmonic = Berlin Philharmonic Orchestra = BP = BPhil = BPO = Symphony Orchestra Berlin
 柏林广播合唱团 = Chorus of Radio Berlin
-柏林广播交响乐团 = 柏林广播乐团 = Berlin Radio Symphony Orchestra = RSB = Rundfunk-Sinfonieorchester Berlin
+柏林广播交响乐团 = 柏林广播乐团 = Rundfunk-Sinfonieorchester Berlin = Berlin Radio Symphony Orchestra = RSB
 柏林音乐厅管弦乐团 = 柏林音乐厅交响乐团 = 柏林音乐厅乐团 = Konzerthausorchester Berlin = KOB
 北德广播交响乐团 = 汉堡NDR交响乐团 = NDR交响乐团 = NDR Elbphilharmonie Orchestra = NEO
 不来梅爱乐乐团 = 不来梅国家爱乐乐团 = 不来梅州立爱乐乐团 = Bremen Philharmonisches Staatsorchester = BPSO
 布达佩斯爱乐乐团 = 布达佩斯管弦乐团 = 布达佩斯交响乐团 = Budapest Philharmonic Orchestra = BpPO
-德国西南广播电台交响乐团 = 巴登-巴登弗赖堡交响乐团 = 斯图加特广播交响乐团 = 西南德意志广播交响乐团 = 西南广播交响乐团 = SWR交响乐团 = SWR Radio Symphony Orchestra = SWR = SWR SO = SWR Symphonieorchester Baden-Baden und Freiburg = SWRSO
 德累斯顿爱乐童声合唱团 = Dresden Philharmonic Children's Chorus
 德累斯顿交响乐团 = Sächsische Staatskapelle Dresden
 法国广播电视管弦乐团 = Orchestra della Radiotelevisione Francese
 法国国家管弦乐团 = 巴黎国家交响乐团 = 巴黎国立交响乐团 = 法国国家电台管弦乐团 = 法国国家广播管弦乐团 = 法国国家交响乐团 = Orchestre National de France = ONF = ONP = Orchestre National de la Radiodiffusion Française(EN: Orchestre National de France)
 法兰克福广播交响乐团 = 德国广播交响乐团 = Frankfurt Radio Symphony = FRS = hr-Sinfonieorchester Frankfurt = Radio-Sinfonie-Orchester Frankfurt = Sinfonie-Orchester des Hessischen Rundfunks
 费城交响乐团 = 费城管弦乐团 = 费城乐团 = Philadelphia Orchestra = PpO
-芬兰广播乐团 = 芬兰广播交响乐团 = Finnish Radio Symphony Orchestra = FRSO = Radio-orkesteri
+芬兰广播乐团 = 芬兰广播交响乐团 = Radio-orkesteri = Finnish Radio Symphony Orchestra = FRSO
 哥德堡交响乐团 = Göteborgs Symfoniker
 哥伦比亚交响乐团 = Columbia Symphony Orchestra = COLUABIA SYMPHONY ORCHESTRA = CoSO
 国家音乐会古乐团 = 国家音乐会 = 国家音乐会乐团 = Le Concert des Nations = CDN
@@ -271,10 +270,12 @@
 日本放送协会交响乐团 = NHK交响乐团 = NHK交响乐团（日本） = NHK Symphony Orchestra = NSO
 瑞士罗曼德管弦乐团 = 日内瓦管弦乐团 = 瑞士法语区管弦乐团 = 瑞士法语区交响乐团 = 瑞士罗曼德交响乐团 = Orchestre de la Suisse Romande = OSR
 斯德哥尔摩节日管弦乐团 = 斯德哥尔摩节庆管弦乐团 = 斯德哥尔摩节庆乐团 = 斯德哥尔摩节日乐团 = Stockholm Festival Orchestra = SFO = The Stockholm Festival Orchestra
+斯图加特广播交响乐团 = 德国西南广播电台交响乐团 = Radio-Sinfonieorchester Stuttgart des SWR = RSO Stuttgart = Stuttgart Radio Symphony Orchestra = SWR Radio Symphony Orchestra = SWR Symphony Orchestra Stuttgart
 苏联国家交响乐团 = 苏联国家管弦乐团 = 苏联国立交响乐团 = USSR State Symphony Orchestra = SSO = USSO
 维也纳爱乐乐团 = 维也纳爱乐 = 维也纳爱乐管弦乐团 = 维也纳爱乐交响乐团 = Vienna Philharmonic Orchestra = Vienna Philharmonic = VPO = Wiener Philharmoniker
 维也纳交响乐团 = Wiener Symphoniker = Vienna Symphony Orchestra = WSO = WSY
 西北德意志广播交响乐团 = 德国NWDR交响乐团 = NWDR广播交响乐团 = NWDR交响乐团 = NWDR Sinfonieorchester = Das NWDR-Sinfonieorchester = NWDR = NWDR-Sinfonieorchester = Sinfonieorchester des NWDR
+西南德意志广播交响乐团 = 巴登-巴登弗赖堡交响乐团 = SWR Sinfonieorchester Baden-Baden und Freiburg = South West German Radio Symphony Orchestra = SWR Symphonieorchester Baden-Baden und Freiburg
 匈牙利国家爱乐乐团 = 匈牙利爱乐乐团 = 匈牙利国爱 = 匈牙利国家交响乐团 = Hungarian National Philharmonic Orchestra = HNP = HNPO
 音乐永恒乐团 = 永恒乐团 = 永恒音乐 = 永恒音乐管弦乐团 = 永恒音乐乐团 = MusicAeterna = musicAeterna
 英国广播公司苏格兰交响乐团 = BBC苏格兰管弦乐团 = BBC苏格兰交响乐团 = BBC苏格兰乐团 = BBC Scottish Symphony Orchestra = BSSO
@@ -330,12 +331,9 @@ RSStu = Radio-Sinfonieorchester Stuttgart = Südfunk-Sinfonieorchester
 Rundfunk-Sinfonie-Orchester Leipzig = LRSO = RSOL = Rundfunk-Sinfonieorchester Leipzig
 Saito Kinen Orchestra
 Scottish Chamber Orchestra = SCO
-South West German Radio Symphony Orchestra
 Staatskapelle Berlin
 Staatskapelle Dresden = SKD
-Stuttgart Radio Symphony Orchestra
 Sveriges Radios Symfoniorkester = SRSO = Swedish Radio Symphony Orchestra
-SWR Sinfonieorchester Baden-Baden und Freiburg
 The British Symphony Orchestra
 The Cleveland Orchestra
 Tokyo Metropolitan Symphony Orchestra = TMSO
