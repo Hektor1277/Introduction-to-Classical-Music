@@ -170,6 +170,101 @@ function isSuspiciousCompositeEnsemblePerson(person: Person) {
   return /(?:\s+\/\s+|\s+&\s+|\bcurrently\b|\([^)]+\))/.test(name) || /\b[A-Z]{2,5}\b(?:\s*&\s*\b[A-Z]{1,5}\b)+/.test(name);
 }
 
+const pollutedGroupSlugMarkerPattern = /(时间|地点|currently|current|chn)/i;
+
+function stripPollutedGroupMarkers(value: string) {
+  return compact(value)
+    .replace(pollutedGroupSlugMarkerPattern, " ")
+    .replace(/\b\d{4}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeGroupIdentityKey(value: unknown) {
+  return normalizeNameKey(stripPollutedGroupMarkers(compact(value)));
+}
+
+function isWeakGroupIdentityValue(value: unknown) {
+  const original = compact(value);
+  const normalized = normalizeGroupIdentityKey(original);
+  if (!normalized) {
+    return true;
+  }
+  return /^[A-Z0-9]{2,6}$/i.test(original) || normalized.length <= 4;
+}
+
+function levenshteinDistance(left: string, right: string) {
+  if (left === right) {
+    return 0;
+  }
+  if (!left) {
+    return right.length;
+  }
+  if (!right) {
+    return left.length;
+  }
+
+  const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  const current = new Array(right.length + 1).fill(0);
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    current[0] = leftIndex;
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const cost = left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1;
+      current[rightIndex] = Math.min(
+        current[rightIndex - 1] + 1,
+        previous[rightIndex] + 1,
+        previous[rightIndex - 1] + cost,
+      );
+    }
+    for (let rightIndex = 0; rightIndex <= right.length; rightIndex += 1) {
+      previous[rightIndex] = current[rightIndex];
+    }
+  }
+
+  return previous[right.length];
+}
+
+function hasNearDuplicateIdentity(leftValues: string[], rightValues: string[]) {
+  for (const left of leftValues) {
+    for (const right of rightValues) {
+      if (!left || !right) {
+        continue;
+      }
+      if (left === right) {
+        return true;
+      }
+      if (Math.min(left.length, right.length) < 12) {
+        continue;
+      }
+      if (Math.abs(left.length - right.length) > 2) {
+        continue;
+      }
+      const commonPrefixLength = (() => {
+        let index = 0;
+        while (index < left.length && index < right.length && left[index] === right[index]) {
+          index += 1;
+        }
+        return index;
+      })();
+      if (commonPrefixLength < 8 && !left.includes(right) && !right.includes(left)) {
+        continue;
+      }
+      if (levenshteinDistance(left, right) <= 2) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function isPollutedGroupIdentity(person: Person) {
+  if (!person.roles.some((role) => isEnsembleRole(role))) {
+    return false;
+  }
+  return pollutedGroupSlugMarkerPattern.test(compact(person.slug));
+}
+
 function isEnsembleRole(role: Credit["role"] | PersonRole) {
   return role === "orchestra" || role === "ensemble" || role === "chorus";
 }
@@ -236,6 +331,23 @@ function uniqueNormalizedNames(person: Person) {
   return [...new Set(values)];
 }
 
+function uniqueNormalizedGroupIdentityNames(person: Person) {
+  const values = [
+    person.name,
+    person.fullName,
+    person.displayName,
+    person.displayFullName,
+    person.nameLatin,
+    person.displayLatinName,
+    person.slug,
+    ...(person.aliases || []),
+  ]
+    .filter((value) => !isWeakGroupIdentityValue(value))
+    .map((value) => normalizeGroupIdentityKey(value))
+    .filter(Boolean);
+  return [...new Set(values)];
+}
+
 function isThinDuplicateGroupPerson(person: Person) {
   if (!person.roles.some((role) => isEnsembleRole(role))) {
     return false;
@@ -257,13 +369,18 @@ function isThinDuplicateGroupPerson(person: Person) {
   );
 }
 
-function findCanonicalReplacementForThinGroup(library: LibraryData, person: Person) {
-  if (!isThinDuplicateGroupPerson(person)) {
+function isLowRiskDuplicateGroupPerson(person: Person) {
+  return isThinDuplicateGroupPerson(person) || isPollutedGroupIdentity(person);
+}
+
+export function findCanonicalReplacementForGroupPerson(library: LibraryData, person: Person) {
+  if (!isLowRiskDuplicateGroupPerson(person)) {
     return null;
   }
-  const sourceNames = new Set(uniqueNormalizedNames(person));
+  const sourceNames = uniqueNormalizedGroupIdentityNames(person);
+  const sourceNameSet = new Set(sourceNames);
   const sourceSlug = compact(person.slug);
-  if (!sourceNames.size) {
+  if (!sourceNameSet.size) {
     if (!sourceSlug) {
       return null;
     }
@@ -274,10 +391,14 @@ function findCanonicalReplacementForThinGroup(library: LibraryData, person: Pers
     .filter((candidate) => candidate.roles.some((role) => isEnsembleRole(role)) && ensembleCompatible(primaryRoleFromPerson(person), candidate))
     .filter((candidate) => {
       const candidateSlug = compact(candidate.slug);
-      if (sourceSlug && candidateSlug && sourceSlug === candidateSlug) {
+      const candidateNames = uniqueNormalizedGroupIdentityNames(candidate);
+      const exactMatch =
+        (sourceSlug && candidateSlug && normalizeGroupIdentityKey(sourceSlug) === normalizeGroupIdentityKey(candidateSlug)) ||
+        candidateNames.some((value) => sourceNameSet.has(value));
+      if (exactMatch) {
         return true;
       }
-      return uniqueNormalizedNames(candidate).some((value) => sourceNames.has(value));
+      return hasNearDuplicateIdentity(sourceNames, candidateNames);
     })
     .sort((left, right) => personQualityScore(right) - personQualityScore(left));
   const replacement = candidates[0] || null;
@@ -436,7 +557,7 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
   const suspiciousCompositeGroupIds = new Map<string, Person>();
 
   for (const person of nextLibrary.people || []) {
-    const replacement = findCanonicalReplacementForThinGroup(nextLibrary, person);
+    const replacement = findCanonicalReplacementForGroupPerson(nextLibrary, person);
     if (replacement) {
       redirectedThinGroupIds.set(person.id, replacement);
     }
@@ -534,7 +655,7 @@ export function stripUnusedPlaceholderPeople(library: LibraryData) {
       if (isSuspiciousCompositeEnsemblePerson(person)) {
         return false;
       }
-      if (isThinDuplicateGroupPerson(person) && findCanonicalReplacementForThinGroup(library, person)) {
+      if (findCanonicalReplacementForGroupPerson(library, person)) {
         return false;
       }
       return true;

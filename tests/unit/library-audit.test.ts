@@ -338,6 +338,66 @@ describe("auditLibraryData", () => {
     );
   });
 
+  it("flags polluted group identities that should be rebound to a stronger canonical entry", () => {
+    const library = {
+      ...buildBaseLibrary(),
+      people: [
+        ...buildBaseLibrary().people,
+        {
+          id: "person-leningrad",
+          slug: "leningrad-philharmonic-orchestra",
+          name: "列宁格勒爱乐乐团",
+          fullName: "列宁格勒爱乐乐团",
+          nameLatin: "Leningrad Philharmonic Orchestra",
+          country: "Russia",
+          avatarSrc: "",
+          roles: ["orchestra" as const],
+          aliases: ["Saint Petersburg Philharmonic Orchestra"],
+          sortKey: "0100",
+          summary: "正式条目",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+        {
+          id: "person-leningrad-polluted",
+          slug: "leningrad-philharmonic-orchestra时间-地点-1979-东京",
+          name: "列宁格勒爱乐乐团",
+          fullName: "列宁格勒爱乐乐团",
+          nameLatin: "Leningrad Philharmonic Orchestra",
+          country: "Russia",
+          avatarSrc: "",
+          roles: ["orchestra" as const],
+          aliases: ["LPO"],
+          sortKey: "0110",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+        },
+      ],
+    };
+
+    const issues = auditLibraryData(validateLibrary(library));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "person-polluted-group-identity",
+          severity: "warning",
+          entityType: "person",
+          entityId: "person-leningrad-polluted",
+          source: "people.slug",
+          suggestedFix: expect.stringContaining("canonical"),
+        }),
+      ]),
+    );
+  });
+
   it("flags conflicts between recording work type and related work groups", () => {
     const library = buildBaseLibrary();
     const conflictingRecording = {

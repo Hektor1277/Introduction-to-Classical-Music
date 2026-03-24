@@ -4320,8 +4320,8 @@
     ]
   },
   {
-    "id": "person-budapesti-filharmo-niai-ta-rsasa-g-zenekara-en-budapest-philharmonic-orchestra-chn-布达佩斯爱乐乐团",
-    "slug": "budapesti-filharmo-niai-ta-rsasa-g-zenekara-en-budapest-philharmonic-orchestra-chn-布达佩斯爱乐乐团",
+    "id": "person-budapest-philharmonic-orchestra",
+    "slug": "budapest-philharmonic-orchestra",
     "name": "布达佩斯爱乐乐团",
     "nameLatin": "Budapest Philharmonic Orchestra",
     "country": "Hungary",
@@ -5766,36 +5766,6 @@
     ]
   },
   {
-    "id": "person-leningrad-philharmonic-orchestra时间-地点-1979-东京",
-    "slug": "leningrad-philharmonic-orchestra时间-地点-1979-东京",
-    "name": "列宁格勒爱乐乐团",
-    "nameLatin": "Leningrad Philharmonic Orchestra",
-    "country": "Russia",
-    "avatarSrc": "",
-    "aliases": [
-      "圣彼得堡爱乐乐团",
-      "列宁格勒交响乐团",
-      "LPO",
-      "百度百科是一部内容开放",
-      "列宁格勒爱乐乐团"
-    ],
-    "sortKey": "2300",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
     "id": "person-丹尼斯瓦里翁",
     "slug": "丹尼斯瓦里翁",
     "name": "丹尼斯.瓦里翁",
@@ -6722,30 +6692,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "2790",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "orchestra"
-    ]
-  },
-  {
-    "id": "person-orchestra-berliner-philarmoniker",
-    "slug": "berliner-philarmoniker",
-    "name": "Berliner Philarmoniker",
-    "nameLatin": "Berliner Philarmoniker",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2800",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",

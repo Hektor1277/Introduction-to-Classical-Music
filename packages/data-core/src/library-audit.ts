@@ -6,12 +6,14 @@ import {
 } from "../../shared/src/recording-rules.js";
 import type { Composer, LibraryData, Person, Recording } from "../../shared/src/schema.js";
 import type { ReviewQueueEntry } from "./library-store.js";
+import { findCanonicalReplacementForGroupPerson, isPollutedGroupIdentity } from "./person-cleanup.js";
 
 export type LibraryAuditSeverity = "info" | "warning" | "error";
 export type LibraryAuditEntityType = "composer" | "person" | "work" | "recording";
 export type LibraryAuditIssueCode =
   | "placeholder-entity"
   | "person-suspicious-ensemble-name"
+  | "person-polluted-group-identity"
   | "recording-missing-credit-role"
   | "recording-work-type-conflict"
   | "recording-title-credit-mismatch";
@@ -278,6 +280,32 @@ function auditSuspiciousEnsemblePeople(library: LibraryData) {
   return issues;
 }
 
+function auditPollutedGroupIdentities(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const person of library.people || []) {
+    if (!isPollutedGroupIdentity(person)) {
+      continue;
+    }
+    const replacement = findCanonicalReplacementForGroupPerson(library, person);
+    issues.push(
+      issue({
+        code: "person-polluted-group-identity",
+        severity: "warning",
+        entityType: "person",
+        entityId: person.id,
+        message: `团体条目 identity 疑似混入 metadata 污染：${compact(person.slug) || compact(person.name)}`,
+        source: "people.slug",
+        suggestedFix: replacement
+          ? `rebind references to canonical group ${replacement.id} and remove the polluted duplicate entry`
+          : "review the polluted group slug manually and normalize it before further cleanup",
+      }),
+    );
+  }
+
+  return issues;
+}
+
 function auditRecordingRequiredCredits(library: LibraryData, options: LibraryAuditOptions) {
   const issues: LibraryAuditIssue[] = [];
 
@@ -381,6 +409,7 @@ export function auditLibraryData(library: LibraryData, options: LibraryAuditOpti
   return [
     ...auditPlaceholderEntities(library),
     ...auditSuspiciousEnsemblePeople(library),
+    ...auditPollutedGroupIdentities(library),
     ...auditRecordingRequiredCredits(library, options),
     ...auditRecordingWorkTypeConflicts(library),
     ...auditRecordingTitleCreditMismatches(library),

@@ -1923,7 +1923,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-budapesti-filharmo-niai-ta-rsasa-g-zenekara-en-budapest-philharmonic-orchestra-chn-布达佩斯爱乐乐团",
+        "personId": "person-budapest-philharmonic-orchestra",
         "displayName": "布达佩斯爱乐乐团",
         "label": "乐团"
       },
@@ -8367,7 +8367,7 @@
     "id": "recording-d大调小提琴协奏曲-施耐德汉-and-富特文格勒1953",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "施耐德汉-and-富特文格勒1953",
-    "title": "富特文格勒 - 施耐德汉 - Berliner Philarmoniker - Titania Palast Berlin 1953",
+    "title": "富特文格勒 - 施耐德汉 - 柏林爱乐乐团 - Titania Palast Berlin 1953",
     "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
@@ -8394,8 +8394,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-berliner-philarmoniker",
-        "displayName": "Berliner Philarmoniker",
+        "personId": "person-berliner-philahrmoniker",
+        "displayName": "柏林爱乐乐团",
         "label": "乐团"
       }
     ],
@@ -8429,7 +8429,7 @@
     "id": "recording-d大调小提琴协奏曲-梅纽因-and-富特文格勒1953",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "梅纽因-and-富特文格勒1953",
-    "title": "富特文格勒 - 梅纽因 - Berliner Philarmoniker - Titania Palast Berlin 1953",
+    "title": "富特文格勒 - 梅纽因 - 柏林爱乐乐团 - Titania Palast Berlin 1953",
     "workTypeHint": "concerto",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
@@ -8456,8 +8456,8 @@
       },
       {
         "role": "orchestra",
-        "personId": "person-orchestra-berliner-philarmoniker",
-        "displayName": "Berliner Philarmoniker",
+        "personId": "person-berliner-philahrmoniker",
+        "displayName": "柏林爱乐乐团",
         "label": "乐团"
       }
     ],

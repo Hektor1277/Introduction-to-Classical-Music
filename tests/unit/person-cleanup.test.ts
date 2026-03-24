@@ -671,4 +671,360 @@ describe("person cleanup", () => {
     });
     expect(nextLibrary.people.some((person) => person.id === "person-hko-and-ro")).toBe(false);
   });
+
+  it("rebinds polluted duplicate orchestra entities to the stronger canonical entry", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-leningrad",
+          slug: "leningrad-philharmonic-orchestra",
+          name: "列宁格勒爱乐乐团",
+          fullName: "列宁格勒爱乐乐团",
+          nameLatin: "Leningrad Philharmonic Orchestra",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: ["Saint Petersburg Philharmonic Orchestra"],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-leningrad-polluted",
+          slug: "leningrad-philharmonic-orchestra时间-地点-1979-东京",
+          name: "列宁格勒爱乐乐团",
+          fullName: "列宁格勒爱乐乐团",
+          nameLatin: "Leningrad Philharmonic Orchestra",
+          country: "Russia",
+          avatarSrc: "",
+          aliases: ["LPO"],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-muravinsky-1979",
+          workId: "work-beethoven-9",
+          slug: "muravinsky-1979",
+          title: "穆拉文斯基 - 列宁格勒爱乐乐团 - 1979",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-24T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-leningrad-polluted",
+              displayName: "列宁格勒爱乐乐团",
+              label: "乐团",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1979",
+          venueText: "东京",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      personId: "person-leningrad",
+      displayName: "列宁格勒爱乐乐团",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-leningrad-polluted")).toBe(false);
+  });
+
+  it("rebinds degraded latin orchestra duplicates when a stronger canonical entry exists", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-bpo",
+          slug: "berliner-philharmoniker",
+          name: "柏林爱乐乐团",
+          fullName: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["Berlin Philharmonic Orchestra", "Berlin Philharmonic", "BPO"],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-bpo-degraded",
+          slug: "berliner-philarmoniker",
+          name: "Berliner Philarmoniker",
+          fullName: "Berliner Philarmoniker",
+          nameLatin: "Berliner Philarmoniker",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-furt-1953",
+          workId: "work-beethoven-9",
+          slug: "furt-1953",
+          title: "富特文格勒 - Berliner Philarmoniker - 1953",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-24T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-bpo-degraded",
+              displayName: "Berliner Philarmoniker",
+              label: "乐团",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1953",
+          venueText: "Berlin",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      personId: "person-bpo",
+      displayName: "柏林爱乐乐团",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-bpo-degraded")).toBe(false);
+  });
+
+  it("does not rebind unrelated orchestras solely because they share an abbreviation alias", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-budapest",
+          slug: "budapesti-filharmonikusok",
+          name: "布达佩斯爱乐乐团",
+          fullName: "布达佩斯爱乐乐团",
+          nameLatin: "Budapest Philharmonic Orchestra",
+          country: "Hungary",
+          avatarSrc: "",
+          aliases: ["BPO"],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-berlin",
+          slug: "berliner-philharmoniker",
+          name: "柏林爱乐乐团",
+          fullName: "柏林爱乐乐团",
+          nameLatin: "Berliner Philharmoniker",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["BPO"],
+          sortKey: "0020",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-budapest-polluted",
+          slug: "budapesti-filharmo-niai-ta-rsasa-g-zenekara-en-budapest-philharmonic-orchestra-chn-布达佩斯爱乐乐团",
+          name: "布达佩斯爱乐乐团",
+          fullName: "布达佩斯爱乐乐团",
+          nameLatin: "Budapest Philharmonic Orchestra",
+          country: "Hungary",
+          avatarSrc: "",
+          aliases: ["BPO"],
+          sortKey: "0030",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-kletzki-1954",
+          workId: "work-beethoven-9",
+          slug: "kletzki-1954",
+          title: "克列茨基 - 安妮 - 布达佩斯爱乐乐团",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-24T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-budapest-polluted",
+              displayName: "布达佩斯爱乐乐团",
+              label: "乐团",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1954",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      personId: "person-budapest",
+      displayName: "布达佩斯爱乐乐团",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-berlin")).toBe(true);
+  });
+
+  it("does not fuzzy-match different acronym-led symphony orchestras", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-nbc",
+          slug: "nbc-symphony-orchestra",
+          name: "NBC Symphony Orchestra",
+          fullName: "NBC Symphony Orchestra",
+          nameLatin: "NBC Symphony Orchestra",
+          country: "United States",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-nhk",
+          slug: "nhk-symphony-orchestra",
+          name: "日本放送协会交响乐团",
+          fullName: "日本放送协会交响乐团",
+          nameLatin: "NHK Symphony Orchestra",
+          country: "Japan",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+        {
+          id: "person-nbc-thin",
+          slug: "nbc-symphony-orchestra",
+          name: "NBC Symphony Orchestra",
+          fullName: "NBC Symphony Orchestra",
+          nameLatin: "NBC Symphony Orchestra",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-toscanini-1948",
+          workId: "work-beethoven-9",
+          slug: "toscanini-1948",
+          title: "托斯卡尼尼 - NBC Symphony Orchestra - 1948",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-24T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({
+              role: "orchestra",
+              personId: "person-nbc-thin",
+              displayName: "NBC Symphony Orchestra",
+              label: "乐团",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1948",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      personId: "person-nbc",
+      displayName: "NBC Symphony Orchestra",
+    });
+    expect(nextLibrary.recordings[0].credits[0].personId).not.toBe("person-nhk");
+  });
 });
