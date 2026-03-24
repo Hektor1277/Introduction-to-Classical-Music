@@ -9,9 +9,11 @@ import {
   buildManualBackfillReference,
   buildManualBackfillQueue,
   groupManualBackfillQueue,
+  type RecordingIssueHint,
   summarizeLibraryAuditIssues,
 } from "../packages/data-core/src/library-audit.js";
 import { parseLegacyRecordingHtml } from "../packages/data-core/src/legacy-parser.js";
+import type { ManualRecordingBackfillEntry } from "../packages/data-core/src/manual-recording-backfill.js";
 import { classifyRecordingLegacyRepairHint } from "../packages/data-core/src/recording-repair.js";
 
 const SOURCE_ROOT_NAME = "an incomplete guide to classical music";
@@ -22,6 +24,7 @@ const unresolvedManualBackfillPath = path.join(
   "references",
   "manual-recording-backfills.unresolved.json",
 );
+const manualBackfillFilePath = path.join(process.cwd(), "materials", "references", "manual-recording-backfills.json");
 
 async function exists(targetPath: string) {
   try {
@@ -80,6 +83,30 @@ async function resolveArchiveRoot() {
   return { tempDir, rootDir };
 }
 
+async function loadManualBackfillHints() {
+  if (!(await exists(manualBackfillFilePath))) {
+    return {} as Record<string, RecordingIssueHint>;
+  }
+
+  const parsed = JSON.parse(await fs.readFile(manualBackfillFilePath, "utf8")) as ManualRecordingBackfillEntry[];
+  const hints: Record<string, RecordingIssueHint> = {};
+  for (const entry of parsed || []) {
+    if (!entry?.recordingId) {
+      continue;
+    }
+    const waivedMissingRoles = (entry.waivedMissingRoles || []).map((role) => String(role ?? "").trim()).filter(Boolean);
+    if (waivedMissingRoles.length === 0) {
+      continue;
+    }
+    hints[entry.recordingId] = {
+      resolutionHint: "manual-backfill",
+      waivedMissingRoles,
+      details: [`人工确认允许缺失署名：${waivedMissingRoles.join(", ")}`],
+    };
+  }
+  return hints;
+}
+
 async function buildArchiveIssueHints(library: Awaited<ReturnType<typeof loadLibraryFromDisk>>) {
   const baseIssues = auditLibraryData(library);
   const missingCreditIssues = baseIssues.filter(
@@ -94,7 +121,7 @@ async function buildArchiveIssueHints(library: Awaited<ReturnType<typeof loadLib
     return {};
   }
 
-  const hints: Record<string, { resolutionHint: "auto-fixable" | "manual-backfill"; details?: string[] }> = {};
+  const hints: Record<string, RecordingIssueHint> = {};
   try {
     for (const issue of missingCreditIssues) {
       const recording = library.recordings.find((entry) => entry.id === issue.entityId);
@@ -121,7 +148,21 @@ async function buildArchiveIssueHints(library: Awaited<ReturnType<typeof loadLib
 
 async function main() {
   const [library, reviewQueue] = await Promise.all([loadLibraryFromDisk(), loadReviewQueue()]);
-  const recordingIssueHints = await buildArchiveIssueHints(library);
+  const [archiveIssueHints, manualBackfillHints] = await Promise.all([
+    buildArchiveIssueHints(library),
+    loadManualBackfillHints(),
+  ]);
+  const recordingIssueHints: Record<string, RecordingIssueHint> = { ...archiveIssueHints };
+  for (const [recordingId, hint] of Object.entries(manualBackfillHints)) {
+    recordingIssueHints[recordingId] = {
+      ...recordingIssueHints[recordingId],
+      ...hint,
+      details: hint.details?.length ? hint.details : recordingIssueHints[recordingId]?.details,
+      waivedMissingRoles: hint.waivedMissingRoles?.length
+        ? hint.waivedMissingRoles
+        : recordingIssueHints[recordingId]?.waivedMissingRoles,
+    };
+  }
   const issues = auditLibraryData(library, { reviewQueue, recordingIssueHints });
   const summary = summarizeLibraryAuditIssues(issues);
   const manualBackfillQueue = buildManualBackfillQueue(library, issues);

@@ -6797,61 +6797,15 @@
     ]
   },
   {
-    "id": "person-ensemble-柏林自由音乐会联合乐团",
-    "slug": "柏林自由音乐会联合乐团",
-    "name": "柏林自由音乐会联合乐团",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2780",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "ensemble"
-    ]
-  },
-  {
-    "id": "person-chorus-柏林自由音乐会联合合唱团",
-    "slug": "柏林自由音乐会联合合唱团",
-    "name": "柏林自由音乐会联合合唱团",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2790",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "chorus"
-    ]
-  },
-  {
     "id": "person-orchestra-巴塞罗那交响乐团",
     "slug": "巴塞罗那交响乐团",
     "name": "巴塞罗那交响乐团",
-    "nameLatin": "",
+    "nameLatin": "Orquesta Sinfónica de Barcelona",
     "country": "",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "Orquesta Sinfónica de Barcelona"
+    ],
     "sortKey": "2800",
     "summary": "",
     "imageSourceUrl": "",
@@ -6872,10 +6826,15 @@
     "id": "person-orchestra-芬兰广播乐团",
     "slug": "芬兰广播乐团",
     "name": "芬兰广播乐团",
-    "nameLatin": "",
+    "nameLatin": "Finnish Radio Symphony Orchestra",
     "country": "",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "Radio-orkesteri",
+      "Finnish Radio Symphony Orchestra",
+      "芬兰广播交响乐团",
+      "FRSO"
+    ],
     "sortKey": "2800",
     "summary": "",
     "imageSourceUrl": "",
@@ -6890,6 +6849,164 @@
     },
     "roles": [
       "orchestra"
+    ]
+  },
+  {
+    "id": "person-orchestra-london-symphony-orchestra",
+    "slug": "london-symphony-orchestra",
+    "name": "伦敦交响乐团",
+    "nameLatin": "London Symphony Orchestra",
+    "country": "United Kingdom",
+    "avatarSrc": "",
+    "aliases": [
+      "London Symphony Orchestra",
+      "LSO"
+    ],
+    "sortKey": "2960",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "orchestra"
+    ]
+  },
+  {
+    "id": "person-orchestra-orchestre-de-paris",
+    "slug": "orchestre-de-paris",
+    "name": "巴黎管弦乐团",
+    "nameLatin": "Orchestre de Paris",
+    "country": "France",
+    "avatarSrc": "",
+    "aliases": [
+      "Orchestre de Paris",
+      "OP"
+    ],
+    "sortKey": "2970",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "orchestra"
+    ]
+  },
+  {
+    "id": "person-orchestra-orchestra-of-the-kirov-theatre",
+    "slug": "orchestra-of-the-kirov-theatre",
+    "name": "基洛夫剧院管弦乐团",
+    "nameLatin": "Orchestra of the Kirov Theatre",
+    "country": "Russia",
+    "avatarSrc": "",
+    "aliases": [
+      "Orchestra of the Kirov Theatre"
+    ],
+    "sortKey": "2980",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "orchestra"
+    ]
+  },
+  {
+    "id": "person-chorus-bavarian-radio-chorus",
+    "slug": "bavarian-radio-chorus",
+    "name": "巴伐利亚广播合唱团",
+    "nameLatin": "Bavarian Radio Chorus",
+    "country": "Germany",
+    "avatarSrc": "",
+    "aliases": [
+      "Bavarian Radio Chorus"
+    ],
+    "sortKey": "2990",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "chorus"
+    ]
+  },
+  {
+    "id": "person-chorus-chorus-of-radio-berlin",
+    "slug": "chorus-of-radio-berlin",
+    "name": "柏林广播合唱团",
+    "nameLatin": "Chorus of Radio Berlin",
+    "country": "Germany",
+    "avatarSrc": "",
+    "aliases": [
+      "Chorus of Radio Berlin"
+    ],
+    "sortKey": "3000",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "chorus"
+    ]
+  },
+  {
+    "id": "person-chorus-dresden-philharmonic-childrens-chorus",
+    "slug": "dresden-philharmonic-childrens-chorus",
+    "name": "德累斯顿爱乐童声合唱团",
+    "nameLatin": "Dresden Philharmonic Children's Chorus",
+    "country": "Germany",
+    "avatarSrc": "",
+    "aliases": [
+      "Dresden Philharmonic Children's Chorus"
+    ],
+    "sortKey": "3010",
+    "summary": "",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "chorus"
     ]
   }
 ]

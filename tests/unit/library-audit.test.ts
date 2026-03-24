@@ -297,6 +297,39 @@ describe("auditLibraryData", () => {
     );
   });
 
+  it("suppresses missing credit issues when the role is explicitly waived as confirmed unknown", () => {
+    const library = buildBaseLibrary();
+    const brokenRecording = {
+      ...library.recordings[0],
+      id: "recording-concerto-confirmed-unknown-orchestra",
+      workId: "work-beethoven-op54",
+      slug: "confirmed-unknown-orchestra",
+      title: "安妮·费舍尔 - 未知乐团",
+      workTypeHint: "concerto" as const,
+      legacyPath: "作曲家/罗伯特·舒曼/钢琴协奏曲/a小调钢琴协奏曲/福斯特_1953.htm",
+      credits: [{ role: "soloist", personId: "person-anne", displayName: "安妮·费舍尔", label: "钢琴" }],
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, brokenRecording), {
+      recordingIssueHints: {
+        "recording-concerto-confirmed-unknown-orchestra": {
+          resolutionHint: "manual-backfill",
+          waivedMissingRoles: ["orchestra_or_ensemble"],
+          details: ["人工确认该条目乐团未知，不再继续追补。"],
+        },
+      },
+    });
+
+    expect(issues).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-missing-credit-role",
+          entityId: "recording-concerto-confirmed-unknown-orchestra",
+        }),
+      ]),
+    );
+  });
+
   it("flags suspicious ensemble names that should stay in manual cleanup queue", () => {
     const library = {
       ...buildBaseLibrary(),

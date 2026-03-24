@@ -35,6 +35,7 @@ export type LibraryAuditIssue = {
 export type RecordingIssueHint = {
   resolutionHint: LibraryAuditResolutionHint;
   details?: string[];
+  waivedMissingRoles?: string[];
 };
 
 export type LibraryAuditOptions = {
@@ -181,7 +182,16 @@ function buildRecordingIssueHint(recording: Recording, options: LibraryAuditOpti
       explicitHint?.resolutionHint ||
       (sourcePath || compact(recording.legacyPath) ? ("auto-fixable" as const) : ("manual-backfill" as const)),
     details: explicitHint?.details || [],
+    waivedMissingRoles: (explicitHint?.waivedMissingRoles || []).map((role) => compact(role)).filter(Boolean),
   };
+}
+
+function applyWaivedMissingRoles(missingRoles: string[], waivedMissingRoles: string[]) {
+  if (!waivedMissingRoles.length) {
+    return missingRoles;
+  }
+  const waived = new Set(waivedMissingRoles.map((role) => compact(role)));
+  return missingRoles.filter((role) => !waived.has(compact(role)));
 }
 
 function auditPlaceholderEntities(library: LibraryData) {
@@ -315,13 +325,12 @@ function auditRecordingRequiredCredits(library: LibraryData, options: LibraryAud
       workTypeHint: recording.workTypeHint,
       ...counts,
     });
-    const missing = getRecordingMissingCreditRoles(recording);
+    const hint = buildRecordingIssueHint(recording, options);
+    const missing = applyWaivedMissingRoles(getRecordingMissingCreditRoles(recording), hint.waivedMissingRoles);
 
     if (missing.length === 0) {
       continue;
     }
-
-    const hint = buildRecordingIssueHint(recording, options);
 
     issues.push(
       issue({

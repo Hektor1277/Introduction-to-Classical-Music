@@ -4710,7 +4710,7 @@
     "id": "recording-第九交响曲合唱-伯恩斯坦1989",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "伯恩斯坦1989",
-    "title": "伯恩斯坦 - 柏林自由音乐会联合乐团 - 柏林自由音乐会联合合唱团",
+    "title": "伯恩斯坦 - 巴伐利亚广播交响乐团 - 德累斯顿交响乐团 - 基洛夫剧院管弦乐团 - 伦敦交响乐团 - 纽约爱乐乐团 - 巴黎管弦乐团 - 巴伐利亚广播合唱团 - 柏林广播合唱团 - 德累斯顿爱乐童声合唱团",
     "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -4724,16 +4724,58 @@
         "label": "文件名推断"
       },
       {
-        "role": "ensemble",
-        "personId": "person-ensemble-柏林自由音乐会联合乐团",
-        "displayName": "柏林自由音乐会联合乐团",
-        "label": "联合乐团"
+        "role": "orchestra",
+        "personId": "person-symphonieorchester-des-bayerischen-rundfunks",
+        "displayName": "巴伐利亚广播交响乐团",
+        "label": "联合乐团成员"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-sachsische-staatskapelle-dresden",
+        "displayName": "德累斯顿交响乐团",
+        "label": "联合乐团成员"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchestra-of-the-kirov-theatre",
+        "displayName": "基洛夫剧院管弦乐团",
+        "label": "联合乐团成员"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-london-symphony-orchestra",
+        "displayName": "伦敦交响乐团",
+        "label": "联合乐团成员"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-new-york-philharmonic",
+        "displayName": "纽约爱乐乐团",
+        "label": "联合乐团成员"
+      },
+      {
+        "role": "orchestra",
+        "personId": "person-orchestra-orchestre-de-paris",
+        "displayName": "巴黎管弦乐团",
+        "label": "联合乐团成员"
       },
       {
         "role": "chorus",
-        "personId": "person-chorus-柏林自由音乐会联合合唱团",
-        "displayName": "柏林自由音乐会联合合唱团",
-        "label": "联合合唱团"
+        "personId": "person-chorus-bavarian-radio-chorus",
+        "displayName": "巴伐利亚广播合唱团",
+        "label": "联合合唱成员"
+      },
+      {
+        "role": "chorus",
+        "personId": "person-chorus-chorus-of-radio-berlin",
+        "displayName": "柏林广播合唱团",
+        "label": "联合合唱成员"
+      },
+      {
+        "role": "chorus",
+        "personId": "person-chorus-dresden-philharmonic-childrens-chorus",
+        "displayName": "德累斯顿爱乐童声合唱团",
+        "label": "联合合唱成员"
       }
     ],
     "links": [
@@ -4743,7 +4785,7 @@
         "title": "https://www.bilibili.com/video/BV1tJ4m1K7tL"
       }
     ],
-    "notes": "",
+    "notes": "本场“柏林自由音乐会”并非单一常设乐团与合唱团录音，现按公开节目单拆分为参与的正式乐团与合唱团条目，以保留联合编制信息。",
     "performanceDateText": "",
     "venueText": "",
     "albumTitle": "",

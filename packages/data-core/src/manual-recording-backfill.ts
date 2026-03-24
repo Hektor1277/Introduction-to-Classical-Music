@@ -9,6 +9,7 @@ export type ManualRecordingBackfillEntry = {
   removeCredits?: Array<Partial<Pick<Credit, "role" | "displayName" | "personId">>>;
   credits?: Array<Pick<Credit, "role" | "displayName"> & Partial<Pick<Credit, "label" | "personId">>>;
   metadata?: ManualRecordingMetadata;
+  waivedMissingRoles?: string[];
 };
 
 function compact(value: unknown) {
