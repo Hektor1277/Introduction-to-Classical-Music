@@ -26,6 +26,14 @@ export type ReferenceRegistry = {
   personLookup: Map<string, PersonReferenceEntry[]>;
 };
 
+export type ReferenceRegistryIssue = {
+  code: "ambiguous_orchestra_abbreviation" | "duplicate_orchestra_identity" | "duplicate_person_identity";
+  scope: "orchestra" | "person";
+  lookupValue: string;
+  role?: string;
+  preferredValues: string[];
+};
+
 type BuildReferenceRegistryOptions = {
   orchestraSourceText?: string;
   personSourceText?: string;
@@ -95,7 +103,7 @@ function selectCanonicalLatin(values: string[], strategy: "first" | "longest" = 
   return latinCandidates[0] || "";
 }
 
-function buildOrchestraEntry(values: string[]): OrchestraReferenceEntry {
+export function buildOrchestraReferenceEntry(values: string[]): OrchestraReferenceEntry {
   const orderedValues = dedupeValues(values);
   const chineseValues = orderedValues.filter((value) => looksLikeChineseText(value));
   const abbreviations = orderedValues.filter((value) => looksLikeAbbreviation(value));
@@ -111,7 +119,7 @@ function buildOrchestraEntry(values: string[]): OrchestraReferenceEntry {
   };
 }
 
-function buildPersonEntry(role: string, values: string[]): PersonReferenceEntry {
+export function buildPersonReferenceEntry(role: string, values: string[]): PersonReferenceEntry {
   const orderedValues = dedupeValues(values);
   const chineseValues = orderedValues.filter((value) => looksLikeChineseText(value));
   const latinValues = orderedValues.filter((value) => !looksLikeChineseText(value));
@@ -134,6 +142,228 @@ function appendLookupEntry<T>(lookup: Map<string, T[]>, key: string, entry: T) {
   lookup.set(key, bucket);
 }
 
+function buildOverlapKeySet(values: string[]) {
+  return new Set(values.map((value) => normalizeLookupKey(value)).filter(Boolean));
+}
+
+function entriesOverlap(leftValues: string[], rightValues: string[]) {
+  const leftKeys = buildOverlapKeySet(leftValues);
+  for (const key of buildOverlapKeySet(rightValues)) {
+    if (leftKeys.has(key)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function filterStrongOrchestraIdentityValues(entry: OrchestraReferenceEntry) {
+  return entry.values.filter((value) => !looksLikeAbbreviation(value));
+}
+
+function orchestraEntriesMatch(left: OrchestraReferenceEntry, right: OrchestraReferenceEntry) {
+  const samePreferred = normalizeLookupKey(left.preferredValue) && normalizeLookupKey(left.preferredValue) === normalizeLookupKey(right.preferredValue);
+  const sameCanonicalLatin = normalizeLookupKey(left.canonicalLatin) && normalizeLookupKey(left.canonicalLatin) === normalizeLookupKey(right.canonicalLatin);
+  return samePreferred || sameCanonicalLatin || entriesOverlap(filterStrongOrchestraIdentityValues(left), filterStrongOrchestraIdentityValues(right));
+}
+
+function personEntriesMatch(left: PersonReferenceEntry, right: PersonReferenceEntry) {
+  if (left.role !== right.role) {
+    return false;
+  }
+  const samePreferred = normalizeLookupKey(left.preferredValue) && normalizeLookupKey(left.preferredValue) === normalizeLookupKey(right.preferredValue);
+  const sameCanonicalLatin = normalizeLookupKey(left.canonicalLatin) && normalizeLookupKey(left.canonicalLatin) === normalizeLookupKey(right.canonicalLatin);
+  return samePreferred || sameCanonicalLatin || entriesOverlap(left.values, right.values);
+}
+
+function sortChineseValues(values: string[], preferred: string) {
+  return dedupeValues([preferred, ...values.filter((value) => value !== preferred)]).sort((left, right) => {
+    if (left === preferred) return -1;
+    if (right === preferred) return 1;
+    return left.localeCompare(right, "zh-Hans-CN");
+  });
+}
+
+function sortLatinValues(values: string[], preferred: string) {
+  return dedupeValues([preferred, ...values.filter((value) => value !== preferred)]).sort((left, right) => {
+    if (left === preferred) return -1;
+    if (right === preferred) return 1;
+    return left.localeCompare(right, "en");
+  });
+}
+
+export function mergeOrchestraReferenceEntries(primary: OrchestraReferenceEntry, secondary: OrchestraReferenceEntry): OrchestraReferenceEntry {
+  const abbreviations = dedupeValues([...(primary.abbreviations || []), ...(secondary.abbreviations || [])]).sort((left, right) =>
+    left.localeCompare(right, "en"),
+  );
+  const preferredValue = primary.preferredValue || secondary.preferredValue;
+  const canonicalLatin = primary.canonicalLatin || secondary.canonicalLatin;
+  const chineseValues = sortChineseValues(dedupeValues([...primary.chineseValues, ...secondary.chineseValues]), preferredValue);
+  const latinValues = sortLatinValues(dedupeValues([...primary.latinValues, ...secondary.latinValues]), canonicalLatin);
+  return {
+    preferredValue,
+    canonicalLatin,
+    values: dedupeValues([...abbreviations, ...chineseValues, ...latinValues]),
+    chineseValues,
+    latinValues,
+    abbreviations,
+  };
+}
+
+export function mergePersonReferenceEntries(primary: PersonReferenceEntry, secondary: PersonReferenceEntry): PersonReferenceEntry {
+  const preferredValue = primary.preferredValue || secondary.preferredValue;
+  const canonicalLatin = primary.canonicalLatin || secondary.canonicalLatin;
+  const chineseValues = sortChineseValues(dedupeValues([...primary.chineseValues, ...secondary.chineseValues]), preferredValue);
+  const latinValues = sortLatinValues(dedupeValues([...primary.latinValues, ...secondary.latinValues]), canonicalLatin);
+  return {
+    role: primary.role,
+    preferredValue,
+    canonicalLatin,
+    values: dedupeValues([...chineseValues, ...latinValues]),
+    chineseValues,
+    latinValues,
+  };
+}
+
+export function findMatchingOrchestraReferenceEntries(entry: OrchestraReferenceEntry, candidates: OrchestraReferenceEntry[]) {
+  return candidates.filter((candidate) => orchestraEntriesMatch(entry, candidate));
+}
+
+export function findUniqueOrchestraReferenceMergeTarget(entry: OrchestraReferenceEntry, candidates: OrchestraReferenceEntry[]) {
+  const matches = findMatchingOrchestraReferenceEntries(entry, candidates);
+  return matches.length === 1 ? matches[0] : null;
+}
+
+export function consolidateOrchestraReferenceEntries(entries: OrchestraReferenceEntry[]) {
+  const pending = [...entries];
+  const consolidated: OrchestraReferenceEntry[] = [];
+  while (pending.length > 0) {
+    const seed = pending.shift();
+    if (!seed) {
+      continue;
+    }
+    let merged = seed;
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let index = pending.length - 1; index >= 0; index -= 1) {
+        const candidate = pending[index];
+        if (!candidate || !orchestraEntriesMatch(merged, candidate)) {
+          continue;
+        }
+        merged = mergeOrchestraReferenceEntries(merged, candidate);
+        pending.splice(index, 1);
+        changed = true;
+      }
+    }
+    consolidated.push(merged);
+  }
+  return consolidated;
+}
+
+export function findMatchingPersonReferenceEntries(entry: PersonReferenceEntry, candidates: PersonReferenceEntry[]) {
+  return candidates.filter((candidate) => personEntriesMatch(entry, candidate));
+}
+
+export function findUniquePersonReferenceMergeTarget(entry: PersonReferenceEntry, candidates: PersonReferenceEntry[]) {
+  const matches = findMatchingPersonReferenceEntries(entry, candidates);
+  return matches.length === 1 ? matches[0] : null;
+}
+
+export function consolidatePersonReferenceEntries(entries: PersonReferenceEntry[]) {
+  const pending = [...entries];
+  const consolidated: PersonReferenceEntry[] = [];
+  while (pending.length > 0) {
+    const seed = pending.shift();
+    if (!seed) {
+      continue;
+    }
+    let merged = seed;
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let index = pending.length - 1; index >= 0; index -= 1) {
+        const candidate = pending[index];
+        if (!candidate || !personEntriesMatch(merged, candidate)) {
+          continue;
+        }
+        merged = mergePersonReferenceEntries(merged, candidate);
+        pending.splice(index, 1);
+        changed = true;
+      }
+    }
+    consolidated.push(merged);
+  }
+  return consolidated;
+}
+
+export function auditReferenceRegistry(registry: ReferenceRegistry) {
+  const issues: ReferenceRegistryIssue[] = [];
+  const seenIssueKeys = new Set<string>();
+
+  for (const entry of registry.orchestraEntries) {
+    const matches = findMatchingOrchestraReferenceEntries(entry, registry.orchestraEntries).filter((candidate) => candidate !== entry);
+    if (matches.length === 0) {
+      continue;
+    }
+    const preferredValues = dedupeValues([entry.preferredValue, ...matches.map((candidate) => candidate.preferredValue)]);
+    const issueKey = `duplicate_orchestra_identity::${preferredValues.join("::")}`;
+    if (seenIssueKeys.has(issueKey)) {
+      continue;
+    }
+    seenIssueKeys.add(issueKey);
+    issues.push({
+      code: "duplicate_orchestra_identity",
+      scope: "orchestra",
+      lookupValue: entry.canonicalLatin || entry.preferredValue,
+      preferredValues,
+    });
+  }
+
+  for (const entry of registry.personEntries) {
+    const matches = findMatchingPersonReferenceEntries(entry, registry.personEntries).filter((candidate) => candidate !== entry);
+    if (matches.length === 0) {
+      continue;
+    }
+    const preferredValues = dedupeValues([entry.preferredValue, ...matches.map((candidate) => candidate.preferredValue)]);
+    const issueKey = `duplicate_person_identity::${entry.role}::${preferredValues.join("::")}`;
+    if (seenIssueKeys.has(issueKey)) {
+      continue;
+    }
+    seenIssueKeys.add(issueKey);
+    issues.push({
+      code: "duplicate_person_identity",
+      scope: "person",
+      lookupValue: entry.canonicalLatin || entry.preferredValue,
+      role: entry.role,
+      preferredValues,
+    });
+  }
+
+  for (const entry of registry.orchestraEntries) {
+    for (const abbreviation of entry.abbreviations) {
+      const matches = lookupOrchestraReferences(registry, abbreviation);
+      const uniqueMatches = dedupeValues(matches.map((candidate) => `${candidate.preferredValue}::${candidate.canonicalLatin}`));
+      if (uniqueMatches.length <= 1) {
+        continue;
+      }
+      const preferredValues = dedupeValues(matches.map((candidate) => candidate.preferredValue));
+      const issueKey = `ambiguous_orchestra_abbreviation::${normalizeLookupKey(abbreviation)}::${preferredValues.join("::")}`;
+      if (seenIssueKeys.has(issueKey)) {
+        continue;
+      }
+      seenIssueKeys.add(issueKey);
+      issues.push({
+        code: "ambiguous_orchestra_abbreviation",
+        scope: "orchestra",
+        lookupValue: abbreviation,
+        preferredValues,
+      });
+    }
+  }
+
+  return issues;
+}
+
 export function parseOrchestraReferenceText(sourceText: string) {
   const entries: OrchestraReferenceEntry[] = [];
   for (const rawLine of String(sourceText ?? "").split(/\r?\n/)) {
@@ -145,7 +375,7 @@ export function parseOrchestraReferenceText(sourceText: string) {
     if (values.length === 0) {
       continue;
     }
-    entries.push(buildOrchestraEntry(values));
+    entries.push(buildOrchestraReferenceEntry(values));
   }
   return entries;
 }
@@ -168,7 +398,7 @@ export function parsePersonAliasReferenceText(sourceText: string) {
     if (values.length === 0) {
       continue;
     }
-    entries.push(buildPersonEntry(currentRole, values));
+    entries.push(buildPersonReferenceEntry(currentRole, values));
   }
   return entries;
 }

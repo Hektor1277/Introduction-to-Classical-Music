@@ -2,8 +2,16 @@ import { promises as fs } from "node:fs";
 
 import { loadLibraryFromDisk } from "../packages/data-core/src/library-store.js";
 import {
+  buildOrchestraReferenceEntry,
+  buildPersonReferenceEntry,
+  consolidateOrchestraReferenceEntries,
+  consolidatePersonReferenceEntries,
+  findMatchingOrchestraReferenceEntries,
+  findMatchingPersonReferenceEntries,
   getOrchestraReferenceDefaultPath,
   getPersonReferenceDefaultPath,
+  mergeOrchestraReferenceEntries,
+  mergePersonReferenceEntries,
   parseOrchestraReferenceText,
   parsePersonAliasReferenceText,
   type OrchestraReferenceEntry,
@@ -43,30 +51,6 @@ function normalizeLookupKey(value: unknown) {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^\p{Letter}\p{Number}\u3400-\u9fff]+/gu, "");
-}
-
-function buildOverlapKeySet(values: string[]) {
-  return new Set(values.map((value) => normalizeLookupKey(value)).filter(Boolean));
-}
-
-function entriesOverlap(leftValues: string[], rightValues: string[]) {
-  const leftKeys = buildOverlapKeySet(leftValues);
-  for (const key of buildOverlapKeySet(rightValues)) {
-    if (leftKeys.has(key)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function filterStrongIdentityValues(values: string[]) {
-  return values.filter((value) => !looksLikeAbbreviation(value));
-}
-
-function orchestraEntriesMatch(left: OrchestraReferenceEntry, right: OrchestraReferenceEntry) {
-  const samePreferred = normalizeLookupKey(left.preferredValue) && normalizeLookupKey(left.preferredValue) === normalizeLookupKey(right.preferredValue);
-  const sameCanonicalLatin = normalizeLookupKey(left.canonicalLatin) && normalizeLookupKey(left.canonicalLatin) === normalizeLookupKey(right.canonicalLatin);
-  return samePreferred || sameCanonicalLatin || entriesOverlap(filterStrongIdentityValues(left.values), filterStrongIdentityValues(right.values));
 }
 
 function mergeValueLists(...valueGroups: string[][]) {
@@ -129,43 +113,6 @@ function derivePersonValues(entity: Composer | Person) {
   const chineseValues = dedupeValues([entity.name, ...aliases.filter((value) => looksLikeChineseText(value))]);
   const latinValues = dedupeValues([entity.nameLatin, ...aliases.filter((value) => !looksLikeChineseText(value))]);
   return {
-    chineseValues,
-    latinValues,
-  };
-}
-
-function mergeOrchestraEntries(primary: OrchestraReferenceEntry, secondary: OrchestraReferenceEntry): OrchestraReferenceEntry {
-  const abbreviations = dedupeValues([...(primary.abbreviations || []), ...(secondary.abbreviations || [])]).sort((left, right) =>
-    left.localeCompare(right, "en"),
-  );
-  const preferredValue = primary.preferredValue || secondary.preferredValue;
-  const canonicalLatin = primary.canonicalLatin || secondary.canonicalLatin;
-  const chineseValues = sortChineseValues(mergeValueLists(primary.chineseValues, secondary.chineseValues), preferredValue);
-  const latinValues = sortLatinValues(mergeValueLists(primary.latinValues, secondary.latinValues), canonicalLatin);
-  return {
-    preferredValue,
-    canonicalLatin,
-    values: dedupeValues([
-      ...(abbreviations.length ? abbreviations : []),
-      ...chineseValues,
-      ...latinValues,
-    ]),
-    chineseValues,
-    latinValues,
-    abbreviations,
-  };
-}
-
-function mergePersonEntries(primary: PersonReferenceEntry, secondary: PersonReferenceEntry): PersonReferenceEntry {
-  const preferredValue = primary.preferredValue || secondary.preferredValue;
-  const canonicalLatin = primary.canonicalLatin || secondary.canonicalLatin;
-  const chineseValues = sortChineseValues(mergeValueLists(primary.chineseValues, secondary.chineseValues), preferredValue);
-  const latinValues = sortLatinValues(mergeValueLists(primary.latinValues, secondary.latinValues), canonicalLatin);
-  return {
-    role: primary.role,
-    preferredValue,
-    canonicalLatin,
-    values: dedupeValues([...chineseValues, ...latinValues]),
     chineseValues,
     latinValues,
   };
@@ -234,6 +181,50 @@ function buildPersonReferenceText(entries: PersonReferenceEntry[]) {
   return `${lines.join("\n").trimEnd()}\n`;
 }
 
+function sanitizeOrchestraEntryForTarget(entry: OrchestraReferenceEntry, target: OrchestraReferenceEntry, candidates: OrchestraReferenceEntry[]) {
+  const targetKeys = new Set(target.values.map((value) => normalizeLookupKey(value)).filter(Boolean));
+  const conflictingKeys = new Set(
+    candidates
+      .filter((candidate) => candidate !== target)
+      .flatMap((candidate) => candidate.values.map((value) => normalizeLookupKey(value)).filter(Boolean)),
+  );
+  const sanitizedValues = dedupeValues(
+    entry.values.filter((value) => {
+      const key = normalizeLookupKey(value);
+      if (!key) {
+        return false;
+      }
+      if (targetKeys.has(key)) {
+        return true;
+      }
+      return !conflictingKeys.has(key);
+    }),
+  );
+  return buildOrchestraReferenceEntry(sanitizedValues.length ? sanitizedValues : target.values);
+}
+
+function sanitizePersonEntryForTarget(entry: PersonReferenceEntry, target: PersonReferenceEntry, candidates: PersonReferenceEntry[]) {
+  const targetKeys = new Set(target.values.map((value) => normalizeLookupKey(value)).filter(Boolean));
+  const conflictingKeys = new Set(
+    candidates
+      .filter((candidate) => candidate !== target)
+      .flatMap((candidate) => candidate.values.map((value) => normalizeLookupKey(value)).filter(Boolean)),
+  );
+  const sanitizedValues = dedupeValues(
+    entry.values.filter((value) => {
+      const key = normalizeLookupKey(value);
+      if (!key) {
+        return false;
+      }
+      if (targetKeys.has(key)) {
+        return true;
+      }
+      return !conflictingKeys.has(key);
+    }),
+  );
+  return buildPersonReferenceEntry(target.role, sanitizedValues.length ? sanitizedValues : target.values);
+}
+
 async function main() {
   const library = await loadLibraryFromDisk();
   const orchestraPath = getOrchestraReferenceDefaultPath();
@@ -244,37 +235,40 @@ async function main() {
   ]);
 
   const existingOrchestraEntries = parseOrchestraReferenceText(existingOrchestraSource);
-  const usedExistingOrchestra = new Set<number>();
-  const orchestraEntries: OrchestraReferenceEntry[] = [];
+  const ambiguousOrchestraEntries: OrchestraReferenceEntry[] = [];
+  let orchestraEntries: OrchestraReferenceEntry[] = [];
   for (const person of library.people.filter((item) => item.roles.some((role) => ["orchestra", "ensemble", "chorus"].includes(role)))) {
     const derived = deriveOrchestraValues(person);
-    const entry: OrchestraReferenceEntry = {
+    orchestraEntries.push({
       preferredValue: derived.chineseValues[0] || derived.latinValues[0] || person.name,
       canonicalLatin: derived.latinValues[0] || "",
       values: dedupeValues([...derived.abbreviations, ...derived.chineseValues, ...derived.latinValues]),
       chineseValues: derived.chineseValues,
       latinValues: derived.latinValues,
       abbreviations: derived.abbreviations,
-    };
-    const matchedIndex = existingOrchestraEntries.findIndex(
-      (candidate, index) => !usedExistingOrchestra.has(index) && orchestraEntriesMatch(candidate, entry),
-    );
-    if (matchedIndex >= 0) {
-      usedExistingOrchestra.add(matchedIndex);
+    });
+  }
+  for (const entry of existingOrchestraEntries) {
+    const matches = findMatchingOrchestraReferenceEntries(entry, orchestraEntries);
+    if (matches.length === 1) {
+      const target = matches[0];
+      const sanitizedEntry = sanitizeOrchestraEntryForTarget(entry, target, orchestraEntries);
+      orchestraEntries = orchestraEntries.map((candidate) =>
+        candidate === target ? mergeOrchestraReferenceEntries(candidate, sanitizedEntry) : candidate,
+      );
+      continue;
+    }
+    if (matches.length === 0) {
       orchestraEntries.push(entry);
       continue;
     }
-    orchestraEntries.push(entry);
+    ambiguousOrchestraEntries.push(entry);
   }
-  existingOrchestraEntries.forEach((entry, index) => {
-    if (!usedExistingOrchestra.has(index)) {
-      orchestraEntries.push(entry);
-    }
-  });
+  orchestraEntries = consolidateOrchestraReferenceEntries(orchestraEntries);
 
   const existingPersonEntries = parsePersonAliasReferenceText(existingPersonSource);
-  const usedExistingPeople = new Set<number>();
-  const personEntries: PersonReferenceEntry[] = [];
+  const ambiguousPersonEntries: PersonReferenceEntry[] = [];
+  let personEntries: PersonReferenceEntry[] = [];
   const derivedPeople: Array<{ role: string; values: { chineseValues: string[]; latinValues: string[] } }> = [
     ...library.composers.map((composer) => ({
       role: determinePersonSection(composer, "composer"),
@@ -283,32 +277,47 @@ async function main() {
     ...library.people.map((person) => ({
       role: determinePersonSection(person, "person"),
       values: derivePersonValues(person),
-    })),
+    })).filter((entry) => entry.role !== "ensemble"),
   ];
   for (const derivedPerson of derivedPeople) {
-    const entry: PersonReferenceEntry = {
+    personEntries.push({
       role: derivedPerson.role,
       preferredValue: derivedPerson.values.chineseValues[0] || derivedPerson.values.latinValues[0] || "",
       canonicalLatin: derivedPerson.values.latinValues[0] || "",
       values: dedupeValues([...derivedPerson.values.chineseValues, ...derivedPerson.values.latinValues]),
       chineseValues: derivedPerson.values.chineseValues,
       latinValues: derivedPerson.values.latinValues,
-    };
-    const matchedIndex = existingPersonEntries.findIndex(
-      (candidate, index) => !usedExistingPeople.has(index) && candidate.role === entry.role && entriesOverlap(candidate.values, entry.values),
-    );
-    if (matchedIndex >= 0) {
-      usedExistingPeople.add(matchedIndex);
-      personEntries.push(mergePersonEntries(entry, existingPersonEntries[matchedIndex]));
+    });
+  }
+  for (const entry of existingPersonEntries.filter((candidate) => candidate.role !== "ensemble")) {
+    const matches = findMatchingPersonReferenceEntries(entry, personEntries);
+    if (matches.length === 1) {
+      const target = matches[0];
+      const sanitizedEntry = sanitizePersonEntryForTarget(entry, target, personEntries);
+      personEntries = personEntries.map((candidate) =>
+        candidate === target ? mergePersonReferenceEntries(candidate, sanitizedEntry) : candidate,
+      );
       continue;
     }
-    personEntries.push(entry);
-  }
-  existingPersonEntries.forEach((entry, index) => {
-    if (!usedExistingPeople.has(index)) {
+    if (matches.length === 0) {
       personEntries.push(entry);
+      continue;
     }
-  });
+    ambiguousPersonEntries.push(entry);
+  }
+
+  personEntries = consolidatePersonReferenceEntries(personEntries);
+  personEntries.push(
+    ...orchestraEntries.map<PersonReferenceEntry>((entry) => ({
+      role: "ensemble",
+      preferredValue: entry.preferredValue,
+      canonicalLatin: entry.canonicalLatin,
+      values: dedupeValues([...entry.chineseValues, ...entry.latinValues, ...entry.abbreviations]),
+      chineseValues: entry.chineseValues,
+      latinValues: dedupeValues([...entry.latinValues, ...entry.abbreviations]),
+    })),
+  );
+  personEntries = consolidatePersonReferenceEntries(personEntries);
 
   await Promise.all([
     fs.writeFile(orchestraPath, buildOrchestraReferenceText(orchestraEntries), "utf8"),
@@ -320,6 +329,8 @@ async function main() {
       {
         orchestraEntries: orchestraEntries.length,
         personEntries: personEntries.length,
+        skippedAmbiguousOrchestraEntries: ambiguousOrchestraEntries.length,
+        skippedAmbiguousPersonEntries: ambiguousPersonEntries.length,
         orchestraPath,
         personPath,
       },

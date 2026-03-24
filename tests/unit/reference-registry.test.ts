@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  auditReferenceRegistry,
   buildReferenceRegistry,
+  consolidateOrchestraReferenceEntries,
+  findUniqueOrchestraReferenceMergeTarget,
   lookupOrchestraReference,
   lookupPersonReference,
   parseOrchestraReferenceText,
@@ -106,5 +109,58 @@ LSO = 拉赫蒂交响乐团 = Lahti Symphony Orchestra
     });
 
     expect(lookupOrchestraReference(registry, "LSO")).toBeNull();
+  });
+
+  it("consolidates duplicate orchestra entries when they share a strong identity", () => {
+    const entries = parseOrchestraReferenceText(`
+RCO = 皇家音乐厅管弦乐团 = Concertgebouworkest = Royal Concertgebouw Orchestra
+The Royal Concertgebouw Orchestra = 皇家音乐厅管弦乐团 = RCO
+BPO = 柏林爱乐乐团 = Berliner Philharmoniker
+BPO = 布达佩斯爱乐乐团 = Budapest Philharmonic Orchestra
+`);
+
+    const consolidated = consolidateOrchestraReferenceEntries(entries);
+
+    expect(consolidated).toHaveLength(3);
+    expect(consolidated.find((entry) => entry.preferredValue === "皇家音乐厅管弦乐团")?.values).toEqual(
+      expect.arrayContaining(["RCO", "Concertgebouworkest", "Royal Concertgebouw Orchestra", "The Royal Concertgebouw Orchestra"]),
+    );
+  });
+
+  it("refuses to pick a merge target when one dirty legacy orchestra line overlaps multiple canonical entries", () => {
+    const [dirtyEntry] = parseOrchestraReferenceText(`
+BPO = 柏林爱乐乐团 = Berliner Philharmoniker = 布达佩斯爱乐乐团 = Budapest Philharmonic Orchestra
+`);
+    const canonicalEntries = parseOrchestraReferenceText(`
+BPO = 柏林爱乐乐团 = Berliner Philharmoniker
+BpPO = 布达佩斯爱乐乐团 = Budapest Philharmonic Orchestra
+`);
+
+    expect(findUniqueOrchestraReferenceMergeTarget(dirtyEntry, canonicalEntries)).toBeNull();
+  });
+
+  it("audits ambiguous orchestra abbreviations and duplicate identities", () => {
+    const registry = buildReferenceRegistry({
+      orchestraSourceText: `
+BPO = 柏林爱乐乐团 = Berliner Philharmoniker
+BPO = 布达佩斯爱乐乐团 = Budapest Philharmonic Orchestra
+RCO = 皇家音乐厅管弦乐团 = Concertgebouworkest
+皇家音乐厅管弦乐团 = The Royal Concertgebouw Orchestra = RCO
+`,
+    });
+
+    expect(auditReferenceRegistry(registry)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "ambiguous_orchestra_abbreviation",
+          lookupValue: "BPO",
+          preferredValues: expect.arrayContaining(["柏林爱乐乐团", "布达佩斯爱乐乐团"]),
+        }),
+        expect.objectContaining({
+          code: "duplicate_orchestra_identity",
+          preferredValues: expect.arrayContaining(["皇家音乐厅管弦乐团"]),
+        }),
+      ]),
+    );
   });
 });

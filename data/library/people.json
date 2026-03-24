@@ -2340,7 +2340,7 @@
     "id": "person-弗里茨克莱斯勒",
     "slug": "弗里茨克莱斯勒",
     "name": "弗里茨·克莱斯勒",
-    "nameLatin": "Claudio Arrau",
+    "nameLatin": "Fritz Kreisler",
     "country": "",
     "avatarSrc": "",
     "aliases": [
@@ -2742,7 +2742,7 @@
     "id": "person-哈罗德鲍尔",
     "slug": "哈罗德鲍尔",
     "name": "哈罗德·鲍尔",
-    "nameLatin": "Leonard Bernstein",
+    "nameLatin": "Harold Bauer",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -2816,7 +2816,7 @@
     "id": "person-埃贡佩特里",
     "slug": "埃贡佩特里",
     "name": "埃贡·佩特里",
-    "nameLatin": "Colin Davis",
+    "nameLatin": "Egon Petri",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -2989,7 +2989,7 @@
     "id": "person-弗拉基米尔索夫罗尼茨基",
     "slug": "弗拉基米尔索夫罗尼茨基",
     "name": "弗拉基米尔·索夫罗尼茨基",
-    "nameLatin": "Thomas Beecham",
+    "nameLatin": "Vladimir Sofronitsky",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -3113,7 +3113,7 @@
     "id": "person-斯坦尼斯拉夫布宁",
     "slug": "斯坦尼斯拉夫布宁",
     "name": "斯坦尼斯拉夫·布宁",
-    "nameLatin": "Thomas Beecham",
+    "nameLatin": "Stanislav Bunin",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -3317,7 +3317,7 @@
     "id": "person-米奇斯瓦夫霍尔绍夫斯基",
     "slug": "米奇斯瓦夫霍尔绍夫斯基",
     "name": "米奇斯瓦夫·霍尔绍夫斯基",
-    "nameLatin": "Claudio Arrau",
+    "nameLatin": "Mieczyslaw Horszowski",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -3489,7 +3489,7 @@
     "id": "person-阿尔多奇科里尼",
     "slug": "阿尔多奇科里尼",
     "name": "阿尔多·奇科里尼",
-    "nameLatin": "Thomas Beecham",
+    "nameLatin": "Aldo Ciccolini",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -3617,13 +3617,12 @@
     "country": "Austria",
     "avatarSrc": "",
     "aliases": [
-      "Wiener Philharmoniker / Konzertvereinigung Wiener Staatsopernchor",
       "维也纳爱乐",
       "维也纳爱乐管弦乐团",
       "维也纳爱乐交响乐团",
-      "WPVVPO",
       "VPO",
-      "Vienna Philharmonic"
+      "Vienna Philharmonic",
+      "Wiener Philharmoniker"
     ],
     "sortKey": "1430",
     "summary": "维也纳爱乐乐团成立于1842年，被公认为世界顶级交响乐团之一。",
@@ -3942,8 +3941,10 @@
     "aliases": [
       "海牙管弦乐团",
       "海牙交响乐团",
-      "HPO",
-      "海牙爱乐乐团"
+      "海牙爱乐乐团",
+      "Residentie Orkest",
+      "RO",
+      "The Hague Philharmonic"
     ],
     "sortKey": "1570",
     "summary": "海牙爱乐乐团是荷兰海牙的一支交响乐团，以其古典音乐演出而闻名。",
@@ -4299,8 +4300,8 @@
     "aliases": [
       "布达佩斯交响乐团",
       "布达佩斯管弦乐团",
-      "BPO",
-      "布达佩斯爱乐乐团"
+      "布达佩斯爱乐乐团",
+      "BpPO"
     ],
     "sortKey": "1720",
     "summary": "布达佩斯爱乐乐团是匈牙利主要交响乐团之一，成立于1853年，以演奏匈牙利作曲家的作品著称。",
@@ -4686,7 +4687,6 @@
     "country": "Germany",
     "avatarSrc": "/library-assets/managed/people/person-cologne-symphony-orchestra/person-cologne-symphony-orchestra-4128cae97e.jpg",
     "aliases": [
-      "CSO",
       "科隆交响乐团"
     ],
     "sortKey": "1900",
@@ -4872,7 +4872,9 @@
     "avatarSrc": "",
     "aliases": [
       "维也纳交响乐团",
-      "WSO"
+      "WSO",
+      "WSY",
+      "Vienna Symphony Orchestra"
     ],
     "sortKey": "1970",
     "summary": "维也纳交响乐团是奥地利维也纳的管弦乐团，主要演出场地为维也纳音乐厅，亦在维也纳金色大厅与维也纳剧院演出。",
@@ -5110,7 +5112,8 @@
       "赫尔辛基交响乐团",
       "赫尔辛基管弦乐团",
       "HPO",
-      "赫尔辛基爱乐乐团"
+      "赫尔辛基爱乐乐团",
+      "Helsingin kaupunginorkesteri"
     ],
     "sortKey": "2060",
     "summary": "赫尔辛基爱乐乐团成立于1882年，由罗伯特·卡亚努斯创立，是北欧首个常设乐团。其主要演出场所为赫尔辛基音乐中心，现任首席指挥为尤卡-佩卡·萨拉斯特（自2023-2024乐季起）。",
@@ -5275,7 +5278,8 @@
       "柏林爱乐",
       "Berlin Philharmonic",
       "Berlin Philharmonic Orchestra",
-      "Symphony Orchestra Berlin"
+      "Symphony Orchestra Berlin",
+      "BPhil"
     ],
     "sortKey": "2120",
     "summary": "德国柏林的主要交响乐团，成立于1882年，以卓越的艺术水准闻名世界。柏林爱乐乐团成立于1882年，是德国管弦乐团。彪罗、尼基什、富特文格勒等历任指挥为其奠定风格基础。卡拉扬执掌34年，极大提升了乐团的艺术水准与国际影响力，并迁入柏林爱乐音乐厅。",
@@ -5624,12 +5628,9 @@
     "aliases": [
       "永恒乐团",
       "永恒音乐",
-      "MA",
       "永恒音乐乐团",
       "musicAeterna",
-      "MO",
-      "永恒音乐管弦乐团",
-      "OM"
+      "永恒音乐管弦乐团"
     ],
     "sortKey": "2290",
     "summary": "MusicAeterna是位于圣彼得堡的管弦乐团与合唱团，由指挥家泰奥多尔·库伦齐斯创立，以遵循历史演奏实践、演绎从早期到当代古典音乐的多样风格而闻名。",
