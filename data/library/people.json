@@ -5350,10 +5350,10 @@
     ]
   },
   {
-    "id": "person-das-nwdr-sinfonieorchester",
-    "slug": "das-nwdr-sinfonieorchester",
+    "id": "person-nwdr-sinfonieorchester",
+    "slug": "nwdr-sinfonieorchester",
     "name": "西北德意志广播交响乐团",
-    "nameLatin": "Norddeutscher Rundfunk",
+    "nameLatin": "NWDR Sinfonieorchester",
     "country": "Germany",
     "avatarSrc": "",
     "aliases": [
@@ -5361,10 +5361,13 @@
       "德国NWDR交响乐团",
       "NWDR",
       "西北德意志广播交响乐团",
-      "NWDR交响乐团"
+      "NWDR交响乐团",
+      "NWDR-Sinfonieorchester",
+      "Sinfonieorchester des NWDR",
+      "Das NWDR-Sinfonieorchester"
     ],
     "sortKey": "2170",
-    "summary": "NWDR交响乐团隶属于汉堡的北德广播公司，该机构是德国公共广播联盟成员，服务于汉堡、下萨克森、梅克伦堡-前波美拉尼亚和石勒苏益格-荷尔斯泰因地区。",
+    "summary": "西北德意志广播交响乐团于1945年在汉堡作为 NWDR 的交响乐团成立，历史原文常见为 NWDR Sinfonieorchester 或 Sinfonieorchester des NWDR；1956年随 NWDR 拆分沿革为 NDR Sinfonieorchester，后继续发展为今日的 NDR Elbphilharmonie Orchester。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",

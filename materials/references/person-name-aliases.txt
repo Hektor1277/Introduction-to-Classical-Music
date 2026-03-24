@@ -274,7 +274,7 @@
 苏联国家交响乐团 = 苏联国家管弦乐团 = 苏联国立交响乐团 = USSR State Symphony Orchestra = SSO = USSO
 维也纳爱乐乐团 = 维也纳爱乐 = 维也纳爱乐管弦乐团 = 维也纳爱乐交响乐团 = Vienna Philharmonic Orchestra = Vienna Philharmonic = VPO = Wiener Philharmoniker
 维也纳交响乐团 = Wiener Symphoniker = Vienna Symphony Orchestra = WSO = WSY
-西北德意志广播交响乐团 = 德国NWDR交响乐团 = NWDR广播交响乐团 = NWDR交响乐团 = Norddeutscher Rundfunk = NWDR = NWDR-Sinfonieorchester
+西北德意志广播交响乐团 = 德国NWDR交响乐团 = NWDR广播交响乐团 = NWDR交响乐团 = NWDR Sinfonieorchester = Das NWDR-Sinfonieorchester = NWDR = NWDR-Sinfonieorchester = Sinfonieorchester des NWDR
 匈牙利国家爱乐乐团 = 匈牙利爱乐乐团 = 匈牙利国爱 = 匈牙利国家交响乐团 = Hungarian National Philharmonic Orchestra = HNP = HNPO
 音乐永恒乐团 = 永恒乐团 = 永恒音乐 = 永恒音乐管弦乐团 = 永恒音乐乐团 = MusicAeterna = musicAeterna
 英国广播公司苏格兰交响乐团 = BBC苏格兰管弦乐团 = BBC苏格兰交响乐团 = BBC苏格兰乐团 = BBC Scottish Symphony Orchestra = BSSO
