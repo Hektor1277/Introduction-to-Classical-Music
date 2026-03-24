@@ -231,6 +231,7 @@
 阿姆斯特丹皇家音乐厅管弦乐团 = 阿姆斯特丹管弦乐团 = 荷兰皇家音乐厅管弦乐团 = 皇家音乐厅管弦乐团 = Royal Concertgebouw Orchestra = Concertgebouworkest = RCO = The Royal Concertgebouw Orchestra
 爱乐乐团 = 新爱乐乐团 = Philharmonia Orchestra = Neo Philharmonia Orchestra = PO
 巴伐利亚广播交响乐团 = 巴伐利亚广播管弦乐团 = Bavarian Radio Symphony Orchestra = BRSO = Symphonie-Orchester des Bayerischen Rundfunks
+巴黎音乐学院音乐会协会乐团 = Orchestre de la Société des Concerts du Conservatoire = OSCC
 巴塞罗那交响乐团
 柏林爱乐乐团 = 柏林爱乐 = 柏林爱乐管弦乐团 = 柏林爱乐交响乐团 = Berliner Philharmoniker = Berlin Philharmonic = Berlin Philharmonic Orchestra = BP = BPhil = BPO = Symphony Orchestra Berlin
 柏林广播交响乐团 = 柏林广播乐团 = Berlin Radio Symphony Orchestra = RSB = Rundfunk-Sinfonieorchester Berlin
@@ -242,9 +243,12 @@
 布达佩斯爱乐乐团 = 布达佩斯管弦乐团 = 布达佩斯交响乐团 = Budapest Philharmonic Orchestra = BpPO
 德国广播交响乐团 = Frankfurt Radio Symphony = FRS
 德国西南广播电台交响乐团 = 巴登-巴登弗赖堡交响乐团 = 斯图加特广播交响乐团 = 西南德意志广播交响乐团 = 西南广播交响乐团 = SWR交响乐团 = SWR Radio Symphony Orchestra = SWR = SWR SO = SWR Symphonieorchester Baden-Baden und Freiburg = SWRSO
+德累斯顿交响乐团 = Sächsische Staatskapelle Dresden
+法国广播电视管弦乐团 = Orchestra della Radiotelevisione Francese
 法国国家管弦乐团 = 巴黎国家交响乐团 = 巴黎国立交响乐团 = 法国国家电台管弦乐团 = 法国国家广播管弦乐团 = 法国国家交响乐团 = Orchestre National de France = ONF = ONP = Orchestre National de la Radiodiffusion Française(EN: Orchestre National de France)
 费城交响乐团 = 费城管弦乐团 = 费城乐团 = Philadelphia Orchestra = PpO
 芬兰广播乐团
+哥德堡交响乐团 = Göteborgs Symfoniker
 国家音乐会古乐团 = 国家音乐会 = 国家音乐会乐团 = Le Concert des Nations = CDN
 海牙爱乐乐团 = 海牙管弦乐团 = 海牙交响乐团 = Hague Philharmonic Orchestra = Residentie Orkest = RO = The Hague Philharmonic
 赫尔辛基爱乐乐团 = 赫尔辛基管弦乐团 = 赫尔辛基交响乐团 = Helsinki Philharmonic Orchestra = Helsingin kaupunginorkesteri = HPO
@@ -270,6 +274,7 @@
 音乐永恒乐团 = 永恒乐团 = 永恒音乐 = 永恒音乐管弦乐团 = 永恒音乐乐团 = MusicAeterna = musicAeterna
 英国广播公司苏格兰交响乐团 = BBC苏格兰管弦乐团 = BBC苏格兰交响乐团 = BBC苏格兰乐团 = BBC Scottish Symphony Orchestra = BSSO
 芝加哥交响乐团 = 芝加哥管弦乐团 = Chicago Symphony Orchestra = CSO
+智利交响乐团 = Orquesta Sinfónica de Chile
 Bamberg Symphony Orchestra
 BaSO = Bamberger Symphoniker
 Bayerisches Staatsorchester = Bavarian State Opera Orchestra = BSOO
@@ -289,7 +294,6 @@ Deutsches Symphonie-Orchester Berlin = DSOB
 Dresdner Philharmonie = DPO
 Finnish Radio Symphony Orchestra = FRSO
 Gewandhausorchester Leipzig = LGO
-Göteborgs Symfoniker
 Gürzenich-Orchester Köln = GOK
 Gustav Mahler Jugendorchester = GMJO
 Hallé Orchestra = HO
@@ -309,15 +313,12 @@ NePO = Nederlands Philharmonisch Orkest = Netherlands Philharmonic Orchestra
 New Japan Philharmonic = NJPO
 New Philharmonia Orchestra = NPO
 Orchester der Wiener Staatsoper = VSOO
-Orchestra della Radiotelevisione Francese
-Orchestre de la Société des Concerts du Conservatoire = OSCC
 Orchestre de Paris = OP
 Orchestre National de l'ORTF
 Orchestre Philharmonique de Monte-Carlo = OPMC = Orchestre National de l'Opéra de Monte-Carlo
 Orchestre philharmonique de Radio France = OPRF
 Orchestre Révolutionnaire et Romantique
 Orchestre symphonique de Montréal = OSM
-Orquesta Sinfónica de Chile
 Philharmonic-Symphony Orchestra of New York = NYPSO
 Philharmonisches Staatsorchester Hamburg = PSH
 Pittsburgh Symphony Orchestra = PSO
@@ -330,7 +331,6 @@ Royal Liverpool Philharmonic = RLPO
 RSSa = Rundfunk-Sinfonieorchester Saarbrücken
 RSStu = Radio-Sinfonieorchester Stuttgart = Südfunk-Sinfonieorchester
 Rundfunk-Sinfonie-Orchester Leipzig = LRSO = RSOL = Rundfunk-Sinfonieorchester Leipzig
-Sächsische Staatskapelle Dresden
 Saito Kinen Orchestra
 Scottish Chamber Orchestra = SCO
 South West German Radio Symphony Orchestra

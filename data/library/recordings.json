@@ -4305,7 +4305,7 @@
     "id": "recording-第三交响曲英雄-克莱茨基-1962",
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "克莱茨基-1962",
-    "title": "克莱茨基 - 巴黎国家交响乐团 - 1962",
+    "title": "克莱茨基 - 法国国家管弦乐团 - 1962",
     "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -4324,8 +4324,8 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-orchestre-national-de-paris",
-        "displayName": "巴黎国家交响乐团",
+        "personId": "person-orchestre-national-de-france",
+        "displayName": "法国国家管弦乐团",
         "label": "乐团"
       },
       {
@@ -5423,7 +5423,7 @@
     "id": "recording-第五交响曲命运-乔治约胡姆-1961",
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "乔治约胡姆-1961",
-    "title": "乔治·约胡姆 - Orquesta Sinfónica de Chile - 1961",
+    "title": "乔治·约胡姆 - 智利交响乐团 - 1961",
     "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
@@ -5439,7 +5439,7 @@
       {
         "role": "orchestra",
         "personId": "person-orchestra-orquesta-sinfonica-de-chile",
-        "displayName": "Orquesta Sinfónica de Chile",
+        "displayName": "智利交响乐团",
         "label": "乐团"
       }
     ],
@@ -5638,7 +5638,7 @@
     "id": "recording-第五交响曲命运-厄特沃什-2017",
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "厄特沃什-2017",
-    "title": "厄特沃什 - Göteborgs Symfoniker - 2017",
+    "title": "厄特沃什 - 哥德堡交响乐团 - 2017",
     "workTypeHint": "orchestral",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
@@ -5664,7 +5664,7 @@
       {
         "role": "orchestra",
         "personId": "person-orchestra-goteborgs-symfoniker",
-        "displayName": "Göteborgs Symfoniker",
+        "displayName": "哥德堡交响乐团",
         "label": "乐团"
       }
     ],
@@ -6183,7 +6183,7 @@
     "id": "recording-第六交响曲田园-舍尔兴1964",
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "舍尔兴1964",
-    "title": "舍尔兴 - Orchestra della Radiotelevisione Francese - 1964",
+    "title": "舍尔兴 - 法国广播电视管弦乐团 - 1964",
     "workTypeHint": "orchestral",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
@@ -6209,7 +6209,7 @@
       {
         "role": "orchestra",
         "personId": "person-orchestra-orchestra-della-radiotelevisione-francese",
-        "displayName": "Orchestra della Radiotelevisione Francese",
+        "displayName": "法国广播电视管弦乐团",
         "label": "乐团"
       }
     ],
@@ -6238,7 +6238,7 @@
     "id": "recording-第六交响曲田园-舒里希特1957",
     "workId": "work-贝多芬-交响曲-第六交响曲田园",
     "slug": "舒里希特1957",
-    "title": "舒里希特 - Orchestre de la Société des Concerts du Conservatoire - 1957",
+    "title": "舒里希特 - 巴黎音乐学院音乐会协会乐团 - 1957",
     "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
@@ -6264,7 +6264,7 @@
       {
         "role": "orchestra",
         "personId": "person-orchestra-orchestre-de-la-societe-des-concerts-du-conservatoire",
-        "displayName": "Orchestre de la Société des Concerts du Conservatoire",
+        "displayName": "巴黎音乐学院音乐会协会乐团",
         "label": "乐团"
       }
     ],
@@ -9671,7 +9671,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-ko-lner-rundfunk-sinfonie-orchester-wdr-sinfonieorchester-ko-ln",
+        "personId": "person-ko-lner-rundfunk-sinfonie-orchester",
         "displayName": "科隆西德广播交响乐团",
         "label": "乐团"
       },
@@ -10356,7 +10356,7 @@
     "credits": [
       {
         "role": "orchestra",
-        "personId": "person-ko-lner-rundfunk-sinfonie-orchester-wdr-sinfonieorchester-ko-ln",
+        "personId": "person-ko-lner-rundfunk-sinfonie-orchester",
         "displayName": "科隆西德广播交响乐团",
         "label": "乐团"
       },
@@ -10497,7 +10497,7 @@
     "id": "recording-第五交响曲-西诺波利1999",
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "西诺波利1999",
-    "title": "西诺波利 - Sächsische Staatskapelle Dresden - 1999",
+    "title": "西诺波利 - 德累斯顿交响乐团 - 1999",
     "workTypeHint": "orchestral",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
@@ -10513,7 +10513,7 @@
       {
         "role": "orchestra",
         "personId": "person-orchestra-sachsische-staatskapelle-dresden",
-        "displayName": "Sächsische Staatskapelle Dresden",
+        "displayName": "德累斯顿交响乐团",
         "label": "元数据推断"
       }
     ],
@@ -10526,7 +10526,7 @@
     ],
     "notes": "",
     "performanceDateText": "1999",
-    "venueText": "Sächsische Staatskapelle Dresden",
+    "venueText": "",
     "albumTitle": "",
     "label": "",
     "releaseDate": "",
