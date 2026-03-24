@@ -5263,8 +5263,8 @@
     ]
   },
   {
-    "id": "person-berliner-philahrmoniker",
-    "slug": "berliner-philahrmoniker",
+    "id": "person-berliner-philharmoniker",
+    "slug": "berliner-philharmoniker",
     "name": "柏林爱乐乐团",
     "nameLatin": "Berliner Philharmoniker",
     "country": "Germany",
@@ -6260,8 +6260,8 @@
     ]
   },
   {
-    "id": "person-orchestra-orquesta-sinfo-nica-de-chile",
-    "slug": "orquesta-sinfo-nica-de-chile",
+    "id": "person-orchestra-orquesta-sinfonica-de-chile",
+    "slug": "orquesta-sinfonica-de-chile",
     "name": "Orquesta Sinfónica de Chile",
     "nameLatin": "Orquesta Sinfónica de Chile",
     "country": "",
@@ -6308,10 +6308,10 @@
     ]
   },
   {
-    "id": "person-orchestra-go-teborgs-symfoniker",
-    "slug": "go-teborgs-symfoniker",
-    "name": "Gōteborgs Symfoniker",
-    "nameLatin": "Gōteborgs Symfoniker",
+    "id": "person-orchestra-goteborgs-symfoniker",
+    "slug": "goteborgs-symfoniker",
+    "name": "Göteborgs Symfoniker",
+    "nameLatin": "Göteborgs Symfoniker",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -6356,10 +6356,10 @@
     ]
   },
   {
-    "id": "person-orchestra-orchestra-della-radiolelevisione-francese",
-    "slug": "orchestra-della-radiolelevisione-francese",
-    "name": "Orchestra della Radiolelevisione Francese",
-    "nameLatin": "Orchestra della Radiolelevisione Francese",
+    "id": "person-orchestra-orchestra-della-radiotelevisione-francese",
+    "slug": "orchestra-della-radiotelevisione-francese",
+    "name": "Orchestra della Radiotelevisione Francese",
+    "nameLatin": "Orchestra della Radiotelevisione Francese",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -6380,10 +6380,10 @@
     ]
   },
   {
-    "id": "person-orchestra-orchester-de-lasocie-te-des-concerts-du-conservatoire",
-    "slug": "orchester-de-lasocie-te-des-concerts-du-conservatoire",
-    "name": "Orchester de laSociétédes Concerts du Conservatoire",
-    "nameLatin": "Orchester de laSociétédes Concerts du Conservatoire",
+    "id": "person-orchestra-orchestre-de-la-societe-des-concerts-du-conservatoire",
+    "slug": "orchestre-de-la-societe-des-concerts-du-conservatoire",
+    "name": "Orchestre de la Société des Concerts du Conservatoire",
+    "nameLatin": "Orchestre de la Société des Concerts du Conservatoire",
     "country": "",
     "avatarSrc": "",
     "aliases": [],
@@ -6812,8 +6812,8 @@
     ]
   },
   {
-    "id": "person-orchestra-sa-chsische-staatskapelle-dresden",
-    "slug": "sa-chsische-staatskapelle-dresden",
+    "id": "person-orchestra-sachsische-staatskapelle-dresden",
+    "slug": "sachsische-staatskapelle-dresden",
     "name": "Sächsische Staatskapelle Dresden",
     "nameLatin": "Sächsische Staatskapelle Dresden",
     "country": "",

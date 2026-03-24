@@ -289,7 +289,7 @@ Deutsches Symphonie-Orchester Berlin = DSOB
 Dresdner Philharmonie = DPO
 Finnish Radio Symphony Orchestra = FRSO
 Gewandhausorchester Leipzig = LGO
-Gōteborgs Symfoniker
+Göteborgs Symfoniker
 Gürzenich-Orchester Köln = GOK
 Gustav Mahler Jugendorchester = GMJO
 Hallé Orchestra = HO
@@ -308,9 +308,8 @@ NDR Sinfonieorchester = NDR = NDR Elbphilharmonie Orchester
 NePO = Nederlands Philharmonisch Orkest = Netherlands Philharmonic Orchestra
 New Japan Philharmonic = NJPO
 New Philharmonia Orchestra = NPO
-Orchester de laSociétédes Concerts du Conservatoire
 Orchester der Wiener Staatsoper = VSOO
-Orchestra della Radiolelevisione Francese
+Orchestra della Radiotelevisione Francese
 Orchestre de la Société des Concerts du Conservatoire = OSCC
 Orchestre de Paris = OP
 Orchestre National de l'ORTF

@@ -65,7 +65,7 @@ DSOB = Deutsches Symphonie-Orchester Berlin
 DPO = Dresdner Philharmonie
 FRSO = Finnish Radio Symphony Orchestra
 LGO = Gewandhausorchester Leipzig
-Gōteborgs Symfoniker
+Göteborgs Symfoniker
 GOK = Gürzenich-Orchester Köln
 GMJO = Gustav Mahler Jugendorchester
 HO = Hallé Orchestra
@@ -84,9 +84,8 @@ NDR = NDR Sinfonieorchester = NDR Elbphilharmonie Orchester
 NePO = Nederlands Philharmonisch Orkest = Netherlands Philharmonic Orchestra
 NJPO = New Japan Philharmonic
 NPO = New Philharmonia Orchestra
-Orchester de laSociétédes Concerts du Conservatoire
 VSOO = Orchester der Wiener Staatsoper
-Orchestra della Radiolelevisione Francese
+Orchestra della Radiotelevisione Francese
 OSCC = Orchestre de la Société des Concerts du Conservatoire
 OP = Orchestre de Paris
 Orchestre National de l'ORTF
