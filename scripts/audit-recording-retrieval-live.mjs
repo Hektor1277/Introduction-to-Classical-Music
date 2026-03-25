@@ -7,6 +7,8 @@ const rootDir = process.cwd();
 const servicePort = Number(process.env.LIVE_RECORDING_RETRIEVAL_AUDIT_PORT || 4793);
 const serviceBaseUrl = process.env.RECORDING_RETRIEVAL_SERVICE_URL || `http://127.0.0.1:${servicePort}`;
 const sampleSizePerGroup = Math.max(1, Number(process.env.RECORDING_LIVE_AUDIT_SAMPLE_SIZE || 1));
+const requestTimeoutMs = Math.max(30000, Number(process.env.RECORDING_LIVE_AUDIT_REQUEST_TIMEOUT_MS || 90000));
+const executionTimeoutMs = Math.max(requestTimeoutMs + 10000, Number(process.env.RECORDING_LIVE_AUDIT_EXECUTION_TIMEOUT_MS || 120000));
 const serviceCwd = path.join(rootDir, "tools", "recording-retrieval-service", "app");
 const servicePythonPath = path.join(serviceCwd, ".venv", "Scripts", "python.exe");
 
@@ -118,12 +120,12 @@ async function main() {
           },
         },
         maxConcurrency: 1,
-        timeoutMs: 45000,
+        timeoutMs: requestTimeoutMs,
         returnPartialResults: true,
       });
       const execution = await retrieval.executeRecordingRetrievalJob(provider, request, fetch, {
         pollIntervalMs: 1000,
-        timeoutMs: 60000,
+        timeoutMs: executionTimeoutMs,
       });
       const proposals = retrieval.translateRecordingRetrievalResultsToProposals(library, execution);
       const review = checks.reviewRecordingAutomationProposalQuality(recording, proposals);
@@ -146,6 +148,8 @@ async function main() {
           ok: true,
           serviceBaseUrl,
           sampleSizePerGroup,
+          requestTimeoutMs,
+          executionTimeoutMs,
           plan,
           summary,
           samples: results,
