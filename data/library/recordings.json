@@ -683,7 +683,7 @@
     "id": "recording-第七交响曲-约胡姆1939",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1939",
-    "title": "乔治·约胡姆 - 维也纳爱乐乐团 - 8-9 May 1939",
+    "title": "约胡姆 - 维也纳爱乐乐团 - 8-9 May 1939",
     "workTypeHint": "orchestral",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
@@ -698,8 +698,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-约胡姆",
-        "displayName": "约胡姆",
+        "personId": "person-欧根约胡姆",
+        "displayName": "欧根·约胡姆",
         "label": "文件名推断"
       }
     ],
@@ -733,7 +733,7 @@
     "id": "recording-第七交响曲-约胡姆1979",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1979",
-    "title": "乔治·约胡姆 - 慕尼黑爱乐乐团 - 8 November 1979",
+    "title": "约胡姆 - 慕尼黑爱乐乐团 - 8 November 1979",
     "workTypeHint": "orchestral",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
@@ -742,8 +742,8 @@
     "credits": [
       {
         "role": "conductor",
-        "personId": "person-约胡姆",
-        "displayName": "约胡姆",
+        "personId": "person-欧根约胡姆",
+        "displayName": "欧根·约胡姆",
         "label": ""
       },
       {
@@ -783,7 +783,7 @@
     "id": "recording-第七交响曲-约胡姆1986",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "约胡姆1986",
-    "title": "乔治·约胡姆 - 阿姆斯特丹皇家音乐厅管弦乐团 - 17 September 1986, Hitomi Memorial Hall, Tokyo",
+    "title": "约胡姆 - 阿姆斯特丹皇家音乐厅管弦乐团 - 17 September 1986, Hitomi Memorial Hall, Tokyo",
     "workTypeHint": "orchestral",
     "sortKey": "0170",
     "isPrimaryRecommendation": false,
@@ -798,8 +798,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-约胡姆",
-        "displayName": "约胡姆",
+        "personId": "person-欧根约胡姆",
+        "displayName": "欧根·约胡姆",
         "label": "文件名推断"
       }
     ],
@@ -883,7 +883,7 @@
     "id": "recording-第七交响曲-老桑德林1999",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "老桑德林1999",
-    "title": "老桑德林BRSO - 斯图加特广播交响乐团 - 1999",
+    "title": "老桑德林 - 斯图加特广播交响乐团 - 1999",
     "workTypeHint": "orchestral",
     "sortKey": "0190",
     "isPrimaryRecommendation": false,
@@ -898,8 +898,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-老桑德林",
-        "displayName": "老桑德林",
+        "personId": "person-库尔特桑德林",
+        "displayName": "库尔特·桑德林",
         "label": "文件名推断"
       }
     ],
@@ -933,7 +933,7 @@
     "id": "recording-第七交响曲-老桑德林brso1999",
     "workId": "work-布鲁克纳-交响曲-第七交响曲",
     "slug": "老桑德林brso1999",
-    "title": "老桑德林BRSO - 巴伐利亚广播交响乐团 - Abonnementkonzert 19991022",
+    "title": "老桑德林 - 巴伐利亚广播交响乐团 - Abonnementkonzert 19991022",
     "workTypeHint": "orchestral",
     "sortKey": "0200",
     "isPrimaryRecommendation": false,
@@ -948,8 +948,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-老桑德林",
-        "displayName": "老桑德林",
+        "personId": "person-库尔特桑德林",
+        "displayName": "库尔特·桑德林",
         "label": "文件名推断"
       }
     ],
@@ -1723,7 +1723,7 @@
     "id": "recording-a小调钢琴协奏曲-劳拉-and-怀特1951",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "劳拉-and-怀特1951",
-    "title": "伊恩・怀特 Ian Whyte - 劳拉 - 怀特 - 英国广播公司苏格兰交响乐团 - May 29, 1951",
+    "title": "怀特 - 劳拉 - 英国广播公司苏格兰交响乐团 - May 29, 1951",
     "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
@@ -1738,20 +1738,14 @@
       },
       {
         "role": "conductor",
-        "personId": "person-伊恩-怀特-ian-whyte",
-        "displayName": "伊恩・怀特 Ian Whyte",
+        "personId": "person-伊恩怀特",
+        "displayName": "伊恩·怀特",
         "label": "指挥"
       },
       {
         "role": "soloist",
         "personId": "person-阿德利纳德劳拉",
         "displayName": "阿德利纳·德·劳拉",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-怀特",
-        "displayName": "怀特",
         "label": "文件名补录"
       }
     ],
@@ -1847,7 +1841,7 @@
     "id": "recording-a小调钢琴协奏曲-安妮-and-佩里克1985",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "安妮-and-佩里克1985",
-    "title": "克里斯托夫·佩里克 Christof Prick - 安妮 - 佩里克 - 日本放送协会交响乐团 - October 18, 1985",
+    "title": "佩里克 - 安妮 - 日本放送协会交响乐团 - October 18, 1985",
     "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
@@ -1872,20 +1866,14 @@
       },
       {
         "role": "conductor",
-        "personId": "person-克里斯托夫佩里克-christof-prick",
-        "displayName": "克里斯托夫·佩里克 Christof Prick",
+        "personId": "person-克里斯托夫佩里克",
+        "displayName": "克里斯托夫·佩里克",
         "label": "指挥"
       },
       {
         "role": "soloist",
         "personId": "person-安妮费舍尔",
         "displayName": "安妮·费舍尔",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-佩里克",
-        "displayName": "佩里克",
         "label": "文件名补录"
       }
     ],
@@ -2104,7 +2092,7 @@
     "id": "recording-a小调钢琴协奏曲-格林伯格-and-埃利亚斯伯格1958",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "格林伯格-and-埃利亚斯伯格1958",
-    "title": "卡尔·埃利亚斯伯格 Carl Eliasberg - 格林伯格 - 埃利亚斯伯格 - 苏联国家交响乐团 - 1958",
+    "title": "埃利亚斯伯格 - 格林伯格 - 苏联国家交响乐团 - 1958",
     "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
@@ -2119,20 +2107,14 @@
       },
       {
         "role": "conductor",
-        "personId": "person-卡尔埃利亚斯伯格-carl-eliasberg",
-        "displayName": "卡尔·埃利亚斯伯格 Carl Eliasberg",
+        "personId": "person-卡尔埃利亚斯伯格",
+        "displayName": "卡尔·埃利亚斯伯格",
         "label": "指挥"
       },
       {
         "role": "soloist",
         "personId": "person-玛丽亚伊斯拉列夫娜格林伯格",
         "displayName": "玛丽亚·伊斯拉列夫娜·格林伯格",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-埃利亚斯伯格",
-        "displayName": "埃利亚斯伯格",
         "label": "文件名补录"
       }
     ],
@@ -2423,7 +2405,7 @@
     "id": "recording-a小调钢琴协奏曲-里赫特-and-费伦奇克1954",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "里赫特-and-费伦奇克1954",
-    "title": "费伦奇克 - 里赫特 - 费伦奇克 - 匈牙利国家爱乐乐团 - 布达佩斯音乐学院",
+    "title": "费伦奇克 - 里赫特 - 匈牙利国家爱乐乐团 - 布达佩斯音乐学院",
     "workTypeHint": "concerto",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
@@ -2446,12 +2428,6 @@
         "role": "soloist",
         "personId": "person-斯维亚托斯拉夫特奥菲洛维奇里赫特",
         "displayName": "斯维亚托斯拉夫·特奥菲洛维奇·里赫特",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-费伦奇克",
-        "displayName": "费伦奇克",
         "label": "文件名补录"
       }
     ],
@@ -2480,7 +2456,7 @@
     "id": "recording-a小调钢琴协奏曲-阿劳-and-约胡姆1977",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "阿劳-and-约胡姆1977",
-    "title": "欧根·约胡姆 - 阿劳 - 乔治·约胡姆 - 阿姆斯特丹皇家音乐厅管弦乐团 - April 21, 1977",
+    "title": "约胡姆 - 阿劳 - 阿姆斯特丹皇家音乐厅管弦乐团 - April 21, 1977",
     "workTypeHint": "concerto",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
@@ -2503,12 +2479,6 @@
         "role": "soloist",
         "personId": "person-克劳迪奥阿劳",
         "displayName": "克劳迪奥·阿劳",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-约胡姆",
-        "displayName": "约胡姆",
         "label": "文件名补录"
       }
     ],
@@ -2814,7 +2784,7 @@
     "id": "recording-d小调小提琴协奏曲-吉特列斯-and-霍伦斯坦1992",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "吉特列斯-and-霍伦斯坦1992",
-    "title": "霍伦斯坦 - 吉特列斯 - 维也纳爱乐乐团 - 2017",
+    "title": "霍伦斯坦 - 吉特利斯 - 维也纳爱乐乐团 - 2017",
     "workTypeHint": "concerto",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
@@ -2835,8 +2805,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-吉特列斯",
-        "displayName": "吉特列斯",
+        "personId": "person-伊夫里吉特利斯",
+        "displayName": "伊夫里·吉特利斯",
         "label": "文件名补录"
       }
     ],
@@ -2943,8 +2913,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-奥伊斯特拉赫",
-        "displayName": "奥伊斯特拉赫",
+        "personId": "person-大卫费奥多洛维奇奥依斯特拉赫",
+        "displayName": "大卫·费奥多洛维奇·奥依斯特拉赫",
         "label": "文件名补录"
       }
     ],
@@ -3065,8 +3035,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-弗里德",
-        "displayName": "弗里德",
+        "personId": "person-米里亚姆弗里德",
+        "displayName": "米里亚姆·弗里德",
         "label": "文件名补录"
       }
     ],
@@ -5393,7 +5363,7 @@
     "id": "recording-第五交响曲命运-乔治约胡姆-1961",
     "workId": "work-贝多芬-交响曲-第五交响曲命运",
     "slug": "乔治约胡姆-1961",
-    "title": "乔治·约胡姆 - 智利交响乐团 - 1961",
+    "title": "约胡姆 - 智利交响乐团 - 1961",
     "workTypeHint": "orchestral",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
@@ -5402,8 +5372,8 @@
     "credits": [
       {
         "role": "conductor",
-        "personId": "person-约胡姆",
-        "displayName": "约胡姆",
+        "personId": "person-欧根约胡姆",
+        "displayName": "欧根·约胡姆",
         "label": "文件名推断"
       },
       {
@@ -6513,7 +6483,7 @@
     "id": "recording-第5号小提琴奏鸣曲-春天-沃尔夫冈施奈德汉-and-卡尔希曼",
     "workId": "work-贝多芬-奏鸣曲-小提琴奏鸣曲-第5号小提琴奏鸣曲-春天",
     "slug": "沃尔夫冈施奈德汉-and-卡尔希曼",
-    "title": "沃尔夫冈·施奈德汉 - 卡尔·希曼 - May, 1959",
+    "title": "施耐德汉 - 卡尔·希曼 - May, 1959",
     "workTypeHint": "chamber_solo",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
@@ -8210,8 +8180,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-奥伊斯特拉赫",
-        "displayName": "奥伊斯特拉赫",
+        "personId": "person-大卫费奥多洛维奇奥依斯特拉赫",
+        "displayName": "大卫·费奥多洛维奇·奥依斯特拉赫",
         "label": "文件名补录"
       }
     ],
@@ -8240,7 +8210,7 @@
     "id": "recording-d大调小提琴协奏曲-布斯塔博-and-门贝尔伯格1943",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "布斯塔博-and-门贝尔伯格1943",
-    "title": "门格尔贝格 - 布斯塔博 - 门贝尔伯格 - 阿姆斯特丹皇家音乐厅管弦乐团 - 06.05.1943",
+    "title": "门格尔贝格 - 布斯塔博 - 阿姆斯特丹皇家音乐厅管弦乐团 - 06.05.1943",
     "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
@@ -8263,12 +8233,6 @@
         "role": "soloist",
         "personId": "person-吉拉布斯塔博",
         "displayName": "吉拉·布斯塔博",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-门贝尔伯格",
-        "displayName": "门贝尔伯格",
         "label": "文件名补录"
       }
     ],
@@ -8322,8 +8286,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-施耐德汉",
-        "displayName": "施耐德汉",
+        "personId": "person-沃尔夫冈施奈德汉",
+        "displayName": "沃尔夫冈·施奈德汉",
         "label": "文件名补录"
       },
       {
@@ -8812,8 +8776,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-金佩尔",
-        "displayName": "金佩尔",
+        "personId": "person-布罗尼斯瓦夫金佩尔",
+        "displayName": "布罗尼斯瓦夫·金佩尔",
         "label": "文件名补录"
       },
       {

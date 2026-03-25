@@ -351,6 +351,169 @@ describe("person cleanup", () => {
     expect(nextLibrary.people.some((person) => person.id === "person-orchestra-wiener-philharmoniker")).toBe(false);
   });
 
+  it("drops a short soloist shell when it is actually the conductor surname duplicated from the file name", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-ian-whyte",
+          slug: "ian-whyte",
+          name: "伊恩・怀特 Ian Whyte",
+          nameLatin: "Ian Whyte",
+          country: "United Kingdom",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-shell-whyte",
+          slug: "whyte",
+          name: "怀特",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-lara",
+          slug: "adelina-de-lara",
+          name: "阿德利纳·德·劳拉",
+          nameLatin: "Adelina de Lara",
+          country: "United Kingdom",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-schumann-1951",
+          workId: "work-beethoven-9",
+          slug: "schumann-1951",
+          title: "怀特 - 劳拉 - 1951",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({ role: "conductor", personId: "person-ian-whyte", displayName: "伊恩・怀特 Ian Whyte", label: "指挥" }),
+            credit({ role: "soloist", personId: "person-lara", displayName: "阿德利纳·德·劳拉", label: "文件名补录" }),
+            credit({ role: "soloist", personId: "person-shell-whyte", displayName: "怀特", label: "文件名补录" }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1951",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+    const nextRecording = nextLibrary.recordings[0];
+
+    expect(nextRecording.credits.filter((entry) => entry.role === "soloist")).toHaveLength(1);
+    expect(nextRecording.credits.some((entry) => entry.personId === "person-shell-whyte")).toBe(false);
+    expect(nextLibrary.people.some((person) => person.id === "person-shell-whyte")).toBe(false);
+  });
+
+  it("rebinds a short soloist shell to the canonical long-form soloist entry", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-oistrakh",
+          slug: "david-oistrakh",
+          name: "大卫·费奥多洛维奇·奥依斯特拉赫",
+          nameLatin: "David Oistrakh",
+          country: "Soviet Union",
+          avatarSrc: "",
+          aliases: ["奥伊斯特拉赫"],
+          sortKey: "0010",
+          summary: "正式条目",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-shell-oistrakh",
+          slug: "oistrakh",
+          name: "奥伊斯特拉赫",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-beethoven-1954",
+          workId: "work-beethoven-9",
+          slug: "beethoven-1954",
+          title: "奥伊斯特拉赫 - 1954",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "soloist", personId: "person-shell-oistrakh", displayName: "奥伊斯特拉赫", label: "文件名补录" })],
+          links: [],
+          notes: "",
+          performanceDateText: "1954",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      role: "soloist",
+      personId: "person-oistrakh",
+      displayName: "大卫·费奥多洛维奇·奥依斯特拉赫",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-shell-oistrakh")).toBe(false);
+  });
+
   it("splits composite orchestra and chorus credits into separate structured group entries", () => {
     const library = createBaseLibrary({
       recordings: [

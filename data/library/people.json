@@ -160,7 +160,7 @@
     "slug": "费伦奇克亚诺什",
     "name": "费伦奇克·亚诺什",
     "nameLatin": "Ferencsik János",
-    "country": "",
+    "country": "Hungary",
     "avatarSrc": "",
     "aliases": [
       "亚诺什·费伦奇克",
@@ -180,7 +180,8 @@
     },
     "roles": [
       "conductor"
-    ]
+    ],
+    "fullName": "费伦奇克·亚诺什"
   },
   {
     "id": "person-伊利亚胡殷巴尔",
@@ -543,7 +544,6 @@
     "id": "person-埃弗特西克斯滕埃林",
     "slug": "埃弗特西克斯滕埃林",
     "name": "埃弗特·西克斯滕·埃林",
-    "fullName": "埃弗特·西克斯滕·埃林",
     "nameLatin": "Evert Sixten Ehrling",
     "country": "Sweden",
     "avatarSrc": "/library-assets/managed/people/person-西克斯滕埃尔林/person-西克斯滕埃尔林-adb6e3862a.jpg",
@@ -729,13 +729,14 @@
     "slug": "威廉门格尔贝格",
     "name": "威廉·门格尔贝格",
     "nameLatin": "Willem Mengelberg",
-    "country": "",
+    "country": "Netherlands",
     "avatarSrc": "",
     "aliases": [
-      "门格尔贝格"
+      "门格尔贝格",
+      "门贝尔伯格"
     ],
     "sortKey": "0300",
-    "summary": "",
+    "summary": "威廉·门格尔贝格（Willem Mengelberg，1871年3月28日—1951年3月21日）是荷兰指挥家，长期执掌阿姆斯特丹皇家音乐厅管弦乐团，是二十世纪前半叶荷兰乐坛最具影响力的指挥之一。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -748,7 +749,8 @@
     },
     "roles": [
       "conductor"
-    ]
+    ],
+    "fullName": "威廉·门格尔贝格"
   },
   {
     "id": "person-安塔尔多拉蒂",
@@ -830,9 +832,12 @@
     "slug": "库尔特桑德林",
     "name": "库尔特·桑德林",
     "nameLatin": "Kurt Sanderling",
-    "country": "",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "老桑德林",
+      "老桑德林BRSO"
+    ],
     "sortKey": "0340",
     "summary": "库尔特·桑德林爵士（Kurt Sanderling，1912-2011），德国著名指挥家。其指挥风格融合了德国风格的严谨与俄罗斯风格的浪漫。二次世界大战之前长期在苏联生活工作，战后常年担任东德地区乐团指挥，与苏联作曲大师肖斯塔科维奇交往甚密，亦成为肖氏作品在欧洲地区的演绎权威。曾任柏林国家歌剧院管弦乐团（Staatskapelle Berlin）首席指挥（1964-1966），并长期担任德国柏林交响乐团（原东柏林交响乐团, Berliner Sinfonia-Orchester）首席指挥（1960-1977）。1977年后，桑德林开始辗转于英国和美国担任客席指挥，后获得英国爱乐乐团（Philharmonia Orchestra）桂冠指挥称号。2002年9月获得英女王颁发的爵士称号。2011年9月，以99岁高龄辞世于柏林。",
     "imageSourceUrl": "",
@@ -847,7 +852,8 @@
     },
     "roles": [
       "conductor"
-    ]
+    ],
+    "fullName": "库尔特·桑德林"
   },
   {
     "id": "person-库尔特马苏尔",
@@ -1095,9 +1101,11 @@
     "slug": "欧根约胡姆",
     "name": "欧根·约胡姆",
     "nameLatin": "Eugen Jochum",
-    "country": "",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "约胡姆"
+    ],
     "sortKey": "0440",
     "summary": "欧根·约胡姆（Eugen Jochum，1902年11月1日－1987年3月26日），德国指挥家，生于巴伐利亚巴本豪森。早年先后在奥格斯堡音乐学院及慕尼黑音乐学院学习钢琴、管风琴、作曲与指挥，出身音乐世家，兄弟均从事音乐工作。 1926年指挥慕尼黑爱乐乐团首演布鲁克纳《第七交响曲》开启职业生涯。历任基尔歌剧院、杜伊斯堡歌剧院指挥（1927-1931），柏林广播乐团及国家歌剧院指挥（1932-1934）。1934年任汉堡爱乐乐团与汉堡国立歌剧院音乐指导，任职至1949年。同年创立巴伐利亚广播交响乐团并担任首席指挥至1959年，将其发展为德国顶尖乐团。1961年任阿姆斯特丹音乐厅管弦乐团常任指挥，1965年起执棒班贝克交响乐团。长期以客席指挥身份活跃于伦敦爱乐乐团及伦敦交响乐团，1975年获后者授予\"桂冠指挥家\"称号。其职业生涯专注德奥音乐传统，尤以诠释布鲁克纳交响曲闻名，为首位完整录制布氏九大交响曲全集的指挥家",
     "imageSourceUrl": "",
@@ -1112,7 +1120,8 @@
     },
     "roles": [
       "conductor"
-    ]
+    ],
+    "fullName": "欧根·约胡姆"
   },
   {
     "id": "person-汉斯克纳佩兹布什",
@@ -2027,10 +2036,11 @@
     "slug": "伊夫里吉特利斯",
     "name": "伊夫里·吉特利斯",
     "nameLatin": "Ivry Gitlis",
-    "country": "",
+    "country": "Israel",
     "avatarSrc": "",
     "aliases": [
-      "吉特利斯"
+      "吉特利斯",
+      "吉特列斯"
     ],
     "sortKey": "0800",
     "summary": "伊夫利·吉特里斯（Ivry Gitlis，1922年8月25日-2020年12月24日），以色列小提琴家。10岁去巴黎音乐学院从步彻列学习。第二次世界大战时困居英国，战后在英国各地演奏赢得声誉。1951年参加在巴黎举行的“蒂博国际小提琴竞赛会”荣获首奖，以后经常在巴黎演出，并先后将帕格尼尼、柴可夫斯基、贝尔格、欣德米特、斯特拉文斯基的小提琴协奏曲录了唱片。Gitlis一向以其幽默博得不少Fans，市面上他的录音不多，每张都被Fans视为珍宝。 2020年12月24日，伊夫利·吉特里斯去世，享年98岁。",
@@ -2046,7 +2056,8 @@
     },
     "roles": [
       "soloist"
-    ]
+    ],
+    "fullName": "伊夫里·吉特利斯"
   },
   {
     "id": "person-伊迪丝佩妮曼",
@@ -2209,9 +2220,12 @@
     "slug": "大卫费奥多洛维奇奥依斯特拉赫",
     "name": "大卫·费奥多洛维奇·奥依斯特拉赫",
     "nameLatin": "David Feodorovich Oistrakh",
-    "country": "",
+    "country": "Soviet Union",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "奥伊斯特拉赫",
+      "大卫·奥伊斯特拉赫"
+    ],
     "sortKey": "0870",
     "summary": "大卫·费奥多罗维奇·奥伊斯特拉赫（俄语：Давид Фёдорович Ойстрах，EN：David Fyodorovich Oistrakh，1908年9月30日—1974年10月24日）。苏联俄罗斯小提琴家、中提琴家和指挥家。他还是莫斯科音乐学院教授、苏联人民艺术家（1953 年）和列宁奖获得者（1960 年）。\n\n奥伊斯特拉赫与来自世界各地的主要管弦乐队和音乐家合作，并致力于创作众多小提琴作品，包括德米特里·肖斯塔科维奇的小提琴协奏曲和阿拉姆·哈恰图良的小提琴协奏曲。被认为是 20 世纪杰出的小提琴家之一。",
     "imageSourceUrl": "",
@@ -2226,7 +2240,8 @@
     },
     "roles": [
       "soloist"
-    ]
+    ],
+    "fullName": "大卫·费奥多洛维奇·奥依斯特拉赫"
   },
   {
     "id": "person-安特耶魏特哈斯",
@@ -2359,9 +2374,11 @@
     "slug": "沃尔夫冈施奈德汉",
     "name": "沃尔夫冈·施奈德汉",
     "nameLatin": "Wolfgang Schneiderhan",
-    "country": "",
+    "country": "Austria",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "施耐德汉"
+    ],
     "sortKey": "0930",
     "summary": "沃尔夫冈·爱德华·施奈德汉（德语：Wolfgang Eduard Schneiderhan；1915年5月28日—2002年5月18日），奥地利小提琴家。施奈德汉生于维也纳，他曾短暂地与奥塔卡·舍夫契克习琴，但主要的学习对象仍是尤利乌斯·温克勒（Julius Winkler）。10岁时，施奈德汉已能公开演奏巴赫D小调夏康舞曲。翌年，他在哥本哈根完成了职业初登场，演奏的曲目则是门德尔松小提琴协奏曲。\n\n1933至1937年间，施奈德汉担任维也纳交响乐团的乐团首席，1937年起转任维也纳爱乐乐团首席，迄1951年止，之后则以独奏家的身份继续音乐活动。\n\n1992年，领衔设立国际克莱斯勒大赛，旨在奖励年轻音乐家的演奏与发展。\n\n施奈德汉在室内乐领域亦有所建树，他曾组建一支弦乐四重奏团，这支团体一直活动到51年止。此外在格奥尔格·库伦坎普夫过世后，施奈德汉递补了他的位置，重建原先由艾德温·费雪、恩里科·梅纳迪所组成的三重奏。\n\n演奏之外，施奈德汉亦是一位教师，他在萨尔茨堡、维也纳与卢塞恩皆有教职。1959年，施奈德汉和鲁道夫·包加纳共同创建了“卢塞恩节庆弦乐团”（Festival Strings Lucerne）。\n\n2002年，施奈德汉于维也纳逝世，享年86岁。",
     "imageSourceUrl": "",
@@ -2376,16 +2393,19 @@
     },
     "roles": [
       "soloist"
-    ]
+    ],
+    "fullName": "沃尔夫冈·施奈德汉"
   },
   {
     "id": "person-米里亚姆弗里德",
     "slug": "米里亚姆弗里德",
     "name": "米里亚姆·弗里德",
-    "nameLatin": "Mariam Fried",
-    "country": "",
+    "nameLatin": "Miriam Fried",
+    "country": "Israel",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "弗里德"
+    ],
     "sortKey": "0940",
     "summary": "米里亚姆·弗里德（希伯来语：מרים פריד，生于 1946 年 9 月 9 日）[1] [2] 是一位出生于罗马尼亚的以色列古典小提琴家和教育家。",
     "imageSourceUrl": "",
@@ -2400,7 +2420,8 @@
     },
     "roles": [
       "soloist"
-    ]
+    ],
+    "fullName": "米里亚姆·弗里德"
   },
   {
     "id": "person-约翰达莱内",
@@ -3722,33 +3743,6 @@
     ]
   },
   {
-    "id": "person-约胡姆",
-    "slug": "约胡姆",
-    "name": "约胡姆",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [
-      "乔治·约胡姆"
-    ],
-    "sortKey": "1500",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor",
-      "soloist"
-    ]
-  },
-  {
     "id": "person-munich-philharmonic-orchestra",
     "slug": "munich-philharmonic-orchestra",
     "name": "慕尼黑爱乐乐团",
@@ -3867,32 +3861,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-老桑德林",
-    "slug": "老桑德林",
-    "name": "老桑德林",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [
-      "老桑德林BRSO"
-    ],
-    "sortKey": "1550",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
     ]
   },
   {
@@ -4135,15 +4103,18 @@
     ]
   },
   {
-    "id": "person-伊恩-怀特-ian-whyte",
-    "slug": "伊恩-怀特-ian-whyte",
-    "name": "伊恩・怀特 Ian Whyte",
-    "nameLatin": "",
-    "country": "",
+    "id": "person-伊恩怀特",
+    "slug": "伊恩怀特",
+    "name": "伊恩·怀特",
+    "nameLatin": "Ian Whyte",
+    "country": "United Kingdom",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "怀特",
+      "伊恩・怀特 Ian Whyte"
+    ],
     "sortKey": "1670",
-    "summary": "",
+    "summary": "伊恩·怀特（Ian Whyte，1901年8月13日—1960年3月27日）是苏格兰作曲家、钢琴家与指挥家，长期任职于 BBC，并在 1945 年至 1960 年间担任 BBC Scottish Orchestra 的首席指挥。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -4156,31 +4127,8 @@
     },
     "roles": [
       "conductor"
-    ]
-  },
-  {
-    "id": "person-怀特",
-    "slug": "怀特",
-    "name": "怀特",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1680",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
+    ],
+    "fullName": "伊恩·怀特"
   },
   {
     "id": "person-nhk-symphony-orchestra",
@@ -4212,15 +4160,18 @@
     ]
   },
   {
-    "id": "person-克里斯托夫佩里克-christof-prick",
-    "slug": "克里斯托夫佩里克-christof-prick",
-    "name": "克里斯托夫·佩里克 Christof Prick",
-    "nameLatin": "",
-    "country": "",
+    "id": "person-克里斯托夫佩里克",
+    "slug": "克里斯托夫佩里克",
+    "name": "克里斯托夫·佩里克",
+    "nameLatin": "Christof Prick",
+    "country": "Germany",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "佩里克",
+      "克里斯托夫·佩里克 Christof Prick"
+    ],
     "sortKey": "1700",
-    "summary": "",
+    "summary": "克里斯托夫·佩里克（Christof Prick，1946年生）是德国指挥家，曾任萨尔布吕肯国家剧院、巴登国家剧院与汉诺威国家歌剧院音乐总监，也常以 Christof Perick 的拼写在国际乐坛活动。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -4233,31 +4184,8 @@
     },
     "roles": [
       "conductor"
-    ]
-  },
-  {
-    "id": "person-佩里克",
-    "slug": "佩里克",
-    "name": "佩里克",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1710",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
+    ],
+    "fullName": "克里斯托夫·佩里克"
   },
   {
     "id": "person-budapest-philharmonic-orchestra",
@@ -4319,15 +4247,18 @@
     ]
   },
   {
-    "id": "person-卡尔埃利亚斯伯格-carl-eliasberg",
-    "slug": "卡尔埃利亚斯伯格-carl-eliasberg",
-    "name": "卡尔·埃利亚斯伯格 Carl Eliasberg",
-    "nameLatin": "",
-    "country": "",
+    "id": "person-卡尔埃利亚斯伯格",
+    "slug": "卡尔埃利亚斯伯格",
+    "name": "卡尔·埃利亚斯伯格",
+    "nameLatin": "Carl Eliasberg",
+    "country": "Soviet Union",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "埃利亚斯伯格",
+      "卡尔·埃利亚斯伯格 Carl Eliasberg"
+    ],
     "sortKey": "1760",
-    "summary": "",
+    "summary": "卡尔·埃利亚斯伯格（Carl Eliasberg，1907年—1978年）是苏联指挥家，长期与列宁格勒广播系统乐团合作，并以列宁格勒围城时期指挥肖斯塔科维奇《第七交响曲》闻名。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -4340,31 +4271,8 @@
     },
     "roles": [
       "conductor"
-    ]
-  },
-  {
-    "id": "person-埃利亚斯伯格",
-    "slug": "埃利亚斯伯格",
-    "name": "埃利亚斯伯格",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1770",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
+    ],
+    "fullName": "卡尔·埃利亚斯伯格"
   },
   {
     "id": "person-hungarian-national-philharmonic-orchestra",
@@ -4395,30 +4303,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-费伦奇克",
-    "slug": "费伦奇克",
-    "name": "费伦奇克",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1850",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
     ]
   },
   {
@@ -4621,30 +4505,6 @@
     ]
   },
   {
-    "id": "person-吉特列斯",
-    "slug": "吉特列斯",
-    "name": "吉特列斯",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1980",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-stockholm-festival-orchestra",
     "slug": "stockholm-festival-orchestra",
     "name": "斯德哥尔摩节日管弦乐团",
@@ -4672,30 +4532,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-奥伊斯特拉赫",
-    "slug": "奥伊斯特拉赫",
-    "name": "奥伊斯特拉赫",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2030",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
     ]
   },
   {
@@ -4757,30 +4593,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-弗里德",
-    "slug": "弗里德",
-    "name": "弗里德",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2070",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
     ]
   },
   {
@@ -5232,54 +5044,6 @@
     ]
   },
   {
-    "id": "person-门贝尔伯格",
-    "slug": "门贝尔伯格",
-    "name": "门贝尔伯格",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2420",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-施耐德汉",
-    "slug": "施耐德汉",
-    "name": "施耐德汉",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2430",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-海因里希-霍尔莱瑟",
     "slug": "海因里希-霍尔莱瑟",
     "name": "海因里希•霍尔莱瑟",
@@ -5306,15 +5070,17 @@
     ]
   },
   {
-    "id": "person-金佩尔",
-    "slug": "金佩尔",
-    "name": "金佩尔",
-    "nameLatin": "",
-    "country": "",
+    "id": "person-布罗尼斯瓦夫金佩尔",
+    "slug": "布罗尼斯瓦夫金佩尔",
+    "name": "布罗尼斯瓦夫·金佩尔",
+    "nameLatin": "Bronislaw Gimpel",
+    "country": "Poland",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "金佩尔"
+    ],
     "sortKey": "2460",
-    "summary": "",
+    "summary": "布罗尼斯瓦夫·金佩尔（Bronislaw Gimpel，1911年1月29日—1979年5月1日）是波兰裔小提琴家与室内乐演奏家，曾任洛杉矶爱乐乐团首席，并与钢琴家雅各布·吉姆佩尔长期合作。",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -5327,7 +5093,8 @@
     },
     "roles": [
       "soloist"
-    ]
+    ],
+    "fullName": "布罗尼斯瓦夫·金佩尔"
   },
   {
     "id": "person-康科迪-杰拉伯特",
@@ -6307,7 +6074,6 @@
     "id": "person-埃里希克莱伯",
     "slug": "埃里希克莱伯",
     "name": "埃里希·克莱伯",
-    "fullName": "埃里希·克莱伯",
     "nameLatin": "Erich Kleiber",
     "country": "Austria",
     "avatarSrc": "",

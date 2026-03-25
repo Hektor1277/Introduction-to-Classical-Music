@@ -1,20 +1,3 @@
 {
-  "canonicalPersonLinks": {
-    "person-小克莱伯": "person-卡洛斯克莱伯",
-    "person-老克莱伯1949-1955": "person-埃里希克莱伯",
-    "person-伯恩斯坦": "person-伦纳德伯恩斯坦",
-    "person-伯恩斯坦1977": "person-伦纳德伯恩斯坦",
-    "person-莫斯特": "person-弗朗茨威尔瑟-莫斯特",
-    "person-弗朗兹威尔瑟-莫斯特": "person-弗朗茨威尔瑟-莫斯特",
-    "person-弗里乔伊": "person-费伦茨弗里乔伊",
-    "person-霍伦斯坦": "person-雅沙霍伦斯坦",
-    "person-罗斯鲍德": "person-汉斯罗斯鲍德",
-    "person-亚诺什费伦奇克": "person-费伦奇克亚诺什",
-    "person-萨瓦尔": "person-约第沙瓦尔",
-    "person-腾斯泰特": "person-克劳斯滕施泰特",
-    "person-阿本-1953-华沙": "person-阿本德罗特",
-    "person-约胡姆": "person-欧根约胡姆",
-    "person-西克斯滕埃尔林": "person-埃弗特西克斯滕埃林",
-    "person-克莱茨基": "person-保罗克列茨基"
-  }
+  "canonicalPersonLinks": {}
 }

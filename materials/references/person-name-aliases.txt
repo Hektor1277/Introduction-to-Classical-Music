@@ -56,7 +56,7 @@
 赫尔曼·舍尔兴 = 舍尔兴 = Hermann Scherchen
 基里尔·康德拉辛 = 康德拉辛 = Kirill Kondrašin
 加里·贝蒂尼 = 贝蒂尼 = Gary Bertini
-卡尔·埃利亚斯伯格 Carl Eliasberg
+卡尔·埃利亚斯伯格 = 埃利亚斯伯格 = 卡尔·埃利亚斯伯格 Carl Eliasberg = Carl Eliasberg
 卡尔·伯姆 = 伯姆 = 伯姆BPO = Karl Böhm
 卡尔·舒里希特 = 舒里希特 = 舒里希特BPO = Carl Schuricht
 卡罗·马里亚·朱里尼 = 朱里尼 = Carlo Maria Giulini
@@ -65,12 +65,11 @@
 科林·戴维斯 = 戴维斯 = Colin Davis
 克劳迪奥·阿巴多 = 阿巴多 = Claudio Abbado
 克劳斯·滕施泰特 = 腾斯泰特 = 滕施泰特 = Klaus Tennstedt
-克里斯托夫·佩里克 Christof Prick
+克里斯托夫·佩里克 = 克里斯托夫·佩里克 Christof Prick = 佩里克 = Christof Prick
 库尔特·马苏尔 = 马苏尔 = Kurt Masur
-库尔特·桑德林 = Kurt Sanderling
+库尔特·桑德林 = 老桑德林 = 老桑德林BRSO = Kurt Sanderling
 拉斐尔·库贝利克 = 库贝利克 = Rafael Kubelík
 莱奥波德·斯托科夫斯基 = 斯托科夫斯基 = Leopold Stokowski
-老桑德林 = 老桑德林BRSO
 利奥·布莱赫 = Leo Blech
 鲁道夫·巴尔沙伊 = 巴尔沙伊 = Rudolf Barshai
 伦纳德·伯恩斯坦 = 伯恩斯坦 = 伯恩斯坦1977 = Leonard Bernstein
@@ -79,7 +78,7 @@
 马里斯·扬颂斯 = 杨松斯 = Mariss Ivars Georgs Jansons
 迈克尔·吉伦 = 吉伦 = Michael Gielen
 米兰·霍瓦特 = Milan Horvat
-欧根·约胡姆 = Eugen Jochum
+欧根·约胡姆 = 约胡姆 = Eugen Jochum
 欧内斯特·布尔 = Ernest Bour
 皮埃尔·布列兹 = 布列兹 = Pierre Boulez
 皮埃尔·蒙都 = 蒙都 = Pierre Monteux
@@ -90,7 +89,7 @@
 托马斯·比彻姆 = 比彻姆 = Thomas Beecham
 瓦茨拉夫·纽曼 = 纽曼 = Vaclav Neumann
 威尔海姆·富特文格勒 = 富特 = 富特文格勒 = Wilhelm Furtwängler
-威廉·门格尔贝格 = 门格尔贝格 = Willem Mengelberg
+威廉·门格尔贝格 = 门贝尔伯格 = 门格尔贝格 = Willem Mengelberg
 沃尔夫冈·萨瓦利施 = Wolfgang Sawallisch
 西奥多·库伦齐斯 = 库伦齐斯 = Teodor Currentzis
 西蒙·拉特尔 = 拉特 = Simon Rattle
@@ -98,13 +97,12 @@
 雅沙·霍伦斯坦 = 霍伦斯坦 = Jascha Horenstein
 亚历山大·鲁丁 = Александр Израилевич Рудин, EN:alexander rudin
 叶夫根尼·亚历山德罗维奇·穆拉文斯基 = 穆拉文斯基 = 叶夫根尼·穆拉文斯基 = Евгений Александрович Мравинский | Evgeni·Mravinsky
-伊恩・怀特 Ian Whyte
+伊恩·怀特 = 怀特 = 伊恩・怀特 Ian Whyte = Ian Whyte
 伊利亚胡·殷巴尔 = 殷巴尔 = Eliahu Inbal
 约第·沙瓦尔 = 萨瓦尔 = Jordi Savall
 约翰·艾略特·加德纳 = 加德纳 = John Eliot Gardiner
 约翰·巴比罗利 = 巴比罗利 = John Barbirolli
 约翰·斯托加德 = John Storgårds
-约胡姆 = 乔治·约胡姆
 约瑟夫·凯尔伯特 = 凯尔伯特 = Joseph Keilberth
 朱塞佩·西诺波利 = 西诺波利 = Giuseppe Sinopoli
 祖宾·梅塔 = Zubin Mehta
@@ -119,40 +117,34 @@
 埃尔林
 埃贡·佩特里 = Egon Petri
 埃里希·罗恩 = 罗恩 = Erich Röhn
-埃利亚斯伯格
 埃莉索·维尔萨拉泽 = 维尔萨拉泽 = Eliso Virsaladze
 艾丽卡·莫莉妮 = Erika Morini
 安妮·费舍尔 = 安妮 = Annie Fischer
 安特耶·魏特哈斯 = Antje Weithaas
 安雅·伊格内修斯 = 伊格内修斯 = Anja Ignatius
-奥伊斯特拉赫
 班诺·莫伊塞维奇 = 莫伊塞维奇 = Benno Moiseiwitsch
 布尔1952
 布莱赫
 布罗尼斯拉夫·胡贝尔曼 = 胡贝尔曼 = Bronislaw Huberman
-大卫·费奥多洛维奇·奥依斯特拉赫 = David Feodorovich Oistrakh
+布罗尼斯瓦夫·金佩尔 = 金佩尔 = Bronislaw Gimpel
+大卫·费奥多洛维奇·奥依斯特拉赫 = 奥伊斯特拉赫 = 大卫·奥伊斯特拉赫 = David Feodorovich Oistrakh = David Oistrakh
 丹尼斯.瓦里翁
 迪特·泽克林 = Dieter Zechlin
 蒂博尔·瓦尔加 = 瓦尔加 = Tibor Varga
 多拉蒂
 恩斯特·利维 = Ernst Levy
-费伦奇克
 弗拉基米尔·阿什肯纳齐 = Vladimir Ashkenazi
 弗拉基米尔·索夫罗尼茨基 = Vladimir Sofronitsky
 弗里茨·克莱斯勒 = 克莱斯勒 = Fritz Kreisler
-弗里德
 哈罗德·鲍尔 = Harold Bauer
 豪尔赫·博列特 = Jorge Bolet
 胡安·马宁 = 马宁 = Juan Manén
-怀特
 霍尔莱瑟1955
 霍瓦特1960s
 吉拉·布斯塔博 = 布斯塔博 = Guila Bustabo
 吉内特·多延 = Ginette Doyen
 吉内特·内芙 = 内芙 = Ginette Neveu
-吉特列斯
 杰拉伯特1916
-金佩尔
 卡尔·西曼 = Carl Seemann
 卡尔·希曼
 卡米拉·威克斯 = 威克斯 = Camilla Wicks
@@ -173,12 +165,10 @@
 马塞尔·钱皮 = Macel Ciampi
 玛丽亚·伊斯拉列夫娜·格林伯格 = 格林伯格 = 玛丽亚·格林伯格 = Mария Израилевна Гринберг, EN: Maria Israilevna Grinberg
 梅塔
-门贝尔伯格
-米里亚姆·弗里德 = Mariam Fried
+米里亚姆·弗里德 = 弗里德 = Miriam Fried
 米奇斯瓦夫·霍尔绍夫斯基 = Mieczyslaw Horszowski
 尼古拉·梅特纳 = Nikolai Medtner
 帕维尔·谢列布里亚科夫 = Pavel Serebryakov
-佩里克
 皮埃尔·巴尔比泽 = Pierre Barbizet
 齐诺·弗兰塞斯卡蒂 = Zino Francescatti
 让·富尼埃(Jean Fournier) = 让·富尼埃
@@ -186,7 +176,6 @@
 塞尔2017
 桑松·弗朗索瓦 = 弗朗索瓦 = Samson François
 山根美代子
-施耐德汉
 施内沃伊特
 斯坦尼斯拉夫·布宁 = Stanislav Bunin
 斯托加德
@@ -197,7 +186,7 @@
 威廉·默多克 = William Murdoch
 威廉·沃尔特·弗里德里希·肯普夫 = 肯普夫 = 威廉·肯普夫 = Wilhelm Walter Friedrich Kempff
 维托尔德·马库津斯基 = Witold Małcużyński
-沃尔夫冈·施奈德汉 = Wolfgang Schneiderhan
+沃尔夫冈·施奈德汉 = 施耐德汉 = Wolfgang Schneiderhan
 西德尼·福斯特 = 福斯特 = Sidney Foster
 西盖蒂·约瑟夫 = 西盖蒂 = Joseph Szigeti
 席蒙·戈尔德贝格 = Szymon Goldberg
@@ -205,7 +194,7 @@
 亚莎·海菲兹 = 海菲兹 = Jascha·Heifetz
 耶胡迪·梅纽因 = 梅纽因 = Yehudi Menuhin
 伊迪丝·佩妮曼 = 佩妮曼 = Edith Peinemann
-伊夫里·吉特利斯 = 吉特利斯 = Ivry Gitlis
+伊夫里·吉特利斯 = 吉特利斯 = 吉特列斯 = Ivry Gitlis
 尤尼丝·诺顿 = Eunice Norton
 園田高弘 = Takahiro Sonoda
 约翰·达莱内 = 达莱内 = Johan Dalene
