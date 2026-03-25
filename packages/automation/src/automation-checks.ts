@@ -1256,11 +1256,68 @@ function extractYearLikeNumber(value: string) {
 }
 
 const recordingMetadataPaths = new Set(["performanceDateText", "venueText", "albumTitle", "label", "releaseDate", "notes"]);
+const recordingDateFieldPaths = new Set(["performanceDateText", "releaseDate"]);
+const recordingVenueFieldPaths = new Set(["venueText"]);
+
+function recordingWarningRequiresAttention(warning: string, changedFieldPaths: Set<string>, hasImageCandidates: boolean) {
+  const normalized = String(warning || "").trim();
+  if (!normalized) {
+    return false;
+  }
+  if (normalized.includes("未达到最终采纳阈值")) {
+    if (normalized.includes("performanceDateText")) {
+      return changedFieldPaths.has("performanceDateText");
+    }
+    if (normalized.includes("venueText")) {
+      return changedFieldPaths.has("venueText");
+    }
+    if (normalized.includes("albumTitle")) {
+      return changedFieldPaths.has("albumTitle");
+    }
+    if (normalized.includes("label")) {
+      return changedFieldPaths.has("label");
+    }
+    if (normalized.includes("releaseDate")) {
+      return changedFieldPaths.has("releaseDate");
+    }
+    if (normalized.includes("封面") || normalized.includes("图片")) {
+      return hasImageCandidates;
+    }
+    return false;
+  }
+
+  if (/保守排除|已排除|证据不足|错误曲目/.test(normalized) || /^(候选|记录\d+|第\d+条URL|URL\s*\d+)/.test(normalized)) {
+    return false;
+  }
+
+  const touchesDate = /日期|年份|年分|performanceDateText|releaseDate/.test(normalized);
+  const touchesVenue = /地点|场地|venueText/.test(normalized);
+  if (touchesDate || touchesVenue) {
+    if (touchesDate && [...recordingDateFieldPaths].some((path) => changedFieldPaths.has(path))) {
+      return true;
+    }
+    if (touchesVenue && [...recordingVenueFieldPaths].some((path) => changedFieldPaths.has(path))) {
+      return true;
+    }
+    return false;
+  }
+
+  if (/不同上传|编辑版本|搬运内容|合集/.test(normalized)) {
+    return [...recordingDateFieldPaths, ...recordingVenueFieldPaths].some((path) => changedFieldPaths.has(path));
+  }
+
+  if (/拼写变体|核心信息一致|平台偏好不完全一致/.test(normalized)) {
+    return false;
+  }
+
+  return true;
+}
 
 export function reviewRecordingAutomationProposalQuality(recording: Recording, proposals: AutomationProposal[]) {
   const mergedPreview = applyFieldPreview(recording as Record<string, unknown>, proposals.flatMap((proposal) => proposal.fields || [])) as Recording;
   const issues: string[] = [];
   const imageCandidates = proposals.flatMap((proposal) => proposal.imageCandidates || []);
+  const changedFieldPaths = new Set(proposals.flatMap((proposal) => (proposal.fields || []).map((field) => field.path)));
   const hasChanges = proposals.some(
     (proposal) =>
       (proposal.fields?.length ?? 0) > 0 ||
@@ -1279,7 +1336,12 @@ export function reviewRecordingAutomationProposalQuality(recording: Recording, p
     if ((proposal.warnings?.length ?? 0) === 0) {
       return false;
     }
-    return (proposal.fields || []).some((field) => recordingMetadataPaths.has(field.path));
+    if (!(proposal.fields || []).some((field) => recordingMetadataPaths.has(field.path))) {
+      return false;
+    }
+    return (proposal.warnings || []).some((warning) =>
+      recordingWarningRequiresAttention(warning, changedFieldPaths, imageCandidates.length > 0),
+    );
   });
   if (hasMetadataWarnings) {
     issues.push("版本提案仍带有来源冲突警告，应用前需要人工复核。");

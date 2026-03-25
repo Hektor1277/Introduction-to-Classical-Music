@@ -219,11 +219,11 @@ describe("automation jobs", () => {
     const current = manager.getJob(job.id);
 
     expect(current?.recordingAudit?.summary.totalTargets).toBe(1);
-    expect(current?.recordingAudit?.summary.reviewStatusCounts["needs-attention"]).toBe(1);
+    expect(current?.recordingAudit?.summary.reviewStatusCounts.ok).toBe(1);
     expect(current?.recordingAudit?.results[0]?.groupKeys).toEqual(
       expect.arrayContaining(["missingAlbumTitle", "missingLabel", "missingReleaseDate", "missingImages"]),
     );
-    expect(current?.errors.some((error) => error.entityType === "recording" && error.message.includes("录音在线审计"))).toBe(true);
+    expect(current?.errors.some((error) => error.entityType === "recording" && error.message.includes("录音在线审计"))).toBe(false);
   });
 
   it("creates an async job with progress and structured failures", async () => {

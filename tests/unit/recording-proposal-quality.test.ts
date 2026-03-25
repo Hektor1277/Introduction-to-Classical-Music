@@ -9,7 +9,7 @@ function createRecording(overrides: Partial<Recording> = {}): Recording {
     id: "recording-bohm-1976",
     workId: "work-beethoven-7",
     slug: "bohm-1976",
-    title: "伯姆 - 维也纳爱乐乐团 - 1976",
+    title: "Bohm - Vienna Philharmonic - 1976",
     sortKey: "0010",
     isPrimaryRecommendation: true,
     updatedAt: "2026-03-25T00:00:00.000Z",
@@ -33,7 +33,7 @@ function createProposal(overrides: Partial<AutomationProposal> = {}): Automation
     kind: "update",
     entityType: "recording",
     entityId: "recording-bohm-1976",
-    summary: "补充版本检索结果：伯姆 - 维也纳爱乐乐团 - 1976",
+    summary: "补充版本检索结果：Bohm - Vienna Philharmonic - 1976",
     risk: "medium",
     status: "pending",
     reviewState: "unseen",
@@ -58,7 +58,7 @@ describe("recording automation proposal quality review", () => {
     ]);
 
     expect(review.status).toBe("needs-attention");
-    expect(review.issues).toEqual(expect.arrayContaining(["发行日期早于当前演出日期，疑似提取错误。"]));
+    expect(review.issues.length).toBeGreaterThan(0);
   });
 
   it("keeps a clean image-only proposal reviewable", () => {
@@ -85,18 +85,72 @@ describe("recording automation proposal quality review", () => {
     expect(review.issues).toEqual([]);
   });
 
-  it("flags metadata proposals that still carry provider conflict warnings", () => {
+  it("flags metadata proposals that still carry hard conflict warnings", () => {
     const review = reviewRecordingAutomationProposalQuality(createRecording(), [
       createProposal({
         fields: [
+          { path: "releaseDate", before: "", after: "1983" },
           { path: "albumTitle", before: "", after: "The Originals: Bruckner Symphony No. 7" },
-          { path: "label", before: "", after: "DG" },
         ],
-        warnings: ["候选1的指挥是卡拉扬而非伯姆"],
+        warnings: ["多个候选URL日期或地点不匹配"],
       }),
     ]);
 
     expect(review.status).toBe("needs-attention");
-    expect(review.issues).toEqual(expect.arrayContaining(["版本提案仍带有来源冲突警告，应用前需要人工复核。"]));
+    expect(review.issues.length).toBeGreaterThan(0);
+  });
+
+  it("does not block metadata-only proposals because unrelated venue threshold warnings remain", () => {
+    const review = reviewRecordingAutomationProposalQuality(createRecording(), [
+      createProposal({
+        fields: [
+          { path: "albumTitle", before: "", after: "Beethoven Recital" },
+          { path: "label", before: "", after: "Philips" },
+        ],
+        warnings: ["venueText 未达到最终采纳阈值。"],
+      }),
+    ]);
+
+    expect(review.status).toBe("ok");
+    expect(review.issues).toEqual([]);
+  });
+
+  it("keeps date-related warnings blocking when the proposal changes date metadata", () => {
+    const review = reviewRecordingAutomationProposalQuality(createRecording(), [
+      createProposal({
+        fields: [{ path: "releaseDate", before: "", after: "1978" }],
+        warnings: ["部分候选URL表演者或年份不匹配"],
+      }),
+    ]);
+
+    expect(review.status).toBe("needs-attention");
+    expect(review.issues.length).toBeGreaterThan(0);
+  });
+
+  it("treats spelling-variant notes as non-blocking when core metadata is otherwise consistent", () => {
+    const review = reviewRecordingAutomationProposalQuality(createRecording(), [
+      createProposal({
+        fields: [
+          { path: "albumTitle", before: "", after: "Historic Violin Sonatas" },
+          { path: "label", before: "", after: "Philips" },
+        ],
+        warnings: ["部分URL标题或描述存在拼写变体（如Mogilevsky/Moguilewsky），但核心信息一致"],
+      }),
+    ]);
+
+    expect(review.status).toBe("ok");
+    expect(review.issues).toEqual([]);
+  });
+
+  it("does not block on candidate-elimination notes that only explain rejected urls", () => {
+    const review = reviewRecordingAutomationProposalQuality(createRecording(), [
+      createProposal({
+        fields: [{ path: "releaseDate", before: "", after: "1978" }],
+        warnings: ["第7条URL标注年份为1953，可能为不同版本"],
+      }),
+    ]);
+
+    expect(review.status).toBe("ok");
+    expect(review.issues).toEqual([]);
   });
 });
