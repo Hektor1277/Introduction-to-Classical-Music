@@ -85,7 +85,8 @@
     "birthYear": 1897,
     "deathYear": 1970,
     "aliases": [
-      "赛尔"
+      "赛尔",
+      "塞尔"
     ],
     "sortKey": "0040",
     "summary": "赛尔是一位勤奋的指挥大师，多年来他指挥克利夫兰交响乐团灌制了大量优秀的唱片，他的唱片价值极高，内容也极广，是今天唱片收藏家手中十分热门的主物。他所指挥灌制的贝多芬交响曲全集，贝多芬钢琴协奏曲全集以及舒伯特的《第八交响曲》（未完成）、《第九交响曲》（伟大）和莫扎特的许多交响曲的唱片，都是非常出色的演奏。赛尔作为一代宗师已经离开很久了，然而人们始终还在津津乐道地评说着他，特别是每当人们提到克利夫兰交响乐团时，都会不由自主地想到他的，这种永恒的印迹的确是真正的艺术大师才能留下的，它将永远向人们证明和展示赛尔那杰出的指挥技艺和伟大的艺术贡献。",
@@ -457,7 +458,9 @@
     "nameLatin": "Carlos Kleiber",
     "country": "",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "小克莱伯"
+    ],
     "sortKey": "0190",
     "summary": "卡洛斯·克莱伯（Carlos Kleiber，1930年7月3日—2004年7月13日），二十世纪著名指挥大师之一，生于德国柏林，指挥家埃里希·克莱伯之子，童年时期开始接受音乐教育；1949年—1950年在瑞士苏黎世学习化学，1950年起回到阿根廷接受音乐训练；1951年在慕尼黑作为候补指挥首演；1956年—1968年历任杜塞尔多夫、杜伊斯堡以及斯图加特剧院的指挥；1968年起，以客座指挥身份执棒巴伐利亚歌剧院；1982年首次指挥柏林爱乐乐团，取得巨大成功。1989年和1992年两次登上维也纳金色大厅指挥新年音乐会而为全世界乐迷所熟知，后退隐。2004年7月13日，卡洛斯·克莱伯病逝于斯洛文尼亚的康涅斯卡村。",
     "imageSourceUrl": "",
@@ -541,30 +544,6 @@
     "aliases": [],
     "sortKey": "0220",
     "summary": "埃弗特·西克斯滕·埃林（Evert Sixten Ehrling，1918 年 4 月 3 日 - 2005 年 2 月 13 日）瑞典指挥家和钢琴家，曾担任瑞典皇家歌剧院的音乐总监和底特律交响乐团的首席指挥等。在斯德哥尔摩学习钢琴后，埃林首先在巴黎跟随阿尔伯特·沃尔夫学习指挥管弦乐队，然后在伦敦和德累斯顿跟随卡尔·伯姆学习指挥管弦乐队。 随后（1953-1960 年）他担任斯德哥尔摩皇家歌剧院的音乐总监，（1963-1973 年）接替底特律交响乐团首席指挥保罗·帕雷，并于 1974 年担任哥德堡城市交响乐团的首席指挥。1973年至1987年，他在纽约茱莉亚艺术学院任教，并在大都会音乐厅指挥。",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-埃里希克莱伯",
-    "slug": "埃里希克莱伯",
-    "name": "埃里希·克莱伯",
-    "nameLatin": "Erich Kleiber",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "0230",
-    "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",
     "imageAttribution": "",
@@ -3998,34 +3977,6 @@
     ]
   },
   {
-    "id": "person-伯恩斯坦1977",
-    "slug": "伯恩斯坦1977",
-    "name": "伦纳德·伯恩斯坦",
-    "nameLatin": "Leonard Bernstein",
-    "country": "United States",
-    "avatarSrc": "/library-assets/managed/people/person-伯恩斯坦1977/person-伯恩斯坦1977-c66c05323f.jpg",
-    "birthYear": 1918,
-    "deathYear": 1990,
-    "aliases": [
-      "伯恩斯坦"
-    ],
-    "sortKey": "1590",
-    "summary": "美国指挥家、作曲家、钢琴家，以指挥纽约爱乐乐团和创作《西区故事》闻名",
-    "imageSourceUrl": "https://en.wikipedia.org/wiki/Leonard_Bernstein",
-    "imageSourceKind": "wikimedia-commons",
-    "imageAttribution": "Wikipedia: Leonard Bernstein",
-    "imageUpdatedAt": "2026-03-18T02:02:35.107Z",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
     "id": "person-new-philharmonia-orchestra",
     "slug": "new-philharmonia-orchestra",
     "name": "爱乐乐团",
@@ -4325,30 +4276,6 @@
     ]
   },
   {
-    "id": "person-萨瓦利施",
-    "slug": "萨瓦利施",
-    "name": "萨瓦利施",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1740",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-ussr-state-symphony-orchestra",
     "slug": "ussr-state-symphony-orchestra",
     "name": "苏联国家交响乐团",
@@ -4411,103 +4338,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "1770",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-弗里乔伊",
-    "slug": "弗里乔伊",
-    "name": "弗里乔伊",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1790",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist",
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-鲁丁",
-    "slug": "鲁丁",
-    "name": "鲁丁",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1800",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-多拉蒂",
-    "slug": "多拉蒂",
-    "name": "多拉蒂",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1810",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-阿克曼",
-    "slug": "阿克曼",
-    "name": "阿克曼",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1820",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",
@@ -4717,30 +4547,6 @@
     ]
   },
   {
-    "id": "person-布尔1952",
-    "slug": "布尔1952",
-    "name": "布尔1952",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1930",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-lahti-symphony-orchestra",
     "slug": "lahti-symphony-orchestra",
     "name": "拉赫蒂交响乐团",
@@ -4834,30 +4640,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "1980",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-塞尔2017",
-    "slug": "塞尔2017",
-    "name": "塞尔2017",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2000",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",
@@ -5040,54 +4822,6 @@
     ]
   },
   {
-    "id": "person-卡姆",
-    "slug": "卡姆",
-    "name": "卡姆",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2080",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-斯托加德",
-    "slug": "斯托加德",
-    "name": "斯托加德",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2090",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-swiss-romande-orchestra",
     "slug": "swiss-romande-orchestra",
     "name": "瑞士罗曼德管弦乐团",
@@ -5179,54 +4913,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-小克莱伯",
-    "slug": "小克莱伯",
-    "name": "小克莱伯",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2130",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-老克莱伯1949-1955",
-    "slug": "老克莱伯1949-1955",
-    "name": "老克莱伯1949-1955",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2160",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
     ]
   },
   {
@@ -5410,30 +5096,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "2240",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-阿本-1953-华沙",
-    "slug": "阿本-1953-华沙",
-    "name": "阿本-1953-华沙",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2250",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",
@@ -5656,103 +5318,6 @@
     ]
   },
   {
-    "id": "person-布莱赫",
-    "slug": "布莱赫",
-    "name": "布莱赫",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2370",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-罗斯鲍德",
-    "slug": "罗斯鲍德",
-    "name": "罗斯鲍德",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2380",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist",
-      "conductor"
-    ]
-  },
-  {
-    "id": "person-克雷",
-    "slug": "克雷",
-    "name": "克雷",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2390",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-梅塔",
-    "slug": "梅塔",
-    "name": "梅塔",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2400",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-门贝尔伯格",
     "slug": "门贝尔伯格",
     "name": "门贝尔伯格",
@@ -5801,37 +5366,15 @@
     ]
   },
   {
-    "id": "person-霍瓦特1960s",
-    "slug": "霍瓦特1960s",
-    "name": "霍瓦特1960s",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2440",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-海因里希-霍尔莱瑟",
     "slug": "海因里希-霍尔莱瑟",
     "name": "海因里希•霍尔莱瑟",
     "nameLatin": "",
     "country": "",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "霍尔莱瑟"
+    ],
     "sortKey": "2450",
     "summary": "",
     "imageSourceUrl": "",
@@ -5873,37 +5416,15 @@
     ]
   },
   {
-    "id": "person-霍尔莱瑟1955",
-    "slug": "霍尔莱瑟1955",
-    "name": "霍尔莱瑟1955",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2470",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-康科迪-杰拉伯特",
     "slug": "康科迪-杰拉伯特",
     "name": "康科迪・杰拉伯特",
     "nameLatin": "",
     "country": "",
     "avatarSrc": "",
-    "aliases": [],
+    "aliases": [
+      "杰拉伯特"
+    ],
     "sortKey": "2480",
     "summary": "",
     "imageSourceUrl": "",
@@ -5918,30 +5439,6 @@
     },
     "roles": [
       "conductor"
-    ]
-  },
-  {
-    "id": "person-杰拉伯特1916",
-    "slug": "杰拉伯特1916",
-    "name": "杰拉伯特1916",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2490",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
     ]
   },
   {
@@ -6886,5 +6383,66 @@
     "roles": [
       "chorus"
     ]
+  },
+  {
+    "id": "person-伦纳德伯恩斯坦",
+    "slug": "伦纳德伯恩斯坦",
+    "name": "伦纳德·伯恩斯坦",
+    "nameLatin": "Leonard Bernstein",
+    "country": "United States",
+    "avatarSrc": "/library-assets/managed/people/person-伦纳德伯恩斯坦/person-伦纳德伯恩斯坦-c66c05323f.jpg",
+    "birthYear": 1918,
+    "deathYear": 1990,
+    "aliases": [
+      "伯恩斯坦",
+      "伯恩斯坦1977"
+    ],
+    "sortKey": "1590",
+    "summary": "美国指挥家、作曲家、钢琴家，以指挥纽约爱乐乐团和创作《西区故事》闻名",
+    "imageSourceUrl": "https://en.wikipedia.org/wiki/Leonard_Bernstein",
+    "imageSourceKind": "wikimedia-commons",
+    "imageAttribution": "Wikipedia: Leonard Bernstein",
+    "imageUpdatedAt": "2026-03-18T02:02:35.107Z",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "conductor"
+    ]
+  },
+  {
+    "id": "person-埃里希克莱伯",
+    "slug": "埃里希克莱伯",
+    "name": "埃里希·克莱伯",
+    "nameLatin": "Erich Kleiber",
+    "country": "Austria",
+    "avatarSrc": "",
+    "birthYear": 1890,
+    "deathYear": 1956,
+    "aliases": [
+      "老克莱伯",
+      "老克莱伯1949-1955",
+      "Erich Kleiber"
+    ],
+    "sortKey": "2160",
+    "summary": "奥地利指挥家，以严谨的德奥作品诠释和在柏林国家歌剧院、布宜诺斯艾利斯科隆剧院的艺术领导闻名；他也是卡洛斯·克莱伯之父。",
+    "imageSourceUrl": "",
+    "imageSourceKind": "",
+    "imageAttribution": "",
+    "imageUpdatedAt": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": [],
+      "collectionUrl": ""
+    },
+    "roles": [
+      "conductor"
+    ],
+    "fullName": "埃里希·克莱伯"
   }
 ]
+

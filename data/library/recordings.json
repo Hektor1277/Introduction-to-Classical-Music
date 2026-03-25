@@ -1148,7 +1148,7 @@
       },
       {
         "role": "conductor",
-        "personId": "person-伯恩斯坦1977",
+        "personId": "person-伦纳德伯恩斯坦",
         "displayName": "伦纳德·伯恩斯坦",
         "label": "文件名推断"
       }
@@ -2033,7 +2033,7 @@
     "id": "recording-a小调钢琴协奏曲-拉罗查-and-萨瓦利施1977",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "拉罗查-and-萨瓦利施1977",
-    "title": "沃尔夫冈·萨瓦利施 - 拉罗查 - 萨瓦利施 - 瑞士罗曼德管弦乐团 - January 12, 1977 -Victoria Hall",
+    "title": "沃尔夫冈·萨瓦利施 - 拉罗查 - 瑞士罗曼德管弦乐团 - January 12, 1977 -Victoria Hall",
     "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
@@ -2066,12 +2066,6 @@
         "role": "soloist",
         "personId": "person-阿利西亚德拉罗查",
         "displayName": "阿利西亚·德·拉罗查",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-萨瓦利施",
-        "displayName": "萨瓦利施",
         "label": "文件名补录"
       }
     ],
@@ -2216,7 +2210,7 @@
     "id": "recording-a小调钢琴协奏曲-科尔托-and-弗里乔伊1951",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "科尔托-and-弗里乔伊1951",
-    "title": "费伦茨·弗里乔伊 - 科尔托 - 弗里乔伊 - 柏林爱乐乐团 - 1951",
+    "title": "费伦茨·弗里乔伊 - 科尔托 - 柏林爱乐乐团 - 1951",
     "workTypeHint": "concerto",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
@@ -2239,12 +2233,6 @@
         "role": "soloist",
         "personId": "person-阿尔弗雷德德尼科尔托",
         "displayName": "阿尔弗雷德·德尼·科尔托",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-弗里乔伊",
-        "displayName": "弗里乔伊",
         "label": "文件名补录"
       }
     ],
@@ -2323,7 +2311,7 @@
     "id": "recording-a小调钢琴协奏曲-肯普夫-and-多拉蒂1959",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "肯普夫-and-多拉蒂1959",
-    "title": "安塔尔·多拉蒂 - 肯普夫 - 多拉蒂 - 阿姆斯特丹皇家音乐厅管弦乐团 - Amsterdam",
+    "title": "安塔尔·多拉蒂 - 肯普夫 - 阿姆斯特丹皇家音乐厅管弦乐团 - Amsterdam",
     "workTypeHint": "concerto",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
@@ -2346,12 +2334,6 @@
         "role": "soloist",
         "personId": "person-威廉沃尔特弗里德里希肯普夫",
         "displayName": "威廉·沃尔特·弗里德里希·肯普夫",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-多拉蒂",
-        "displayName": "多拉蒂",
         "label": "文件名补录"
       }
     ],
@@ -2380,7 +2362,7 @@
     "id": "recording-a小调钢琴协奏曲-莫伊塞维奇-and-阿克曼1954",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "莫伊塞维奇-and-阿克曼1954",
-    "title": "奥托·阿克曼 - 莫伊塞维奇 - 阿克曼 - 爱乐乐团 - 1954",
+    "title": "奥托·阿克曼 - 莫伊塞维奇 - 爱乐乐团 - 1954",
     "workTypeHint": "concerto",
     "sortKey": "0120",
     "isPrimaryRecommendation": false,
@@ -2413,12 +2395,6 @@
         "role": "soloist",
         "personId": "person-班诺莫伊塞维奇",
         "displayName": "班诺·莫伊塞维奇",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-阿克曼",
-        "displayName": "阿克曼",
         "label": "文件名补录"
       }
     ],
@@ -2726,7 +2702,7 @@
     "id": "recording-d小调小提琴协奏曲-佩妮曼-and-布尔1952",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "佩妮曼-and-布尔1952",
-    "title": "欧内斯特·布尔 - 佩妮曼 - 布尔1952 - 西南德意志广播交响乐团 - 1952*",
+    "title": "欧内斯特·布尔 - 佩妮曼 - 西南德意志广播交响乐团 - 1952*",
     "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
@@ -2749,12 +2725,6 @@
         "role": "soloist",
         "personId": "person-伊迪丝佩妮曼",
         "displayName": "伊迪丝·佩妮曼",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-布尔1952",
-        "displayName": "布尔1952",
         "label": "文件名补录"
       }
     ],
@@ -2895,7 +2865,7 @@
     "id": "recording-d小调小提琴协奏曲-吉特利斯-and-塞尔2017",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "吉特利斯-and-塞尔2017",
-    "title": "赛尔 - 吉特利斯 - 塞尔2017 - 纽约爱乐乐团 - 2017",
+    "title": "赛尔 - 吉特利斯 - 纽约爱乐乐团 - 2017",
     "workTypeHint": "concerto",
     "sortKey": "0060",
     "isPrimaryRecommendation": false,
@@ -2922,8 +2892,8 @@
       },
       {
         "role": "soloist",
-        "personId": "person-塞尔2017",
-        "displayName": "塞尔2017",
+        "personId": "person-乔治赛尔",
+        "displayName": "乔治·赛尔",
         "label": "文件名补录"
       }
     ],
@@ -3074,7 +3044,7 @@
     "id": "recording-d小调小提琴协奏曲-弗里德-and-卡姆1987",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "弗里德-and-卡姆1987",
-    "title": "奥科·卡姆 - 弗里德 - 卡姆 - 赫尔辛基爱乐乐团 - 1987",
+    "title": "奥科·卡姆 - 弗里德 - 赫尔辛基爱乐乐团 - 1987",
     "workTypeHint": "concerto",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
@@ -3097,12 +3067,6 @@
         "role": "soloist",
         "personId": "person-弗里德",
         "displayName": "弗里德",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-卡姆",
-        "displayName": "卡姆",
         "label": "文件名补录"
       }
     ],
@@ -3193,7 +3157,7 @@
     "id": "recording-d小调小提琴协奏曲-达莱内-and-斯托加德2021",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "达莱内-and-斯托加德2021",
-    "title": "约翰·斯托加德 - 达莱内 - 斯托加德 - 皇家斯德哥尔摩爱乐乐团 - 2021",
+    "title": "约翰·斯托加德 - 达莱内 - 皇家斯德哥尔摩爱乐乐团 - 2021",
     "workTypeHint": "concerto",
     "sortKey": "0110",
     "isPrimaryRecommendation": false,
@@ -3216,12 +3180,6 @@
         "role": "soloist",
         "personId": "person-约翰达莱内",
         "displayName": "约翰·达莱内",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-斯托加德",
-        "displayName": "斯托加德",
         "label": "文件名补录"
       }
     ],
@@ -3735,8 +3693,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-小克莱伯",
-        "displayName": "小克莱伯",
+        "personId": "person-卡洛斯克莱伯",
+        "displayName": "卡洛斯·克莱伯",
         "label": "文件名推断"
       }
     ],
@@ -4010,7 +3968,7 @@
     "id": "recording-第七交响曲-老克莱伯1949-1955",
     "workId": "work-贝多芬-交响曲-第七交响曲",
     "slug": "老克莱伯1949-1955",
-    "title": "老克莱伯1949-1955 - 阿姆斯特丹皇家音乐厅管弦乐团 - 1949*",
+    "title": "老克莱伯 - 阿姆斯特丹皇家音乐厅管弦乐团 - 1949*",
     "workTypeHint": "orchestral",
     "sortKey": "0140",
     "isPrimaryRecommendation": false,
@@ -4035,8 +3993,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-老克莱伯1949-1955",
-        "displayName": "老克莱伯1949-1955",
+        "personId": "person-埃里希克莱伯",
+        "displayName": "埃里希·克莱伯",
         "label": "文件名推断"
       }
     ],
@@ -4535,7 +4493,7 @@
     "id": "recording-第三交响曲英雄-阿本-1953-华沙",
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "阿本-1953-华沙",
-    "title": "阿本-1953-华沙 - 华沙爱乐乐团 - 1953",
+    "title": "阿本德罗特 - 华沙爱乐乐团 - 1953",
     "workTypeHint": "orchestral",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
@@ -4560,8 +4518,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-阿本-1953-华沙",
-        "displayName": "阿本-1953-华沙",
+        "personId": "person-阿本德罗特",
+        "displayName": "阿本德罗特",
         "label": "文件名推断"
       }
     ],
@@ -4650,7 +4608,7 @@
       },
       {
         "role": "conductor",
-        "personId": "person-伯恩斯坦1977",
+        "personId": "person-伦纳德伯恩斯坦",
         "displayName": "伦纳德·伯恩斯坦",
         "label": "文件名推断"
       }
@@ -4689,7 +4647,7 @@
     "credits": [
       {
         "role": "conductor",
-        "personId": "person-伯恩斯坦1977",
+        "personId": "person-伦纳德伯恩斯坦",
         "displayName": "伦纳德·伯恩斯坦",
         "label": "文件名推断"
       },
@@ -5069,7 +5027,7 @@
     "id": "recording-第九交响曲合唱-弗里乔伊1958",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "弗里乔伊1958",
-    "title": "弗里乔伊 - 柏林爱乐乐团 - 1958",
+    "title": "费伦茨·弗里乔伊 - 柏林爱乐乐团 - 1958",
     "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
@@ -5094,8 +5052,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-弗里乔伊",
-        "displayName": "弗里乔伊",
+        "personId": "person-费伦茨弗里乔伊",
+        "displayName": "费伦茨·弗里乔伊",
         "label": "文件名推断"
       }
     ],
@@ -5124,7 +5082,7 @@
     "id": "recording-第九交响曲合唱-弗里乔伊",
     "workId": "work-贝多芬-交响曲-第九交响曲合唱",
     "slug": "弗里乔伊",
-    "title": "弗里乔伊 - 柏林爱乐乐团",
+    "title": "费伦茨·弗里乔伊 - 柏林爱乐乐团",
     "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
@@ -5139,8 +5097,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-弗里乔伊",
-        "displayName": "弗里乔伊",
+        "personId": "person-费伦茨弗里乔伊",
+        "displayName": "费伦茨·弗里乔伊",
         "label": "文件名推断"
       }
     ],
@@ -8012,7 +7970,7 @@
     "id": "recording-d大调小提琴协奏曲-克莱斯勒-and-布莱赫1926",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "克莱斯勒-and-布莱赫1926",
-    "title": "利奥·布莱赫 - 克莱斯勒 - 布莱赫 - Staatskapelle Berlin - 1926",
+    "title": "利奥·布莱赫 - 克莱斯勒 - Staatskapelle Berlin - 1926",
     "workTypeHint": "concerto",
     "sortKey": "0010",
     "isPrimaryRecommendation": true,
@@ -8029,12 +7987,6 @@
         "role": "soloist",
         "personId": "person-弗里茨克莱斯勒",
         "displayName": "弗里茨·克莱斯勒",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-布莱赫",
-        "displayName": "布莱赫",
         "label": "文件名补录"
       },
       {
@@ -8074,7 +8026,7 @@
     "id": "recording-d大调小提琴协奏曲-内芙-and-罗斯鲍德1949",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "内芙-and-罗斯鲍德1949",
-    "title": "汉斯·罗斯鲍德 - 内芙 - 罗斯鲍德 - 西南德意志广播交响乐团 - September 25, 1949",
+    "title": "汉斯·罗斯鲍德 - 内芙 - 西南德意志广播交响乐团 - September 25, 1949",
     "workTypeHint": "concerto",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -8091,12 +8043,6 @@
         "role": "soloist",
         "personId": "person-吉内特内芙",
         "displayName": "吉内特·内芙",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-罗斯鲍德",
-        "displayName": "罗斯鲍德",
         "label": "文件名补录"
       },
       {
@@ -8136,7 +8082,7 @@
     "id": "recording-d大调小提琴协奏曲-博贝斯库-and-克雷1960",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "博贝斯库-and-克雷1960",
-    "title": "汉斯·穆勒-克雷 - 博贝斯库 - 克雷 - 斯图加特广播交响乐团 - Stuttgart, 1960",
+    "title": "汉斯·穆勒-克雷 - 博贝斯库 - 斯图加特广播交响乐团 - Stuttgart, 1960",
     "workTypeHint": "concerto",
     "sortKey": "0030",
     "isPrimaryRecommendation": false,
@@ -8153,12 +8099,6 @@
         "role": "soloist",
         "personId": "person-萝拉博贝斯库",
         "displayName": "萝拉·博贝斯库",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-克雷",
-        "displayName": "克雷",
         "label": "文件名补录"
       },
       {
@@ -8198,7 +8138,7 @@
     "id": "recording-d大调小提琴协奏曲-卡瓦科斯-and-梅塔2009",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "卡瓦科斯-and-梅塔2009",
-    "title": "祖宾·梅塔 - 卡瓦科斯 - 梅塔 - 柏林爱乐乐团 - 6 December 2009",
+    "title": "祖宾·梅塔 - 卡瓦科斯 - 柏林爱乐乐团 - 6 December 2009",
     "workTypeHint": "concerto",
     "sortKey": "0040",
     "isPrimaryRecommendation": false,
@@ -8221,12 +8161,6 @@
         "role": "soloist",
         "personId": "person-莱昂尼达斯卡瓦科斯",
         "displayName": "莱昂尼达斯·卡瓦科斯",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-梅塔",
-        "displayName": "梅塔",
         "label": "文件名补录"
       }
     ],
@@ -8564,7 +8498,7 @@
     "id": "recording-d大调小提琴协奏曲-瓦尔加-and-霍瓦特1960s",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "瓦尔加-and-霍瓦特1960s",
-    "title": "米兰·霍瓦特 - 瓦尔加 - 霍瓦特1960s - Zagreb Philharmonic - 1960s",
+    "title": "米兰·霍瓦特 - 瓦尔加 - Zagreb Philharmonic - 1960s",
     "workTypeHint": "concerto",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
@@ -8581,12 +8515,6 @@
         "role": "soloist",
         "personId": "person-蒂博尔瓦尔加",
         "displayName": "蒂博尔·瓦尔加",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-霍瓦特1960s",
-        "displayName": "霍瓦特1960s",
         "label": "文件名补录"
       },
       {
@@ -8869,7 +8797,7 @@
     "id": "recording-d大调小提琴协奏曲-金佩尔-and-霍尔莱瑟1955",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "金佩尔-and-霍尔莱瑟1955",
-    "title": "海因里希•霍尔莱瑟 - 金佩尔 - 霍尔莱瑟1955 - Bamberg Symphony Orchestra - 1955*",
+    "title": "霍尔莱瑟 - 金佩尔 - Bamberg Symphony Orchestra - 1955*",
     "workTypeHint": "concerto",
     "sortKey": "0150",
     "isPrimaryRecommendation": false,
@@ -8886,12 +8814,6 @@
         "role": "soloist",
         "personId": "person-金佩尔",
         "displayName": "金佩尔",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-霍尔莱瑟1955",
-        "displayName": "霍尔莱瑟1955",
         "label": "文件名补录"
       },
       {
@@ -8936,7 +8858,7 @@
     "id": "recording-d大调小提琴协奏曲-马宁-and-杰拉伯特1916",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "马宁-and-杰拉伯特1916",
-    "title": "康科迪・杰拉伯特 - 马宁 - 杰拉伯特1916 - 巴塞罗那交响乐团 - 1916",
+    "title": "杰拉伯特 - 马宁 - 巴塞罗那交响乐团 - 1916",
     "workTypeHint": "concerto",
     "sortKey": "0160",
     "isPrimaryRecommendation": false,
@@ -8953,12 +8875,6 @@
         "role": "soloist",
         "personId": "person-胡安马宁",
         "displayName": "胡安·马宁",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-杰拉伯特1916",
-        "displayName": "杰拉伯特1916",
         "label": "文件名补录"
       },
       {
@@ -10343,7 +10259,7 @@
     "id": "recording-第五交响曲-罗斯鲍德1951",
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "罗斯鲍德1951",
-    "title": "罗斯鲍德 - 科隆西德广播交响乐团 - October 22, 1951",
+    "title": "汉斯·罗斯鲍德 - 科隆西德广播交响乐团 - October 22, 1951",
     "workTypeHint": "orchestral",
     "sortKey": "0090",
     "isPrimaryRecommendation": false,
@@ -10368,8 +10284,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-罗斯鲍德",
-        "displayName": "罗斯鲍德",
+        "personId": "person-汉斯罗斯鲍德",
+        "displayName": "汉斯·罗斯鲍德",
         "label": "文件名推断"
       }
     ],

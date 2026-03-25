@@ -348,12 +348,13 @@ function uniqueNormalizedNames(person: Person) {
   return [...new Set(values)];
 }
 
-function personMatchScore(person: Person, target: string, options?: { allowPartial?: boolean }) {
+function personMatchScore(person: Person, target: string, options?: { allowPartial?: boolean; minPartialLength?: number }) {
   const normalizedTarget = normalizeNameKey(target);
   if (!normalizedTarget) {
     return 0;
   }
   const allowPartial = options?.allowPartial ?? true;
+  const minPartialLength = options?.minPartialLength ?? 5;
   let bestScore = 0;
   for (const candidate of [
     person.name,
@@ -374,13 +375,49 @@ function personMatchScore(person: Person, target: string, options?: { allowParti
     }
     if (
       allowPartial &&
-      normalizedTarget.length >= 5 &&
+      normalizedTarget.length >= minPartialLength &&
       (normalizedCandidate.includes(normalizedTarget) || normalizedTarget.includes(normalizedCandidate))
     ) {
       bestScore = Math.max(bestScore, 10 + Math.min(normalizedCandidate.length, normalizedTarget.length));
     }
   }
   return bestScore;
+}
+
+function expandThinPersonSourceNames(person: Person) {
+  const rawValues = [
+    person.name,
+    person.fullName,
+    person.displayName,
+    person.displayFullName,
+    person.nameLatin,
+    person.displayLatinName,
+    ...(person.aliases || []),
+  ]
+    .map((value) => compact(value))
+    .filter(Boolean);
+  const expanded = new Set<string>();
+
+  for (const rawValue of rawValues) {
+    expanded.add(normalizeNameKey(rawValue));
+
+    const strippedDigits = compact(rawValue.replace(/(?:18|19|20)\d{2}(?:s)?/gi, " ").replace(/\b\d{2}s\b/gi, " "));
+    if (strippedDigits) {
+      expanded.add(normalizeNameKey(strippedDigits));
+      const tokens = strippedDigits
+        .split(/[\s\-_/.,()]+/)
+        .map((token) => compact(token))
+        .filter(Boolean);
+      if (tokens.length > 1) {
+        const longestToken = [...tokens].sort((left, right) => right.length - left.length)[0];
+        if (longestToken) {
+          expanded.add(normalizeNameKey(longestToken));
+        }
+      }
+    }
+  }
+
+  return [...expanded].filter(Boolean);
 }
 
 function uniqueNormalizedGroupIdentityNames(person: Person) {
@@ -435,7 +472,7 @@ function findCanonicalReplacementForThinPerson(library: LibraryData, person: Per
   if (!isThinDuplicateIndividualPerson(person)) {
     return null;
   }
-  const sourceNames = uniqueNormalizedNames(person).filter((value) => value.length >= 2);
+  const sourceNames = expandThinPersonSourceNames(person).filter((value) => value.length >= 2);
   if (sourceNames.length === 0) {
     return null;
   }
@@ -445,7 +482,16 @@ function findCanonicalReplacementForThinPerson(library: LibraryData, person: Per
     .filter((candidate) => !candidate.roles.some((role) => isEnsembleRole(role)))
     .map((candidate) => ({
       person: candidate,
-      score: sourceNames.reduce((best, sourceName) => Math.max(best, personMatchScore(candidate, sourceName)), 0),
+      score: sourceNames.reduce(
+        (best, sourceName) =>
+          Math.max(
+            best,
+            personMatchScore(candidate, sourceName, {
+              minPartialLength: /[\u3400-\u9fff]/.test(sourceName) ? 2 : 3,
+            }),
+          ),
+        0,
+      ),
       quality: personQualityScore(candidate),
     }))
     .filter((candidate) => candidate.score > 0)

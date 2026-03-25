@@ -1321,4 +1321,254 @@ describe("person cleanup", () => {
     });
     expect(nextLibrary.people.some((person) => person.id === "person-jochum-shell")).toBe(true);
   });
+
+  it("drops year-suffixed soloist shells when they only duplicate the conductor surname", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-bour-1952",
+          slug: "bour1952",
+          name: "Bour1952",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-ernest-bour",
+          slug: "ernest-bour",
+          name: "Ernest Bour",
+          nameLatin: "Ernest Bour",
+          country: "France",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-violinist",
+          slug: "edith-peinemann",
+          name: "Edith Peinemann",
+          nameLatin: "Edith Peinemann",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "canonical soloist",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-bour-1952",
+          workId: "work-beethoven-9",
+          slug: "bour-1952",
+          title: "Ernest Bour - Edith Peinemann - Bour1952 - 1952",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({ role: "conductor", personId: "person-ernest-bour", displayName: "Ernest Bour", label: "conductor" }),
+            credit({ role: "soloist", personId: "person-violinist", displayName: "Edith Peinemann", label: "soloist" }),
+            credit({ role: "soloist", personId: "person-bour-1952", displayName: "Bour1952", label: "filename" }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1952",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits.some((item) => item.personId === "person-bour-1952")).toBe(false);
+    expect(nextLibrary.people.some((person) => person.id === "person-bour-1952")).toBe(false);
+  });
+
+  it("rebinds year-suffixed thin conductor shells to a unique canonical conductor", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-szell-shell",
+          slug: "szell2017",
+          name: "Szell2017",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-george-szell",
+          slug: "george-szell",
+          name: "George Szell",
+          nameLatin: "George Szell",
+          country: "United States",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-szell-2017",
+          workId: "work-beethoven-9",
+          slug: "szell-2017",
+          title: "Szell2017 - 2017",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "conductor", personId: "person-szell-shell", displayName: "Szell2017", label: "filename" })],
+          links: [],
+          notes: "",
+          performanceDateText: "2017",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      role: "conductor",
+      personId: "person-george-szell",
+      displayName: "George Szell",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-szell-shell")).toBe(false);
+  });
+
+  it("rebinds year-suffixed chinese surname shells when the canonical conductor is unique", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-bour-shell-zh",
+          slug: "布尔1952",
+          name: "布尔1952",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-bour-zh",
+          slug: "ou-nei-si-te-bu-er",
+          name: "欧内斯特·布尔",
+          nameLatin: "Ernest Bour",
+          country: "France",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0020",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-soloist",
+          slug: "yi-di-si-pei-ni-man",
+          name: "伊迪丝·佩妮曼",
+          nameLatin: "Edith Peinemann",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "canonical soloist",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-bour-zh-1952",
+          workId: "work-beethoven-9",
+          slug: "bour-zh-1952",
+          title: "欧内斯特·布尔 - 伊迪丝·佩妮曼 - 布尔1952 - 1952",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({ role: "conductor", personId: "person-bour-zh", displayName: "欧内斯特·布尔", label: "conductor" }),
+            credit({ role: "soloist", personId: "person-soloist", displayName: "伊迪丝·佩妮曼", label: "soloist" }),
+            credit({ role: "soloist", personId: "person-bour-shell-zh", displayName: "布尔1952", label: "filename" }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1952",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits.some((item) => item.personId === "person-bour-shell-zh")).toBe(false);
+    expect(nextLibrary.people.some((person) => person.id === "person-bour-shell-zh")).toBe(false);
+  });
 });
