@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validateLibrary } from "@/lib/schema";
 import {
   backfillRecordingWorkTypeHints,
+  normalizeRecordingMetadata,
   rebuildRecordingDerivedFields,
   recordingNeedsLegacyRepair,
   repairRecordingFromLegacyParse,
@@ -585,5 +586,104 @@ describe("recording repair helpers", () => {
 
     expect(repaired.performanceDateText).toBe("1954");
     expect(repaired.venueText).toBe("莫斯科音乐学院大音乐厅");
+  });
+  it("clears placeholder metadata values before rebuilding the display title", () => {
+    const library = validateLibrary({
+      composers: [
+        {
+          id: "composer-placeholder",
+          slug: "placeholder",
+          name: "Placeholder Composer",
+          fullName: "Placeholder Composer",
+          nameLatin: "Placeholder Composer",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0001",
+          summary: "",
+        },
+      ],
+      people: [
+        {
+          id: "person-soloist",
+          slug: "soloist",
+          name: "Soloist",
+          fullName: "Soloist",
+          nameLatin: "Soloist",
+          country: "",
+          avatarSrc: "",
+          roles: ["soloist"],
+          aliases: [],
+          sortKey: "0001",
+          summary: "",
+        },
+      ],
+      workGroups: [
+        {
+          id: "group-chamber",
+          composerId: "composer-placeholder",
+          title: "Chamber",
+          slug: "chamber",
+          path: ["Chamber"],
+          sortKey: "0001",
+        },
+      ],
+      works: [
+        {
+          id: "work-placeholder",
+          composerId: "composer-placeholder",
+          groupIds: ["group-chamber"],
+          slug: "work-placeholder",
+          title: "Placeholder Work",
+          titleLatin: "",
+          aliases: [],
+          catalogue: "",
+          summary: "",
+          sortKey: "0001",
+          updatedAt: "2026-03-25T00:00:00.000Z",
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-placeholder-metadata",
+          workId: "work-placeholder",
+          slug: "placeholder-metadata",
+          title: "Soloist - *",
+          workTypeHint: "chamber_solo",
+          sortKey: "0001",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [{ role: "soloist", personId: "person-soloist", displayName: "Soloist", label: "soloist" }],
+          links: [],
+          notes: "",
+          performanceDateText: "*",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          legacyPath: "",
+        },
+      ],
+    });
+
+    const repaired = rebuildRecordingDerivedFields(library, library.recordings[0]);
+
+    expect(repaired.performanceDateText).toBe("");
+    expect(repaired.venueText).toBe("");
+    expect(repaired.title).toBe("Soloist");
+  });
+
+  it("moves venue-like text out of performanceDateText when no real date is present", () => {
+    const normalized = normalizeRecordingMetadata({
+      performanceDateText: "Amsterdam",
+      venueText: "",
+    });
+
+    expect(normalized).toEqual({
+      performanceDateText: "",
+      venueText: "Amsterdam",
+    });
   });
 });

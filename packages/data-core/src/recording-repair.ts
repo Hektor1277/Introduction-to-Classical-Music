@@ -14,6 +14,11 @@ function compact(value: unknown) {
   return String(value ?? "").trim();
 }
 
+function isPlaceholderRecordingMetadataValue(value: unknown) {
+  const normalized = compact(value).toLowerCase();
+  return !normalized || normalized === "-" || normalized === "*" || normalized === "unknown" || normalized === "鏈煡";
+}
+
 function isPlaceholderCredit(credit: { personId?: unknown; displayName?: unknown }) {
   return compact(credit.personId) === "person-item" || isPlaceholderValue(credit.displayName);
 }
@@ -241,11 +246,18 @@ export function recordingNeedsLegacyRepair(
 }
 
 export function normalizeRecordingMetadata(recording: Pick<Recording, "performanceDateText" | "venueText">) {
-  let performanceDateText = compact(recording.performanceDateText);
-  let venueText = compact(recording.venueText);
+  let performanceDateText = isPlaceholderRecordingMetadataValue(recording.performanceDateText)
+    ? ""
+    : compact(recording.performanceDateText);
+  let venueText = isPlaceholderRecordingMetadataValue(recording.venueText) ? "" : compact(recording.venueText);
 
   if (performanceDateText && venueText && !looksDateLike(performanceDateText) && looksDateLike(venueText)) {
     [performanceDateText, venueText] = [venueText, performanceDateText];
+  }
+
+  if (performanceDateText && !venueText && !looksDateLike(performanceDateText)) {
+    venueText = performanceDateText;
+    performanceDateText = "";
   }
 
   if (venueText || !performanceDateText.includes(" / ")) {

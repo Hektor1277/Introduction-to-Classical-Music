@@ -481,6 +481,32 @@ describe("auditLibraryData", () => {
     );
   });
 
+  it("flags placeholder or venue-like values left in recording metadata fields", () => {
+    const library = buildBaseLibrary();
+    const suspiciousRecording = {
+      ...library.recordings[0],
+      id: "recording-suspicious-metadata",
+      slug: "suspicious-metadata",
+      title: "Karajan - BPO - *",
+      performanceDateText: "*",
+      venueText: "",
+    };
+
+    const issues = auditLibraryData(replaceRecording(library, suspiciousRecording));
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "recording-suspicious-metadata",
+          severity: "warning",
+          entityType: "recording",
+          entityId: "recording-suspicious-metadata",
+          source: "recordings.performanceDateText",
+        }),
+      ]),
+    );
+  });
+
   it("builds a structured manual backfill queue for unresolved recording credit gaps", () => {
     const library = buildBaseLibrary();
     const brokenRecording = {

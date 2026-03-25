@@ -14,6 +14,7 @@ export type LibraryAuditIssueCode =
   | "placeholder-entity"
   | "person-suspicious-ensemble-name"
   | "person-polluted-group-identity"
+  | "recording-suspicious-metadata"
   | "recording-missing-credit-role"
   | "recording-work-type-conflict"
   | "recording-title-credit-mismatch";
@@ -84,6 +85,11 @@ function compareText(left: string, right: string) {
 function isPlaceholderValue(value: unknown) {
   const normalized = compact(value).toLowerCase();
   return !normalized || normalized === "-" || normalized === "unknown" || normalized === "未知" || normalized === "未填写";
+}
+
+function isPlaceholderRecordingMetadataValue(value: unknown) {
+  const normalized = compact(value).toLowerCase();
+  return !normalized || normalized === "-" || normalized === "*" || normalized === "unknown" || normalized === "鏈煡";
 }
 
 function hasPlaceholderIdentity(entity: Pick<Person | Composer, "id" | "name">) {
@@ -316,6 +322,44 @@ function auditPollutedGroupIdentities(library: LibraryData) {
   return issues;
 }
 
+function auditRecordingSuspiciousMetadata(library: LibraryData) {
+  const issues: LibraryAuditIssue[] = [];
+
+  for (const recording of library.recordings || []) {
+    const performanceDateText = compact(recording.performanceDateText);
+    const venueText = compact(recording.venueText);
+    const details: string[] = [];
+
+    if (isPlaceholderRecordingMetadataValue(recording.performanceDateText) && performanceDateText === "*") {
+      details.push("performanceDateText contains placeholder '*'");
+    } else if (performanceDateText && !/\d/.test(performanceDateText) && !venueText) {
+      details.push(`performanceDateText looks like venue text: ${performanceDateText}`);
+    }
+
+    if (isPlaceholderRecordingMetadataValue(recording.venueText) && venueText === "*") {
+      details.push("venueText contains placeholder '*'");
+    }
+
+    if (details.length === 0) {
+      continue;
+    }
+
+    issues.push(
+      issue({
+        code: "recording-suspicious-metadata",
+        severity: "warning",
+        entityType: "recording",
+        entityId: recording.id,
+        message: `版本元数据存在可规范化的占位值或错位字段：${details.join("; ")}`,
+        source: "recordings.performanceDateText",
+        suggestedFix: "按当前录音清洗规则清空占位值，并将误写进 performanceDateText 的地点文本迁移到 venueText。",
+      }),
+    );
+  }
+
+  return issues;
+}
+
 function auditRecordingRequiredCredits(library: LibraryData, options: LibraryAuditOptions) {
   const issues: LibraryAuditIssue[] = [];
 
@@ -419,6 +463,7 @@ export function auditLibraryData(library: LibraryData, options: LibraryAuditOpti
     ...auditPlaceholderEntities(library),
     ...auditSuspiciousEnsemblePeople(library),
     ...auditPollutedGroupIdentities(library),
+    ...auditRecordingSuspiciousMetadata(library),
     ...auditRecordingRequiredCredits(library, options),
     ...auditRecordingWorkTypeConflicts(library),
     ...auditRecordingTitleCreditMismatches(library),

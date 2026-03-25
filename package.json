@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "build:indexes": "npm run runtime:build && node output/runtime/scripts/build-indexes.js",
     "import:legacy": "npm run runtime:build && node output/runtime/scripts/import-legacy.js",
+    "recording:legacy-audit": "npm run runtime:build && node output/runtime/scripts/audit-recording-legacy-alignment.js",
     "reference:audit": "npm run runtime:build && node output/runtime/scripts/audit-reference-registry.js",
     "reference:query": "npm run runtime:build && node output/runtime/scripts/query-reference-registry.js",
     "reference:sync": "npm run runtime:build && node output/runtime/scripts/sync-reference-registry.js",
