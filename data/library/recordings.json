@@ -1149,7 +1149,7 @@
       {
         "role": "conductor",
         "personId": "person-伯恩斯坦1977",
-        "displayName": "伯恩斯坦1977",
+        "displayName": "伦纳德·伯恩斯坦",
         "label": "文件名推断"
       }
     ],
@@ -1249,7 +1249,7 @@
       {
         "role": "conductor",
         "personId": "person-列奥波德斯托科夫斯基",
-        "displayName": "列奥波德·斯托科夫斯基",
+        "displayName": "莱奥波德·斯托科夫斯基",
         "label": "文件名推断"
       }
     ],
@@ -1304,7 +1304,7 @@
       {
         "role": "conductor",
         "personId": "person-马里斯杨松斯",
-        "displayName": "马里斯·杨松斯",
+        "displayName": "马里斯·扬颂斯",
         "label": "文件名推断"
       }
     ],
@@ -1688,7 +1688,7 @@
       {
         "role": "conductor",
         "personId": "person-弗朗茨威尔瑟-莫斯特",
-        "displayName": "弗朗兹·威尔瑟-莫斯特",
+        "displayName": "弗朗茨·威尔瑟-莫斯特",
         "label": "指挥"
       },
       {
@@ -2628,7 +2628,7 @@
       {
         "role": "conductor",
         "personId": "person-georg-schne-evoigt-乔治施内沃伊特",
-        "displayName": "Georg Schnéevoigt（乔治·施内沃伊特）",
+        "displayName": "乔治·施内沃伊特",
         "label": "指挥"
       },
       {
@@ -2698,12 +2698,6 @@
         "role": "soloist",
         "personId": "person-伊迪丝佩妮曼",
         "displayName": "伊迪丝·佩妮曼",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-约瑟夫凯尔伯特",
-        "displayName": "约瑟夫·凯尔伯特",
         "label": "文件名补录"
       }
     ],
@@ -2818,12 +2812,6 @@
         "personId": "person-莱昂尼达斯卡瓦科斯",
         "displayName": "莱昂尼达斯·卡瓦科斯",
         "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-奥斯莫安泰罗万斯凯",
-        "displayName": "奥斯莫·安泰罗·万斯凯",
-        "label": "文件名补录"
       }
     ],
     "links": [
@@ -2879,12 +2867,6 @@
         "role": "soloist",
         "personId": "person-吉特列斯",
         "displayName": "吉特列斯",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-雅沙霍伦斯坦",
-        "displayName": "雅沙·霍伦斯坦",
         "label": "文件名补录"
       }
     ],
@@ -2994,12 +2976,6 @@
         "personId": "person-奥伊斯特拉赫",
         "displayName": "奥伊斯特拉赫",
         "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
-        "label": "文件名补录"
       }
     ],
     "links": [
@@ -3055,12 +3031,6 @@
         "role": "soloist",
         "personId": "person-卡米拉威克斯",
         "displayName": "卡米拉·威克斯",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
         "label": "文件名补录"
       }
     ],
@@ -3886,7 +3856,7 @@
       {
         "role": "conductor",
         "personId": "person-列奥波德斯托科夫斯基",
-        "displayName": "列奥波德·斯托科夫斯基",
+        "displayName": "莱奥波德·斯托科夫斯基",
         "label": "文件名推断"
       }
     ],
@@ -8308,12 +8278,6 @@
         "role": "soloist",
         "personId": "person-奥伊斯特拉赫",
         "displayName": "奥伊斯特拉赫",
-        "label": "文件名补录"
-      },
-      {
-        "role": "soloist",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
         "label": "文件名补录"
       }
     ],

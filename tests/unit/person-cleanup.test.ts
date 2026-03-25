@@ -1027,4 +1027,298 @@ describe("person cleanup", () => {
     });
     expect(nextLibrary.recordings[0].credits[0].personId).not.toBe("person-nhk");
   });
+
+  it("drops thin soloist aliases when they only duplicate the conductor surname", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-dorati",
+          slug: "dorati",
+          name: "Dorati",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0010",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-antal-dorati",
+          slug: "antal-dorati",
+          name: "Antal Dorati",
+          nameLatin: "Antal Dorati",
+          country: "Hungary",
+          avatarSrc: "",
+          aliases: ["Dorati"],
+          sortKey: "0020",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-kempff",
+          slug: "wilhelm-kempff",
+          name: "Wilhelm Kempff",
+          nameLatin: "Wilhelm Kempff",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "canonical soloist",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["soloist"],
+        },
+        {
+          id: "person-london",
+          slug: "london-symphony-orchestra",
+          name: "London Symphony Orchestra",
+          nameLatin: "London Symphony Orchestra",
+          country: "United Kingdom",
+          avatarSrc: "",
+          aliases: ["LSO"],
+          sortKey: "0040",
+          summary: "canonical orchestra",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-kempff-dorati",
+          workId: "work-beethoven-9",
+          slug: "kempff-dorati",
+          title: "Antal Dorati - Wilhelm Kempff - Dorati - London Symphony Orchestra - 1959",
+          workTypeHint: "concerto",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({ role: "conductor", personId: "person-antal-dorati", displayName: "Antal Dorati", label: "conductor" }),
+            credit({ role: "soloist", personId: "person-kempff", displayName: "Wilhelm Kempff", label: "soloist" }),
+            credit({ role: "soloist", personId: "person-dorati", displayName: "Dorati", label: "filename" }),
+            credit({
+              role: "orchestra",
+              personId: "person-london",
+              displayName: "London Symphony Orchestra",
+              label: "orchestra",
+            }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1959",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+    const nextCredits = nextLibrary.recordings[0].credits;
+
+    expect(nextCredits.some((item) => item.personId === "person-dorati" || item.displayName === "Dorati")).toBe(false);
+    expect(nextLibrary.people.some((person) => person.id === "person-dorati")).toBe(false);
+  });
+
+  it("rebinds thin conductor shells to a unique stronger canonical person", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-georg-jochum",
+          slug: "georg-ludwig-jochum",
+          name: "Georg-Ludwig Jochum",
+          nameLatin: "Georg-Ludwig Jochum",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["George Jochum", "Jochum"],
+          sortKey: "0010",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-jochum-shell",
+          slug: "jochum",
+          name: "Jochum",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: ["George Jochum"],
+          sortKey: "0020",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-vienna",
+          slug: "vienna-philharmonic",
+          name: "Vienna Philharmonic",
+          nameLatin: "Vienna Philharmonic",
+          country: "Austria",
+          avatarSrc: "",
+          aliases: ["Wiener Philharmoniker"],
+          sortKey: "0030",
+          summary: "canonical orchestra",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["orchestra"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-jochum-1979",
+          workId: "work-beethoven-9",
+          slug: "jochum-1979",
+          title: "George Jochum - Vienna Philharmonic - 1979",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [
+            credit({ role: "conductor", personId: "person-jochum-shell", displayName: "Jochum", label: "filename" }),
+            credit({ role: "orchestra", personId: "person-vienna", displayName: "Vienna Philharmonic", label: "orchestra" }),
+          ],
+          links: [],
+          notes: "",
+          performanceDateText: "1979",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      role: "conductor",
+      personId: "person-georg-jochum",
+      displayName: "Georg-Ludwig Jochum",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-jochum-shell")).toBe(false);
+  });
+
+  it("does not auto-merge ambiguous thin conductor shells", () => {
+    const library = createBaseLibrary({
+      people: [
+        {
+          id: "person-eugen-jochum",
+          slug: "eugen-jochum",
+          name: "Eugen Jochum",
+          nameLatin: "Eugen Jochum",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["Jochum"],
+          sortKey: "0010",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-georg-jochum",
+          slug: "georg-ludwig-jochum",
+          name: "Georg-Ludwig Jochum",
+          nameLatin: "Georg-Ludwig Jochum",
+          country: "Germany",
+          avatarSrc: "",
+          aliases: ["Jochum"],
+          sortKey: "0020",
+          summary: "canonical conductor",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+        {
+          id: "person-jochum-shell",
+          slug: "jochum",
+          name: "Jochum",
+          nameLatin: "",
+          country: "",
+          avatarSrc: "",
+          aliases: [],
+          sortKey: "0030",
+          summary: "",
+          imageSourceUrl: "",
+          imageSourceKind: "",
+          imageAttribution: "",
+          imageUpdatedAt: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+          roles: ["conductor"],
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-jochum-unknown",
+          workId: "work-beethoven-9",
+          slug: "jochum-unknown",
+          title: "Jochum - 1965",
+          workTypeHint: "orchestral",
+          sortKey: "0010",
+          isPrimaryRecommendation: false,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [credit({ role: "conductor", personId: "person-jochum-shell", displayName: "Jochum", label: "filename" })],
+          links: [],
+          notes: "",
+          performanceDateText: "1965",
+          venueText: "",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [] },
+        },
+      ],
+    });
+
+    const nextLibrary = cleanupLibraryPeople(library);
+
+    expect(nextLibrary.recordings[0].credits[0]).toMatchObject({
+      role: "conductor",
+      personId: "person-jochum-shell",
+      displayName: "Jochum",
+    });
+    expect(nextLibrary.people.some((person) => person.id === "person-jochum-shell")).toBe(true);
+  });
 });

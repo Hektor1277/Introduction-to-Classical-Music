@@ -4661,30 +4661,6 @@
     ]
   },
   {
-    "id": "person-施内沃伊特",
-    "slug": "施内沃伊特",
-    "name": "施内沃伊特",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1890",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-cologne-symphony-orchestra",
     "slug": "cologne-symphony-orchestra",
     "name": "科隆交响乐团",
@@ -4708,30 +4684,6 @@
     },
     "roles": [
       "orchestra"
-    ]
-  },
-  {
-    "id": "person-凯尔伯特",
-    "slug": "凯尔伯特",
-    "name": "凯尔伯特",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1910",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
     ]
   },
   {
@@ -4845,30 +4797,6 @@
     ]
   },
   {
-    "id": "person-万斯凯",
-    "slug": "万斯凯",
-    "name": "万斯凯",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1960",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
     "id": "person-wiener-symphoniker",
     "slug": "wiener-symphoniker",
     "name": "维也纳交响乐团",
@@ -4919,31 +4847,6 @@
     },
     "roles": [
       "soloist"
-    ]
-  },
-  {
-    "id": "person-霍伦斯坦",
-    "slug": "霍伦斯坦",
-    "name": "霍伦斯坦",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "1990",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist",
-      "conductor"
     ]
   },
   {
@@ -5036,30 +4939,6 @@
     "avatarSrc": "",
     "aliases": [],
     "sortKey": "2030",
-    "summary": "",
-    "imageSourceUrl": "",
-    "imageSourceKind": "",
-    "imageAttribution": "",
-    "imageUpdatedAt": "",
-    "infoPanel": {
-      "text": "",
-      "articleId": "",
-      "collectionLinks": [],
-      "collectionUrl": ""
-    },
-    "roles": [
-      "soloist"
-    ]
-  },
-  {
-    "id": "person-埃尔林",
-    "slug": "埃尔林",
-    "name": "埃尔林",
-    "nameLatin": "",
-    "country": "",
-    "avatarSrc": "",
-    "aliases": [],
-    "sortKey": "2040",
     "summary": "",
     "imageSourceUrl": "",
     "imageSourceKind": "",

@@ -283,6 +283,23 @@ function ensembleCompatible(role: Credit["role"], person: Person) {
   return true;
 }
 
+function creditRoleCompatibleWithPerson(role: Credit["role"], person: Person) {
+  if (isEnsembleRole(role)) {
+    return ensembleCompatible(role, person);
+  }
+  const personRoles = new Set(person.roles || []);
+  if (role === "conductor") {
+    return personRoles.has("conductor");
+  }
+  if (role === "singer") {
+    return personRoles.has("singer");
+  }
+  if (role === "soloist" || role === "instrumentalist") {
+    return personRoles.has("soloist") || personRoles.has("instrumentalist");
+  }
+  return true;
+}
+
 function personQualityScore(person: Person) {
   let score = 0;
   const aliases = person.aliases || [];
@@ -331,6 +348,41 @@ function uniqueNormalizedNames(person: Person) {
   return [...new Set(values)];
 }
 
+function personMatchScore(person: Person, target: string, options?: { allowPartial?: boolean }) {
+  const normalizedTarget = normalizeNameKey(target);
+  if (!normalizedTarget) {
+    return 0;
+  }
+  const allowPartial = options?.allowPartial ?? true;
+  let bestScore = 0;
+  for (const candidate of [
+    person.name,
+    person.fullName,
+    person.displayName,
+    person.displayFullName,
+    person.nameLatin,
+    person.displayLatinName,
+    ...(person.aliases || []),
+  ]) {
+    const normalizedCandidate = normalizeNameKey(candidate);
+    if (!normalizedCandidate) {
+      continue;
+    }
+    if (normalizedCandidate === normalizedTarget) {
+      bestScore = Math.max(bestScore, 100 + normalizedTarget.length);
+      continue;
+    }
+    if (
+      allowPartial &&
+      normalizedTarget.length >= 5 &&
+      (normalizedCandidate.includes(normalizedTarget) || normalizedTarget.includes(normalizedCandidate))
+    ) {
+      bestScore = Math.max(bestScore, 10 + Math.min(normalizedCandidate.length, normalizedTarget.length));
+    }
+  }
+  return bestScore;
+}
+
 function uniqueNormalizedGroupIdentityNames(person: Person) {
   const values = [
     person.name,
@@ -346,6 +398,67 @@ function uniqueNormalizedGroupIdentityNames(person: Person) {
     .map((value) => normalizeGroupIdentityKey(value))
     .filter(Boolean);
   return [...new Set(values)];
+}
+
+function isThinDuplicateIndividualPerson(person: Person) {
+  if (person.roles.some((role) => isEnsembleRole(role))) {
+    return false;
+  }
+  if (isPlaceholderPerson(person)) {
+    return false;
+  }
+  return (
+    !compact(person.country) &&
+    !compact(person.summary) &&
+    !compact(person.avatarSrc) &&
+    !compact(person.imageSourceUrl) &&
+    !compact(person.imageAttribution) &&
+    !compact(person.fullName) &&
+    !compact(person.displayName) &&
+    !compact(person.displayFullName) &&
+    !compact(person.displayLatinName) &&
+    (person.aliases || []).length <= 1
+  );
+}
+
+function personSupportsFeaturedRole(person: Person) {
+  const roles = new Set(person.roles || []);
+  return roles.has("soloist") || roles.has("instrumentalist") || roles.has("singer");
+}
+
+function personIsConductorOnly(person: Person) {
+  const roles = new Set(person.roles || []);
+  return roles.has("conductor") && !personSupportsFeaturedRole(person) && !roles.has("composer");
+}
+
+function findCanonicalReplacementForThinPerson(library: LibraryData, person: Person) {
+  if (!isThinDuplicateIndividualPerson(person)) {
+    return null;
+  }
+  const sourceNames = uniqueNormalizedNames(person).filter((value) => value.length >= 2);
+  if (sourceNames.length === 0) {
+    return null;
+  }
+  const candidates = (library.people || [])
+    .filter((candidate) => candidate.id !== person.id)
+    .filter((candidate) => !isPlaceholderPerson(candidate))
+    .filter((candidate) => !candidate.roles.some((role) => isEnsembleRole(role)))
+    .map((candidate) => ({
+      person: candidate,
+      score: sourceNames.reduce((best, sourceName) => Math.max(best, personMatchScore(candidate, sourceName)), 0),
+      quality: personQualityScore(candidate),
+    }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((left, right) => right.score - left.score || right.quality - left.quality);
+
+  const replacement = candidates[0] || null;
+  if (!replacement) {
+    return null;
+  }
+  if ((candidates[1]?.score || 0) === replacement.score) {
+    return null;
+  }
+  return replacement.quality > personQualityScore(person) ? replacement.person : null;
 }
 
 function isThinDuplicateGroupPerson(person: Person) {
@@ -413,11 +526,29 @@ export function findPersonForCredit(library: LibraryData, role: Credit["role"], 
   if (!target || isPlaceholderValue(target)) {
     return null;
   }
+  if (isEnsembleRole(role)) {
+    const candidates = (library.people || [])
+      .filter((person) => !isPlaceholderPerson(person) && creditRoleCompatibleWithPerson(role, person))
+      .filter((person) => personMatchesName(person, target))
+      .sort((left, right) => personQualityScore(right) - personQualityScore(left));
+    return candidates[0] || null;
+  }
   const candidates = (library.people || [])
-    .filter((person) => !isPlaceholderPerson(person) && ensembleCompatible(role, person))
-    .filter((person) => personMatchesName(person, target))
-    .sort((left, right) => personQualityScore(right) - personQualityScore(left));
-  return candidates[0] || null;
+    .filter((person) => !isPlaceholderPerson(person) && creditRoleCompatibleWithPerson(role, person))
+    .map((person) => ({
+      person,
+      score: personMatchScore(person, target),
+      quality: personQualityScore(person),
+    }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((left, right) => right.score - left.score || right.quality - left.quality);
+  if (candidates.length === 0) {
+    return null;
+  }
+  if (!isEnsembleRole(role) && (candidates[1]?.score || 0) === candidates[0].score) {
+    return null;
+  }
+  return candidates[0]?.person || null;
 }
 
 function canonicalCreditDisplayName(person: Person) {
@@ -554,12 +685,17 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
   const nextCredits: Recording["credits"] = [];
   let nextVenueText = recording.venueText;
   const redirectedThinGroupIds = new Map<string, Person>();
+  const redirectedThinPersonIds = new Map<string, Person>();
   const suspiciousCompositeGroupIds = new Map<string, Person>();
 
   for (const person of nextLibrary.people || []) {
     const replacement = findCanonicalReplacementForGroupPerson(nextLibrary, person);
     if (replacement) {
       redirectedThinGroupIds.set(person.id, replacement);
+    }
+    const thinPersonReplacement = findCanonicalReplacementForThinPerson(nextLibrary, person);
+    if (thinPersonReplacement) {
+      redirectedThinPersonIds.set(person.id, thinPersonReplacement);
     }
     if (isSuspiciousCompositeEnsemblePerson(person)) {
       suspiciousCompositeGroupIds.set(person.id, person);
@@ -574,6 +710,16 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
       label: compact(currentCredit.label),
     };
 
+    const ambiguousCompositePerson = suspiciousCompositeGroupIds.get(compact(nextCredit.personId));
+    if (ambiguousCompositePerson) {
+      nextCredit = {
+        ...nextCredit,
+        role: primaryRoleFromPerson(ambiguousCompositePerson),
+        personId: "",
+        displayName: compact(nextCredit.displayName) || canonicalCreditDisplayName(ambiguousCompositePerson),
+      };
+    }
+
     const redirectedPerson = redirectedThinGroupIds.get(compact(nextCredit.personId));
     if (redirectedPerson) {
       nextCredit = {
@@ -584,14 +730,26 @@ export function repairRecordingPeople(library: LibraryData, recording: Recording
       };
     }
 
-    const ambiguousCompositePerson = suspiciousCompositeGroupIds.get(compact(nextCredit.personId));
-    if (ambiguousCompositePerson) {
-      nextCredit = {
-        ...nextCredit,
-        role: primaryRoleFromPerson(ambiguousCompositePerson),
-        personId: "",
-        displayName: compact(nextCredit.displayName) || canonicalCreditDisplayName(ambiguousCompositePerson),
-      };
+    const redirectedThinPerson = redirectedThinPersonIds.get(compact(nextCredit.personId));
+    if (redirectedThinPerson) {
+      if (creditRoleCompatibleWithPerson(nextCredit.role, redirectedThinPerson)) {
+        nextCredit = {
+          ...nextCredit,
+          personId: redirectedThinPerson.id,
+          displayName: canonicalCreditDisplayName(redirectedThinPerson),
+        };
+      } else if (
+        (nextCredit.role === "soloist" || nextCredit.role === "instrumentalist" || nextCredit.role === "singer") &&
+        personIsConductorOnly(redirectedThinPerson) &&
+        (recording.credits || []).some(
+          (credit) =>
+            credit !== currentCredit &&
+            (credit.role === "soloist" || credit.role === "instrumentalist" || credit.role === "singer") &&
+            !isPlaceholderValue(credit.displayName),
+        )
+      ) {
+        continue;
+      }
     }
 
     if (!isPlaceholderValue(nextCredit.displayName)) {
@@ -653,6 +811,9 @@ export function stripUnusedPlaceholderPeople(library: LibraryData) {
         return false;
       }
       if (isSuspiciousCompositeEnsemblePerson(person)) {
+        return false;
+      }
+      if (findCanonicalReplacementForThinPerson(library, person)) {
         return false;
       }
       if (findCanonicalReplacementForGroupPerson(library, person)) {
