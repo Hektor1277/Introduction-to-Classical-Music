@@ -48,6 +48,88 @@ const library = validateLibrary({
 });
 
 describe("automation jobs", () => {
+  it("marks recording jobs as needing attention when provider metadata conflicts with the known performance year", async () => {
+    const recordingLibrary = validateLibrary({
+      ...library,
+      workGroups: [
+        {
+          id: "group-beethoven-symphony",
+          composerId: "beethoven",
+          title: "交响曲",
+          slug: "symphony",
+          path: ["交响曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "work-beethoven-7",
+          composerId: "beethoven",
+          groupIds: ["group-beethoven-symphony"],
+          slug: "beethoven-7",
+          title: "第七交响曲",
+          titleLatin: "Symphony No. 7",
+          aliases: [],
+          catalogue: "Op. 92",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [], collectionUrl: "" },
+          sortKey: "0010",
+          updatedAt: "2026-03-25T00:00:00.000Z",
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-bohm-1976",
+          workId: "work-beethoven-7",
+          slug: "bohm-1976",
+          title: "伯姆 - 维也纳爱乐乐团 - 1976",
+          sortKey: "0010",
+          isPrimaryRecommendation: true,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [],
+          links: [],
+          notes: "",
+          performanceDateText: "1976",
+          venueText: "Musikverein",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [], collectionUrl: "" },
+        },
+      ],
+    });
+
+    const manager = createAutomationJobManager();
+    const job = manager.createJob({
+      library: recordingLibrary,
+      request: { categories: ["recording"], recordingIds: ["recording-bohm-1976"] },
+      runChecksImpl: async () =>
+        createAutomationRun(recordingLibrary, {
+          categories: ["recording"],
+          proposals: [
+            {
+              id: "recording-bohm-1976-release-date",
+              entityType: "recording",
+              entityId: "recording-bohm-1976",
+              summary: "补充版本检索结果：伯姆 - 维也纳爱乐乐团 - 1976",
+              risk: "medium",
+              sources: ["https://example.com/release"],
+              fields: [{ path: "releaseDate", before: "", after: "1975" }],
+              warnings: [],
+            },
+          ],
+        }),
+    });
+
+    await manager.waitForJob(job.id);
+    const current = manager.getJob(job.id);
+
+    expect(current?.items[0]?.status).toBe("needs-attention");
+    expect(current?.items[0]?.reviewIssues).toEqual(expect.arrayContaining(["发行日期早于当前演出日期，疑似提取错误。"]));
+    expect(current?.errors[0]?.code).toBe("needs-attention");
+  });
+
   it("creates an async job with progress and structured failures", async () => {
     const manager = createAutomationJobManager();
     const job = manager.createJob({

@@ -1,6 +1,7 @@
 import { createAutomationRun, normalizeAutomationProposals, type AutomationCheckCategory, type AutomationRun } from "./automation.js";
 import {
   reviewAutomationProposalQuality,
+  reviewRecordingAutomationProposalQuality,
   reviewWorkAutomationProposalQuality,
   runAutomationChecks,
   type AutomationCheckRequest,
@@ -436,6 +437,13 @@ function findWorkForItem(library: LibraryData, item: AutomationJobSelectionItem)
   return library.works.find((work) => work.id === item.entityId);
 }
 
+function findRecordingForItem(library: LibraryData, item: AutomationJobSelectionItem) {
+  if (item.category !== "recording") {
+    return undefined;
+  }
+  return library.recordings.find((recording) => recording.id === item.entityId);
+}
+
 export function createAutomationJobManager() {
   const jobs = new Map<string, AutomationJobRecord>();
 
@@ -546,12 +554,13 @@ export function createAutomationJobManager() {
     item.runId = run.id;
     const proposals = run.proposals.filter((proposal) => proposal.entityId === item.entityId);
 
-    if (isNamedEntityCategory(item.category) || item.category === "work") {
+    if (isNamedEntityCategory(item.category) || item.category === "work" || item.category === "recording") {
       let review:
         | ReturnType<typeof reviewAutomationProposalQuality>
-        | ReturnType<typeof reviewWorkAutomationProposalQuality>;
+        | ReturnType<typeof reviewWorkAutomationProposalQuality>
+        | ReturnType<typeof reviewRecordingAutomationProposalQuality>;
       let reviewTitle = item.label;
-      let reviewEntityType: "composer" | "person" | "work" = "work";
+      let reviewEntityType: "composer" | "person" | "work" | "recording" = "work";
       let reviewRoles: string[] = [];
       let currentEntity: Record<string, unknown>;
 
@@ -565,7 +574,7 @@ export function createAutomationJobManager() {
         reviewEntityType = item.category === "composer" ? "composer" : "person";
         reviewRoles = "roles" in entity ? [...entity.roles] : [];
         currentEntity = entity as unknown as Record<string, unknown>;
-      } else {
+      } else if (item.category === "work") {
         const work = findWorkForItem(input.library, item);
         if (!work) {
           throw new Error(`闁剧虎浜濇竟姗€宕氶弶璺ㄧ濠㈣泛绉甸悡鈩冩媴濠婂啯鎯傞柨?{item.entityId}`);
@@ -575,9 +584,18 @@ export function createAutomationJobManager() {
         reviewTitle = [composer?.nameLatin || composer?.name || "", work.title].filter(Boolean).join(" / ");
         reviewEntityType = "work";
         currentEntity = work as unknown as Record<string, unknown>;
+      } else {
+        const recording = findRecordingForItem(input.library, item);
+        if (!recording) {
+          throw new Error(`未找到待审查版本：${item.entityId}`);
+        }
+        review = reviewRecordingAutomationProposalQuality(recording, proposals);
+        reviewTitle = recording.title;
+        reviewEntityType = "recording";
+        currentEntity = recording as unknown as Record<string, unknown>;
       }
 
-      if (proposals.length > 0 && input.llmConfig) {
+      if (proposals.length > 0 && input.llmConfig && reviewEntityType !== "recording") {
         const llmReview = await reviewAutomationProposalWithLlm({
           config: input.llmConfig,
           entityType: reviewEntityType,

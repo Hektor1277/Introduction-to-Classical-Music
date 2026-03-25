@@ -1250,6 +1250,55 @@ export function reviewWorkAutomationProposalQuality(work: Work, composer: Compos
   };
 }
 
+function extractYearLikeNumber(value: string) {
+  const matched = String(value || "").match(/\b(1[6-9]\d{2}|20\d{2})\b/);
+  return matched ? Number(matched[1]) : undefined;
+}
+
+const recordingMetadataPaths = new Set(["performanceDateText", "venueText", "albumTitle", "label", "releaseDate", "notes"]);
+
+export function reviewRecordingAutomationProposalQuality(recording: Recording, proposals: AutomationProposal[]) {
+  const mergedPreview = applyFieldPreview(recording as Record<string, unknown>, proposals.flatMap((proposal) => proposal.fields || [])) as Recording;
+  const issues: string[] = [];
+  const imageCandidates = proposals.flatMap((proposal) => proposal.imageCandidates || []);
+  const hasChanges = proposals.some(
+    (proposal) =>
+      (proposal.fields?.length ?? 0) > 0 ||
+      (proposal.imageCandidates?.length ?? 0) > 0 ||
+      (proposal.linkCandidates?.length ?? 0) > 0 ||
+      (proposal.mergeCandidates?.length ?? 0) > 0,
+  );
+
+  const performanceYear = extractYearLikeNumber(mergedPreview.performanceDateText || recording.performanceDateText || "");
+  const releaseYear = extractYearLikeNumber(mergedPreview.releaseDate || "");
+  if (performanceYear && releaseYear && releaseYear < performanceYear) {
+    issues.push("发行日期早于当前演出日期，疑似提取错误。");
+  }
+
+  const hasMetadataWarnings = proposals.some((proposal) => {
+    if ((proposal.warnings?.length ?? 0) === 0) {
+      return false;
+    }
+    return (proposal.fields || []).some((field) => recordingMetadataPaths.has(field.path));
+  });
+  if (hasMetadataWarnings) {
+    issues.push("版本提案仍带有来源冲突警告，应用前需要人工复核。");
+  }
+
+  if (imageCandidates.some((candidate) => isSuspiciousImageCandidate(candidate))) {
+    issues.push("版本图片候选疑似为站点 logo 或占位图。");
+  }
+
+  const status = hasChanges ? (issues.length === 0 ? "ok" : "needs-attention") : issues.length === 0 ? "already-complete" : "needs-attention";
+  return {
+    ok: status === "ok",
+    status,
+    issues,
+    preview: mergedPreview,
+    hasChanges,
+  };
+}
+
 async function inspectNamedEntity(
   entity: Composer | Person,
   entityType: "composer" | "person",
