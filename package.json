@@ -12,6 +12,7 @@
     "build:indexes": "npm run runtime:build && node output/runtime/scripts/build-indexes.js",
     "import:legacy": "npm run runtime:build && node output/runtime/scripts/import-legacy.js",
     "recording:legacy-audit": "npm run runtime:build && node output/runtime/scripts/audit-recording-legacy-alignment.js",
+    "recording:live-audit": "npm run runtime:build && node scripts/audit-recording-retrieval-live.mjs",
     "recording:live-verify": "npm run runtime:build && node scripts/verify-recording-retrieval-live-integration.mjs",
     "reference:audit": "npm run runtime:build && node output/runtime/scripts/audit-reference-registry.js",
     "reference:query": "npm run runtime:build && node output/runtime/scripts/query-reference-registry.js",
