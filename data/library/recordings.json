@@ -2423,7 +2423,7 @@
     "id": "recording-a小调钢琴协奏曲-里赫特-and-费伦奇克1954",
     "workId": "work-罗伯特舒曼-钢琴协奏曲-a小调钢琴协奏曲",
     "slug": "里赫特-and-费伦奇克1954",
-    "title": "亚诺什·费伦奇克 - 里赫特 - 费伦奇克 - 匈牙利国家爱乐乐团 - 布达佩斯音乐学院",
+    "title": "费伦奇克 - 里赫特 - 费伦奇克 - 匈牙利国家爱乐乐团 - 布达佩斯音乐学院",
     "workTypeHint": "concerto",
     "sortKey": "0130",
     "isPrimaryRecommendation": false,
@@ -2438,8 +2438,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-亚诺什费伦奇克",
-        "displayName": "亚诺什·费伦奇克",
+        "personId": "person-费伦奇克亚诺什",
+        "displayName": "费伦奇克·亚诺什",
         "label": "指挥"
       },
       {
@@ -2922,7 +2922,7 @@
     "id": "recording-d小调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1956",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "奥伊斯特拉赫-and-埃尔林1956",
-    "title": "埃尔林 - 奥伊斯特拉赫 - 斯德哥尔摩节日管弦乐团 - 1956*",
+    "title": "西克斯滕·埃尔林 - 奥伊斯特拉赫 - 斯德哥尔摩节日管弦乐团 - 1956*",
     "workTypeHint": "concerto",
     "sortKey": "0070",
     "isPrimaryRecommendation": false,
@@ -2937,8 +2937,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
+        "personId": "person-埃弗特西克斯滕埃林",
+        "displayName": "埃弗特·西克斯滕·埃林",
         "label": "指挥"
       },
       {
@@ -2978,7 +2978,7 @@
     "id": "recording-d小调小提琴协奏曲-威克斯-and-埃尔林1952",
     "workId": "work-让西贝柳斯-小提琴协奏曲-d小调小提琴协奏曲",
     "slug": "威克斯-and-埃尔林1952",
-    "title": "埃尔林 - 威克斯 - 皇家斯德哥尔摩爱乐乐团 - 1952",
+    "title": "西克斯滕·埃尔林 - 威克斯 - 皇家斯德哥尔摩爱乐乐团 - 1952",
     "workTypeHint": "concerto",
     "sortKey": "0080",
     "isPrimaryRecommendation": false,
@@ -2993,8 +2993,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
+        "personId": "person-埃弗特西克斯滕埃林",
+        "displayName": "埃弗特·西克斯滕·埃林",
         "label": "指挥"
       },
       {
@@ -4233,7 +4233,7 @@
     "id": "recording-第三交响曲英雄-克莱茨基-1962",
     "workId": "work-贝多芬-交响曲-第三交响曲英雄",
     "slug": "克莱茨基-1962",
-    "title": "克莱茨基 - 法国国家管弦乐团 - 1962",
+    "title": "克列茨基 - 法国国家管弦乐团 - 1962",
     "workTypeHint": "orchestral",
     "sortKey": "0020",
     "isPrimaryRecommendation": false,
@@ -4258,8 +4258,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-克莱茨基",
-        "displayName": "克莱茨基",
+        "personId": "person-保罗克列茨基",
+        "displayName": "保罗·克列茨基",
         "label": "文件名推断"
       }
     ],
@@ -4463,8 +4463,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-萨瓦尔",
-        "displayName": "萨瓦尔",
+        "personId": "person-约第沙瓦尔",
+        "displayName": "约第·沙瓦尔",
         "label": "文件名推断"
       }
     ],
@@ -8189,7 +8189,7 @@
     "id": "recording-d大调小提琴协奏曲-奥伊斯特拉赫-and-埃尔林1954",
     "workId": "work-贝多芬-小提琴协奏曲-d大调小提琴协奏曲",
     "slug": "奥伊斯特拉赫-and-埃尔林1954",
-    "title": "埃尔林 - 奥伊斯特拉赫 - 斯德哥尔摩节日管弦乐团 - 10th and 11th June of 1954, at Konserthus, Stockholm",
+    "title": "西克斯滕·埃尔林 - 奥伊斯特拉赫 - 斯德哥尔摩节日管弦乐团 - 10th and 11th June of 1954, at Konserthus, Stockholm",
     "workTypeHint": "concerto",
     "sortKey": "0050",
     "isPrimaryRecommendation": false,
@@ -8204,8 +8204,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-西克斯滕埃尔林",
-        "displayName": "西克斯滕·埃尔林",
+        "personId": "person-埃弗特西克斯滕埃林",
+        "displayName": "埃弗特·西克斯滕·埃林",
         "label": "指挥"
       },
       {
@@ -10319,7 +10319,7 @@
     "id": "recording-第五交响曲-腾斯泰特1980",
     "workId": "work-马勒-交响曲-第五交响曲",
     "slug": "腾斯泰特1980",
-    "title": "腾斯泰特 - 纽约爱乐乐团 - June 18th 1980",
+    "title": "滕施泰特 - 纽约爱乐乐团 - June 18th 1980",
     "workTypeHint": "orchestral",
     "sortKey": "0100",
     "isPrimaryRecommendation": false,
@@ -10334,8 +10334,8 @@
       },
       {
         "role": "conductor",
-        "personId": "person-腾斯泰特",
-        "displayName": "腾斯泰特",
+        "personId": "person-克劳斯滕施泰特",
+        "displayName": "克劳斯·滕施泰特",
         "label": "文件名推断"
       }
     ],

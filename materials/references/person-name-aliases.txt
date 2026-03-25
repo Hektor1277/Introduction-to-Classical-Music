@@ -22,7 +22,7 @@
 阿本-1953-华沙
 阿本德罗特 = Hermann Abendroth
 阿尔图罗·托斯卡尼尼 = 托斯卡尼尼 = Arturo Toscanini
-埃弗特·西克斯滕·埃林 = Evert Sixten Ehrling
+埃弗特·西克斯滕·埃林 = 埃尔林 = 西克斯滕·埃尔林 = Evert Sixten Ehrling
 埃里希·克莱伯 = 老克莱伯 = 老克莱伯1949-1955 = Erich Kleiber
 埃里希·莱因斯多夫 = 莱因斯多夫 = Erich Leinsdorf
 爱德华·范·贝奴姆 = 贝奴姆 = Eduard van Beinum
@@ -32,7 +32,7 @@
 奥托·阿克曼 = Otto Ackermann
 奥托·克伦佩勒 = 克伦佩勒 = Otto Klemperer
 保罗·费利克斯·冯·魏因加特纳 = 魏因加特纳 = Paul Felix von Weingartner
-保罗·克列茨基 = 克列茨基 = Paul Kletzki = Kletzki
+保罗·克列茨基 = 克莱茨基 = 克列茨基 = Paul Kletzki = Kletzki
 彼得·厄特沃什 = 厄特沃什 = Peter Eötvös
 伯纳德·约翰·赫尔曼·海廷克 = 伯纳德·海廷克 = 海廷克 = 海廷克BPO = Bernard Johan Herman Haitink
 布鲁诺·瓦尔特 = 瓦尔特 = Bruno Walter
@@ -40,7 +40,7 @@
 丹尼尔·加蒂 = 加蒂 = Daniele Gatti
 德米特里·米特罗普洛斯 = 米特罗普洛斯 = Dimitri Mitropoulos
 费伦茨·弗里乔伊 = Ferenc·Fricsay
-费伦奇克·亚诺什 = Ferencsik János
+费伦奇克·亚诺什 = 费伦奇克 = 亚诺什·费伦奇克 = Ferencsik János
 弗朗茨·威尔瑟-莫斯特 = 弗朗茨·韦尔瑟-莫斯特 = 莫斯特 = Franz Welser-Möst
 弗里茨·莱纳 = 莱纳 = Fritz Reiner
 弗里乔伊
@@ -63,9 +63,8 @@
 卡洛斯·克莱伯 = 小克莱伯 = Carlos Kleiber
 康科迪・杰拉伯特 = 杰拉伯特
 科林·戴维斯 = 戴维斯 = Colin Davis
-克莱茨基
 克劳迪奥·阿巴多 = 阿巴多 = Claudio Abbado
-克劳斯·滕施泰特 = 滕施泰特 = Klaus Tennstedt
+克劳斯·滕施泰特 = 腾斯泰特 = 滕施泰特 = Klaus Tennstedt
 克里斯托夫·佩里克 Christof Prick
 库尔特·马苏尔 = 马苏尔 = Kurt Masur
 库尔特·桑德林 = Kurt Sanderling
@@ -88,24 +87,20 @@
 乔治-路德维希·约胡姆 = Georg-Ludwig Jochum
 乔治·赛尔 = 塞尔 = 赛尔 = George Szell
 乔治·施内沃伊特 = 施内沃伊特 = Georg Schnéevoigt
-萨瓦尔
-腾斯泰特
 托马斯·比彻姆 = 比彻姆 = Thomas Beecham
 瓦茨拉夫·纽曼 = 纽曼 = Vaclav Neumann
 威尔海姆·富特文格勒 = 富特 = 富特文格勒 = Wilhelm Furtwängler
 威廉·门格尔贝格 = 门格尔贝格 = Willem Mengelberg
 沃尔夫冈·萨瓦利施 = Wolfgang Sawallisch
 西奥多·库伦齐斯 = 库伦齐斯 = Teodor Currentzis
-西克斯滕·埃尔林 = 埃尔林 = Sixten Ehrling
 西蒙·拉特尔 = 拉特 = Simon Rattle
 小泽征尔
 雅沙·霍伦斯坦 = 霍伦斯坦 = Jascha Horenstein
 亚历山大·鲁丁 = Александр Израилевич Рудин, EN:alexander rudin
-亚诺什·费伦奇克
 叶夫根尼·亚历山德罗维奇·穆拉文斯基 = 穆拉文斯基 = 叶夫根尼·穆拉文斯基 = Евгений Александрович Мравинский | Evgeni·Mravinsky
 伊恩・怀特 Ian Whyte
 伊利亚胡·殷巴尔 = 殷巴尔 = Eliahu Inbal
-约第·沙瓦尔 = Jordi Savall
+约第·沙瓦尔 = 萨瓦尔 = Jordi Savall
 约翰·艾略特·加德纳 = 加德纳 = John Eliot Gardiner
 约翰·巴比罗利 = 巴比罗利 = John Barbirolli
 约翰·斯托加德 = John Storgårds
