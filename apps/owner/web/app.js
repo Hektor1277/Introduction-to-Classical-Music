@@ -3273,6 +3273,44 @@ const buildInlineOutcomeHtml = (item, proposals) => {
     </section>`;
 };
 
+const buildRecordingAuditHtml = (job, selectedItem) => {
+  const audit = job?.recordingAudit;
+  if (!audit?.summary) {
+    return "";
+  }
+  const selectedAudit = audit.results?.find((result) => result.recordingId === selectedItem?.entityId) || null;
+  const groupLabelMap = Object.fromEntries((audit.summary.groups || []).map((group) => [group.key, group.label]));
+  const attentionGroups = (audit.summary.groups || []).filter((group) => (group.reviewStatusCounts?.["needs-attention"] || 0) > 0);
+  const summaryLines = [
+    `已纳入在线审计的录音条目：${audit.summary.totalTargets}`,
+    `待关注样本：${audit.summary.reviewStatusCounts?.["needs-attention"] || 0}`,
+    `高风险字段组：${
+      attentionGroups.length
+        ? attentionGroups.map((group) => `${group.label} ${group.reviewStatusCounts?.["needs-attention"] || 0}/${group.sampleCount}`).join("；")
+        : "无"
+    }`,
+  ];
+  const selectedLines = selectedAudit
+    ? [
+        `当前条目 provider 状态：${selectedAudit.providerStatus}`,
+        `命中字段组：${selectedAudit.groupKeys.map((key) => groupLabelMap[key] || key).join(" / ") || "无"}`,
+        ...selectedAudit.warnings.map((warning) => `警告：${warning}`),
+        ...selectedAudit.issues.map((issue) => `问题：${issue}`),
+      ]
+    : [];
+
+  return `
+    <section class="owner-job-detail__section">
+      <h4>录音在线审计</h4>
+      <ul>${summaryLines.map((line) => `<li>${escapeHtml(clipText(line, 220))}</li>`).join("")}</ul>
+      ${
+        selectedLines.length
+          ? `<ul>${selectedLines.map((line) => `<li>${escapeHtml(clipText(line, 220))}</li>`).join("")}</ul>`
+          : ""
+      }
+    </section>`;
+};
+
 const renderJob = (job) => {
   state.activeJob = job || null;
   automationJobStatus.textContent = describeJobStatus(job);
@@ -3340,6 +3378,7 @@ const renderJob = (job) => {
         <span class="owner-pill owner-pill--job owner-pill--${escapeHtml(selectedItem.status)}">${escapeHtml(describeJobItemStatus(selectedItem))}</span>
       </div>
       ${buildInlineOutcomeHtml(selectedItem, [])}
+      ${buildRecordingAuditHtml(job, selectedItem)}
       ${
         selectedItem.reviewIssues?.length
           ? `<section class="owner-job-detail__section">

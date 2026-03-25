@@ -130,6 +130,102 @@ describe("automation jobs", () => {
     expect(current?.errors[0]?.code).toBe("needs-attention");
   });
 
+  it("stores recording live-audit summaries on completed recording jobs", async () => {
+    const recordingLibrary = validateLibrary({
+      ...library,
+      workGroups: [
+        {
+          id: "group-beethoven-sonata",
+          composerId: "beethoven",
+          title: "奏鸣曲",
+          slug: "sonata",
+          path: ["奏鸣曲"],
+          sortKey: "0010",
+        },
+      ],
+      works: [
+        {
+          id: "work-beethoven-23",
+          composerId: "beethoven",
+          groupIds: ["group-beethoven-sonata"],
+          slug: "beethoven-23",
+          title: "第二十三号奏鸣曲“热情”",
+          titleLatin: "Piano Sonata No. 23",
+          aliases: [],
+          catalogue: "Op. 57",
+          summary: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [], collectionUrl: "" },
+          sortKey: "0010",
+          updatedAt: "2026-03-25T00:00:00.000Z",
+        },
+      ],
+      recordings: [
+        {
+          id: "recording-arrau-1970",
+          workId: "work-beethoven-23",
+          slug: "arrau-1970",
+          title: "阿劳 - Beethovenfest Bonn 1970",
+          sortKey: "0010",
+          isPrimaryRecommendation: true,
+          updatedAt: "2026-03-25T00:00:00.000Z",
+          images: [],
+          credits: [],
+          links: [],
+          notes: "",
+          performanceDateText: "1970",
+          venueText: "Bonn",
+          albumTitle: "",
+          label: "",
+          releaseDate: "",
+          infoPanel: { text: "", articleId: "", collectionLinks: [], collectionUrl: "" },
+        },
+      ],
+    });
+
+    const manager = createAutomationJobManager();
+    const job = manager.createJob({
+      library: recordingLibrary,
+      request: { categories: ["recording"], recordingIds: ["recording-arrau-1970"] },
+      runChecksImpl: async () =>
+        createAutomationRun(recordingLibrary, {
+          categories: ["recording"],
+          provider: {
+            providerName: "recording-retrieval-service",
+            requestId: "req-1",
+            status: "partial",
+            phase: "completed",
+            logs: [],
+            error: "",
+          },
+          proposals: [
+            {
+              id: "recording-arrau-1970-metadata",
+              entityType: "recording",
+              entityId: "recording-arrau-1970",
+              summary: "补充版本检索结果：阿劳 - Beethovenfest Bonn 1970",
+              risk: "medium",
+              sources: ["https://example.com/album"],
+              fields: [
+                { path: "albumTitle", before: "", after: "Beethoven Recital" },
+                { path: "label", before: "", after: "Philips" },
+              ],
+              warnings: ["venueText 未达到最终采纳阈值。"],
+            },
+          ],
+        }),
+    });
+
+    await manager.waitForJob(job.id);
+    const current = manager.getJob(job.id);
+
+    expect(current?.recordingAudit?.summary.totalTargets).toBe(1);
+    expect(current?.recordingAudit?.summary.reviewStatusCounts["needs-attention"]).toBe(1);
+    expect(current?.recordingAudit?.results[0]?.groupKeys).toEqual(
+      expect.arrayContaining(["missingAlbumTitle", "missingLabel", "missingReleaseDate", "missingImages"]),
+    );
+    expect(current?.errors.some((error) => error.entityType === "recording" && error.message.includes("录音在线审计"))).toBe(true);
+  });
+
   it("creates an async job with progress and structured failures", async () => {
     const manager = createAutomationJobManager();
     const job = manager.createJob({

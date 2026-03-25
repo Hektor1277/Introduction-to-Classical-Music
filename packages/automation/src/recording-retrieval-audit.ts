@@ -77,6 +77,21 @@ const groupDefinitions: Array<{
   { key: "missingImages", label: "缺图片", predicate: (recording) => (recording.images?.length || 0) === 0 },
 ];
 
+export function getRecordingRetrievalAuditGroupKeys(recording: Recording): RecordingRetrievalAuditGroupKey[] {
+  return groupDefinitions.filter((definition) => definition.predicate(recording)).map((definition) => definition.key);
+}
+
+export function buildRecordingRetrievalAuditTarget(
+  recording: Recording,
+  groupKeys: RecordingRetrievalAuditGroupKey[] = getRecordingRetrievalAuditGroupKeys(recording),
+): RecordingRetrievalAuditTarget {
+  return {
+    recordingId: recording.id,
+    title: recording.title,
+    groupKeys,
+  };
+}
+
 function incrementCounter<T extends string>(counter: Partial<Record<T, number>>, key: T) {
   counter[key] = (counter[key] || 0) + 1;
 }
@@ -118,11 +133,7 @@ export function buildRecordingRetrievalAuditPlan(library: LibraryData, options: 
       if (existing) {
         existing.groupKeys.push(definition.key);
       } else {
-        targetMap.set(recording.id, {
-          recordingId: recording.id,
-          title: recording.title,
-          groupKeys: [definition.key],
-        });
+        targetMap.set(recording.id, buildRecordingRetrievalAuditTarget(recording, [definition.key]));
       }
       assignmentCounts.set(recording.id, (assignmentCounts.get(recording.id) ?? 0) + 1);
     }

@@ -10,6 +10,13 @@ import {
 import { getDisplayData, getWebsiteDisplay } from "../../shared/src/display.js";
 import { reviewAutomationProposalWithLlm, type LlmConfig } from "./llm.js";
 import { mergeProposalReviewResults } from "./proposal-review.js";
+import {
+  buildRecordingRetrievalAuditResult,
+  buildRecordingRetrievalAuditTarget,
+  summarizeRecordingRetrievalAudit,
+  type RecordingRetrievalAuditResult,
+  type RecordingRetrievalAuditSummary,
+} from "./recording-retrieval-audit.js";
 import type { Composer, LibraryData, Person, Work } from "../../shared/src/schema.js";
 
 export type AutomationJobStatus = "queued" | "preparing" | "running" | "completed" | "cancelled";
@@ -77,6 +84,12 @@ export type AutomationJobItemRecord = AutomationJobSelectionItem & {
   errors: string[];
   runId?: string;
   reviewIssues?: string[];
+  recordingAuditResult?: RecordingRetrievalAuditResult;
+};
+
+export type AutomationJobRecordingAudit = {
+  results: RecordingRetrievalAuditResult[];
+  summary: RecordingRetrievalAuditSummary;
 };
 
 export type AutomationJobRecord = {
@@ -92,6 +105,7 @@ export type AutomationJobRecord = {
   errors: AutomationJobError[];
   selection: AutomationSelectionPreview;
   run?: AutomationRun;
+  recordingAudit?: AutomationJobRecordingAudit;
   createdAt: string;
   completedAt?: string;
 };
@@ -136,6 +150,26 @@ function groupByCategory(items: AutomationJobSelectionItem[]) {
 
 function uniqueStrings(values: Array<string | undefined | null>) {
   return [...new Set(values.map((value) => String(value ?? "").trim()).filter(Boolean))];
+}
+
+function buildRecordingAuditGateMessage(summary: RecordingRetrievalAuditSummary) {
+  const needsAttentionCount = summary.reviewStatusCounts["needs-attention"] || 0;
+  const topGroups = summary.groups
+    .filter((group) => (group.reviewStatusCounts["needs-attention"] || 0) > 0)
+    .slice(0, 3)
+    .map((group) => `${group.label} ${group.reviewStatusCounts["needs-attention"]}/${group.sampleCount}`)
+    .join("；");
+  const topWarnings = summary.groups
+    .flatMap((group) => group.topWarnings || [])
+    .filter(Boolean)
+    .slice(0, 3)
+    .join("；");
+  const fragments = [
+    `录音在线审计：${needsAttentionCount}/${summary.totalTargets} 条需要关注`,
+    topGroups ? `高风险字段组：${topGroups}` : "",
+    topWarnings ? `高频警告：${topWarnings}` : "",
+  ].filter(Boolean);
+  return fragments.join("；");
 }
 
 function mergeRunProposals(runs: AutomationRun[]) {
@@ -612,6 +646,22 @@ export function createAutomationJobManager() {
       }
 
       item.reviewIssues = review.issues;
+      if (item.category === "recording") {
+        const recording = findRecordingForItem(input.library, item);
+        if (recording && run.provider) {
+          item.recordingAuditResult = buildRecordingRetrievalAuditResult({
+            target: buildRecordingRetrievalAuditTarget(recording),
+            recording,
+            providerStatus: run.provider.status,
+            providerError: run.provider.error,
+            proposals,
+            review: {
+              status: review.status as "ok" | "needs-attention" | "already-complete",
+              issues: review.issues,
+            },
+          });
+        }
+      }
 
       if (review.status === "needs-attention") {
         const reviewMessage =
@@ -714,6 +764,30 @@ export function createAutomationJobManager() {
     });
 
     job.run = mergedRun;
+    const recordingAuditResults = job.items
+      .map((item) => item.recordingAuditResult)
+      .filter((result): result is RecordingRetrievalAuditResult => Boolean(result));
+    if (recordingAuditResults.length > 0) {
+      const summary = summarizeRecordingRetrievalAudit(recordingAuditResults);
+      job.recordingAudit = {
+        results: recordingAuditResults,
+        summary,
+      };
+      const gateMessage = buildRecordingAuditGateMessage(summary);
+      appendEvent(jobId, {
+        timestamp: nowIso(),
+        phase: "review",
+        message: gateMessage,
+        entityType: "recording",
+      });
+      if ((summary.reviewStatusCounts["needs-attention"] || 0) > 0) {
+        job.errors.push({
+          code: "needs-attention",
+          message: gateMessage,
+          entityType: "recording",
+        });
+      }
+    }
     job.currentItem = undefined;
     job.currentItemIds = [];
     job.selectedItemId =
