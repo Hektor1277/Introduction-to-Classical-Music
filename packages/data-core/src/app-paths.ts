@@ -46,7 +46,9 @@ function resolveRepoRoot() {
 }
 
 export function resolveDevelopmentAppDataRoot(repoRoot = resolveRepoRoot()) {
-  return path.join(path.resolve(repoRoot), "output", "desktop-dev-appdata");
+  const rawRoot = String(repoRoot);
+  const pathApi = /^[A-Za-z]:[\\/]/.test(rawRoot) ? path.win32 : path;
+  return pathApi.join(pathApi.resolve(rawRoot), "output", "desktop-dev-appdata");
 }
 
 function resolveDefaultAppDataRoot() {

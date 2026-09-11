@@ -21,7 +21,9 @@ describe("app runtime path resolution", () => {
   it("keeps development app data inside the repository output directory", async () => {
     const { resolveDevelopmentAppDataRoot } = await import("../../packages/data-core/src/app-paths.ts");
 
-    expect(resolveDevelopmentAppDataRoot("E:/workspace/icm")).toBe(path.join("E:/workspace/icm", "output", "desktop-dev-appdata"));
+    expect(resolveDevelopmentAppDataRoot("E:/workspace/icm")).toBe(
+      path.win32.join(path.win32.resolve("E:/workspace/icm"), "output", "desktop-dev-appdata"),
+    );
   });
 
   it("resolves bundle-aware library and app-data paths from environment variables", async () => {
