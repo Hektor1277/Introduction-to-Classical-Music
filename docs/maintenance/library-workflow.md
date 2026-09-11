@@ -2,7 +2,7 @@
 
 ## 角色
 
-- `E:\Workspace\codex\Salon_library` 是私有官方源资料库。
+- `<workspace-root>\Salon_library` 是私有官方源资料库。
 - 安装版只操作 `buquanshu` AppData 中的 `official-working` 工作副本。
 - 本仓库的 `data/library` 永远是空发行种子，不得写入真实条目。
 

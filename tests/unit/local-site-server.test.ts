@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import http from "node:http";
+import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 
@@ -12,6 +13,18 @@ async function canBindLoopbackPort() {
     probe.once("error", () => resolve(false));
     probe.listen(0, "127.0.0.1", () => {
       probe.close(() => resolve(true));
+    });
+  });
+}
+
+async function getFreeLoopbackPort() {
+  const probe = net.createServer();
+  return await new Promise<number>((resolve, reject) => {
+    probe.once("error", reject);
+    probe.listen(0, "127.0.0.1", () => {
+      const address = probe.address();
+      const port = typeof address === "object" && address ? address.port : 0;
+      probe.close((error) => (error ? reject(error) : resolve(port)));
     });
   });
 }
@@ -39,7 +52,7 @@ describe("local site server", () => {
     await writeFile(path.join(siteRoot, "index.html"), "<!doctype html><title>Library</title>", "utf8");
 
     const { createLocalSiteServer } = await import("../../packages/data-core/src/local-site-server.ts");
-    const server = createLocalSiteServer({ preferredPort: 4591 });
+    const server = createLocalSiteServer({ preferredPort: await getFreeLoopbackPort() });
     const started = await server.ensureStarted(siteRoot);
     const response = await fetch(started.url);
     const html = await response.text();
@@ -66,7 +79,7 @@ describe("local site server", () => {
     const openedPaths: string[] = [];
     const { createLocalSiteServer } = await import("../../packages/data-core/src/local-site-server.ts");
     const server = createLocalSiteServer({
-      preferredPort: 4592,
+      preferredPort: await getFreeLoopbackPort(),
       onOpenLocalPath(targetPath) {
         openedPaths.push(targetPath);
       },

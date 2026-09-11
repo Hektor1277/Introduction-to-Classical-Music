@@ -11,13 +11,13 @@
 
 ## 已确认事实
 
-- 当前根目录已是公开仓库 `main=8479ddc`，工作树干净，见 [公开软件根目录](</E:/Workspace/codex/Introduction%20to%20Classical%20Music>)。
+- 当前根目录已是公开仓库 `main=8479ddc`，工作树干净，见公开软件仓库根目录。
 - 私有开发仓库与公开仓库没有共同提交祖先，且存在大量私有专属数据、历史资料和旧工具，不能整体合并。
-- 旧私有工作区已保存于 [私有归档目录](</E:/Workspace/codex/Introduction%20to%20Classical%20Music-private-archive-20260911>)；Git 历史另存为 `private-repository-all-refs.bundle`。
+- 旧私有工作区已保存于 `<private-archive-root>`；Git 历史另存为 `private-repository-all-refs.bundle`。
 - 远端 [私有开发仓库](https://github.com/Hektor1277/Introduction-to-Classical-Music-dev) 已设置为 Archived。
 - 远端 `Salon_library` 比本地完整副本更干净：本地多出测试专栏、7 个测试图片和旧构建文件。
-- 现有公开软件的 [默认库构建脚本](</E:/Workspace/codex/Introduction%20to%20Classical%20Music/scripts/build-library-site.ts:9>)和 [公开边界测试](</E:/Workspace/codex/Introduction%20to%20Classical%20Music/tests/unit/public-release.test.ts:56>)已经提供空库保护。
-- 站点仓库当前仍使用 `main` 归档和 `pages` 发布，现有流程见 [站点发布流程](</E:/Workspace/codex/introduction-to-classical-music-site-deploy/docs/release-workflow.md:3>)。
+- 现有公开软件的默认库构建脚本和公开边界测试已经提供空库保护。
+- 站点仓库当前仍使用 `main` 归档和 `pages` 发布，流程见 `<site-deploy-root>/docs/release-workflow.md`。
 
 ## 阶段一：整理软件仓库
 
@@ -63,7 +63,7 @@
 
 以远端 [Salon_library `main`](https://github.com/introduction-to-classical-music/Salon_library) 为唯一基线，在本机建立：
 
-`E:\Workspace\codex\Salon_library`
+`<workspace-root>\Salon_library`
 
 不把本地旧副本直接覆盖远端，也不把本地测试内容自动合并进去。
 
@@ -131,10 +131,10 @@ export-site-release.mjs
 
 ### 只保留两个运行角色
 
-1. **官方源库**：`E:\Workspace\codex\Salon_library`
+1. **官方源库**：`<workspace-root>\Salon_library`
 2. **干净默认库快照**：由公开仓库构建生成，存放在仓库外的版本化暂存目录，例如：
 
-   `E:\Workspace\codex\release-default-library\v0.1.1`
+   `<workspace-root>\release-default-library\v0.1.1`
 
 默认库快照带有独立 `release-manifest.json`，记录：
 

@@ -41,25 +41,17 @@ describe("dev process manager helpers", () => {
   it("skips occupied ports when choosing the next available dev port", async () => {
     const busyServer = http.createServer((_request, response) => response.end("ok"));
     servers.push(busyServer);
-    await new Promise<void>((resolve, reject) => {
+    const busyPort = await new Promise<number>((resolve, reject) => {
       busyServer.once("error", reject);
-      busyServer.listen(4551, "127.0.0.1", () => {
-        busyServer.off("error", reject);
-        resolve();
+      busyServer.listen(0, "127.0.0.1", () => {
+        const address = busyServer.address();
+        const port = typeof address === "object" && address ? address.port : 0;
+        busyServer.removeListener("error", reject);
+        resolve(port);
       });
-    }).catch((error) => {
-      const code = error instanceof Error && "code" in error ? String(error.code) : "";
-      if (code === "EPERM") {
-        return;
-      }
-      throw error;
     });
 
-    if (!busyServer.listening) {
-      return;
-    }
-
-    await expect(findAvailablePort(4551, { maxAttempts: 5 })).resolves.toBe(4552);
+    await expect(findAvailablePort(busyPort, { maxAttempts: 256 })).resolves.toBeGreaterThan(busyPort);
   });
 
   it("builds local loopback urls for launched servers", () => {

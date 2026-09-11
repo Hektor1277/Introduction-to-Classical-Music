@@ -82,7 +82,6 @@ async function runAstroBuild(options: { outputDir?: string; siteBase?: string } 
 }
 
 async function writeBuildMetadata(outputDir = getRuntimePaths().library.buildSiteDir) {
-  const runtimePaths = getRuntimePaths();
   const resolvedOutputDir = path.resolve(outputDir);
   const metadataPath = path.join(resolvedOutputDir, ".icm-build-meta.json");
   await mkdir(resolvedOutputDir, { recursive: true });
