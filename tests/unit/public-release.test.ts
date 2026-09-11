@@ -7,6 +7,11 @@ async function readJson<T>(filePath: string): Promise<T> {
 }
 
 describe("public release repository", () => {
+  it("passes the standalone public boundary audit", async () => {
+    const auditScript = await fs.readFile(path.resolve("scripts/audit-public-boundary.mjs"), "utf8");
+    expect(auditScript).toContain("public-data-not-empty");
+    expect(auditScript).toContain("private-path-tracked");
+  });
   it("exposes public packaging scripts and metadata", async () => {
     const packageJson = await readJson<Record<string, unknown>>("package.json");
     const scripts = (packageJson.scripts || {}) as Record<string, string>;

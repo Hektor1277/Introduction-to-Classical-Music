@@ -70,4 +70,35 @@ describe("library bundle scaffolding", () => {
     await expect(readFile(path.join(libraryRoot, "content", "site", "articles.json"), "utf8")).resolves.toBe("[]\n");
     await expect(readFile(path.join(libraryRoot, "assets", "managed", "cover.jpg"), "utf8")).resolves.toBe("asset");
   });
+
+  it("copies only source content for a source-only library export", async () => {
+    const tempRoot = await mkdtemp(path.join(os.tmpdir(), "classical-library-source-export-"));
+    tempDirs.push(tempRoot);
+    const sourceRoot = path.join(tempRoot, "source");
+    const targetRoot = path.join(tempRoot, "target");
+    await mkdir(path.join(sourceRoot, "content", "library"), { recursive: true });
+    await mkdir(path.join(sourceRoot, "content", "site"), { recursive: true });
+    await mkdir(path.join(sourceRoot, "assets", "managed"), { recursive: true });
+    await mkdir(path.join(sourceRoot, "build", "site"), { recursive: true });
+    await writeFile(path.join(sourceRoot, "library.manifest.json"), JSON.stringify({
+      schemaVersion: "library-bundle-v1",
+      libraryId: "source-only-1",
+      libraryName: "Source Only",
+      createdAt: "2026-04-17T00:00:00.000Z",
+      updatedAt: "2026-04-17T00:00:00.000Z",
+      appMinVersion: "0.1.0",
+    }, null, 2), "utf8");
+    await writeFile(path.join(sourceRoot, "content", "library", "composers.json"), "[]\n", "utf8");
+    await writeFile(path.join(sourceRoot, "content", "site", "articles.json"), "[]\n", "utf8");
+    await writeFile(path.join(sourceRoot, "assets", "managed", "cover.txt"), "asset", "utf8");
+    await writeFile(path.join(sourceRoot, "build", "site", "index.html"), "generated", "utf8");
+
+    const { copyLibrarySourceBundle } = await import("../../packages/data-core/src/library-bundle.ts");
+    await copyLibrarySourceBundle(sourceRoot, targetRoot);
+
+    await expect(readFile(path.join(targetRoot, "library.manifest.json"), "utf8")).resolves.toContain("source-only-1");
+    await expect(readFile(path.join(targetRoot, "content", "library", "composers.json"), "utf8")).resolves.toBe("[]\n");
+    await expect(readFile(path.join(targetRoot, "assets", "managed", "cover.txt"), "utf8")).resolves.toBe("asset");
+    await expect(stat(path.join(targetRoot, "build"))).rejects.toThrow();
+  });
 });

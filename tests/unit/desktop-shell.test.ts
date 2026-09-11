@@ -82,6 +82,8 @@ describe("desktop shell scaffolding", () => {
     expect(mainProcess).toContain("webSecurity: true");
     expect(mainProcess).toContain("ICM_DEFAULT_LIBRARY_DIR");
     expect(mainProcess).toContain('app.getPath("userData")');
+    expect(mainProcess).toContain('app.setPath("userData", resolveDevelopmentAppDataRoot(shellRootDir))');
+    expect(mainProcess).toContain("resolveDevelopmentAppDataRoot");
     expect(mainProcess).toContain('path.dirname(process.execPath)');
     expect(mainProcess).toContain('"library"');
     expect(mainProcess).toContain("migrateLegacyInstalledLibraryIfNeeded");

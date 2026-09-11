@@ -8,6 +8,8 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { resolveDevelopmentAppDataRoot } from "../../packages/data-core/src/app-paths.js";
+
 type ManagedService = {
   child: ChildProcess;
   port: number;
@@ -67,6 +69,10 @@ const retrievalPythonPath = path.resolve(
   "Scripts",
   "python.exe",
 );
+
+if (!app.isPackaged) {
+  app.setPath("userData", resolveDevelopmentAppDataRoot(shellRootDir));
+}
 
 let launcherWindow: BrowserWindow | null = null;
 let ownerWindow: BrowserWindow | null = null;

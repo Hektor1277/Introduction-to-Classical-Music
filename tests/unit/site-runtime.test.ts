@@ -32,6 +32,19 @@ describe("site runtime", () => {
     expect(env.ICM_APP_DATA_DIR).toBe(process.env.ICM_APP_DATA_DIR);
   });
 
+  it("accepts an explicit output directory and site base for deployment builds", async () => {
+    process.env.ICM_REPO_ROOT = path.join(os.tmpdir(), "icm-site-runtime-overrides");
+    process.env.ICM_ACTIVE_LIBRARY_DIR = path.join(os.tmpdir(), "classical-library-overrides");
+    const { createSiteBuildEnvironment } = await import("../../packages/data-core/src/site-runtime.ts");
+
+    const env = createSiteBuildEnvironment(process.env, {
+      outputDir: path.join(os.tmpdir(), "pages-output"),
+      siteBase: "/introduction-to-classical-music-sites/",
+    });
+    expect(env.ICM_SITE_OUT_DIR).toBe(path.join(os.tmpdir(), "pages-output"));
+    expect(env.ICM_SITE_BASE).toBe("/introduction-to-classical-music-sites/");
+  });
+
   it("centers article guide images in the public site stylesheet", async () => {
     const css = await fs.readFile(path.resolve("apps/site/src/styles/global.css"), "utf8");
 

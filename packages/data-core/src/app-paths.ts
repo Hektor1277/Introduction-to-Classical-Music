@@ -45,6 +45,10 @@ function resolveRepoRoot() {
   return path.resolve(process.env.ICM_REPO_ROOT || process.cwd());
 }
 
+export function resolveDevelopmentAppDataRoot(repoRoot = resolveRepoRoot()) {
+  return path.join(path.resolve(repoRoot), "output", "desktop-dev-appdata");
+}
+
 function resolveDefaultAppDataRoot() {
   const appDataBase = process.env.APPDATA || path.join(os.homedir(), "AppData", "Roaming");
   return path.join(appDataBase, APP_DISPLAY_NAME);
