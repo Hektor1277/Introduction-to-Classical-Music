@@ -9,7 +9,7 @@ import { openTargetInShell } from "./open-target.js";
 
 async function findAvailablePort(preferredPort: number, options: { maxAttempts?: number; host?: string } = {}) {
   const host = options.host || "127.0.0.1";
-  const maxAttempts = options.maxAttempts || 20;
+  const maxAttempts = options.maxAttempts || 256;
   let port = preferredPort;
   let attempts = 0;
   while (port <= 65535 && attempts <= maxAttempts) {

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -194,6 +194,46 @@ describe("library manager", () => {
     expect(result.exported).toBe(true);
     expect(result.exportedRoot).toBe(path.join(exportRoot, "portable-library"));
     await expect(readFile(path.join(result.exportedRoot, "library.manifest.json"), "utf8")).resolves.toContain('"libraryName": "Portable Library"');
+  });
+
+  it("exports a source-only library without generated directories", async () => {
+    const tempRoot = await mkdtemp(path.join(os.tmpdir(), "classical-library-source-export-manager-"));
+    tempDirs.push(tempRoot);
+    const appDataRoot = path.join(tempRoot, "app-data");
+    const activeRoot = path.join(appDataRoot, "libraries", "portable-library");
+    const exportRoot = path.join(tempRoot, "exports");
+    await mkdir(path.join(activeRoot, "content", "library"), { recursive: true });
+    await mkdir(path.join(activeRoot, "content", "site"), { recursive: true });
+    await mkdir(path.join(activeRoot, "assets", "managed"), { recursive: true });
+    await mkdir(path.join(activeRoot, "build", "site"), { recursive: true });
+    await mkdir(path.join(activeRoot, "runtime"), { recursive: true });
+    await mkdir(path.join(activeRoot, "exports"), { recursive: true });
+    await writeFile(path.join(activeRoot, "library.manifest.json"), JSON.stringify({
+      schemaVersion: "library-bundle-v1",
+      libraryId: "lib-source-only",
+      libraryName: "Portable Library",
+      createdAt: "2026-04-17T00:00:00.000Z",
+      updatedAt: "2026-04-17T00:00:00.000Z",
+      appMinVersion: "0.1.0",
+    }, null, 2), "utf8");
+    for (const file of ["composers", "people", "work-groups", "works", "recordings"]) {
+      await writeFile(path.join(activeRoot, "content", "library", `${file}.json`), "[]\n", "utf8");
+    }
+    await writeFile(path.join(activeRoot, "content", "site", "config.json"), "{}\n", "utf8");
+    await writeFile(path.join(activeRoot, "content", "site", "articles.json"), "[]\n", "utf8");
+    await writeFile(path.join(activeRoot, "assets", "managed", "cover.txt"), "asset", "utf8");
+    process.env.ICM_REPO_ROOT = tempRoot;
+    process.env.ICM_APP_DATA_DIR = appDataRoot;
+    process.env.ICM_RUNTIME_MODE = "bundle";
+
+    const { activateLibrary, exportActiveLibrarySource } = await import("../../packages/data-core/src/library-manager.ts");
+    await activateLibrary(activeRoot);
+    const result = await exportActiveLibrarySource(exportRoot);
+
+    expect(result.exported).toBe(true);
+    await expect(readFile(path.join(result.exportedRoot, "assets", "managed", "cover.txt"), "utf8")).resolves.toBe("asset");
+    await expect(stat(path.join(result.exportedRoot, "build"))).rejects.toThrow();
+    await expect(stat(path.join(result.exportedRoot, "runtime"))).rejects.toThrow();
   });
 
   it("falls back to an empty managed library when no legacy seed source is available", async () => {

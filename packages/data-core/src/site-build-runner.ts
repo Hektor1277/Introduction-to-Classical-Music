@@ -39,9 +39,9 @@ async function writeBuildRuntimeLog(message: string) {
   }
 }
 
-async function runAstroBuild() {
+async function runAstroBuild(options: { outputDir?: string; siteBase?: string } = {}) {
   const runtimePaths = getRuntimePaths();
-  const env = createSiteBuildEnvironment();
+  const env = createSiteBuildEnvironment(process.env, options);
   if (process.versions.electron) {
     env.ELECTRON_RUN_AS_NODE = "1";
   }
@@ -81,10 +81,10 @@ async function runAstroBuild() {
   }
 }
 
-async function writeBuildMetadata() {
-  const runtimePaths = getRuntimePaths();
-  const metadataPath = path.join(runtimePaths.library.buildSiteDir, ".icm-build-meta.json");
-  await mkdir(runtimePaths.library.buildSiteDir, { recursive: true });
+async function writeBuildMetadata(outputDir = getRuntimePaths().library.buildSiteDir) {
+  const resolvedOutputDir = path.resolve(outputDir);
+  const metadataPath = path.join(resolvedOutputDir, ".icm-build-meta.json");
+  await mkdir(resolvedOutputDir, { recursive: true });
   await writeFileIfChanged(
     metadataPath,
     `${JSON.stringify(
@@ -110,24 +110,32 @@ async function writeFileIfChanged(targetPath: string, content: string) {
   await writeFile(targetPath, content, "utf8");
 }
 
-export async function buildLibrarySite(options: { includeLocalOnlyLinks?: boolean } = {}) {
+export type LibrarySiteBuildOptions = {
+  includeLocalOnlyLinks?: boolean;
+  outputDir?: string;
+  siteBase?: string;
+};
+
+export async function buildLibrarySite(options: LibrarySiteBuildOptions = {}) {
   const runtimePaths = getRuntimePaths();
+  const outputDir = path.resolve(options.outputDir || runtimePaths.library.buildSiteDir);
+  const { includeLocalOnlyLinks, siteBase } = options;
   await writeBuildRuntimeLog(`buildLibrarySite: begin root=${runtimePaths.library.rootDir}`);
   await writeBuildRuntimeLog("buildLibrarySite: writeGeneratedArtifacts:start");
-  await writeGeneratedArtifacts(options);
+  await writeGeneratedArtifacts({ includeLocalOnlyLinks });
   await writeBuildRuntimeLog("buildLibrarySite: writeGeneratedArtifacts:done");
   await writeBuildRuntimeLog("buildLibrarySite: runAstroBuild:start");
-  await runAstroBuild();
+  await runAstroBuild({ outputDir, siteBase });
   await writeBuildRuntimeLog("buildLibrarySite: runAstroBuild:done");
   await writeBuildRuntimeLog("buildLibrarySite: syncLibraryAssets:start");
   await syncLibraryAssetsToBuildSite({
     assetsDir: runtimePaths.library.assetsDir,
-    buildSiteDir: runtimePaths.library.buildSiteDir,
+    buildSiteDir: outputDir,
   });
   await writeBuildRuntimeLog("buildLibrarySite: syncLibraryAssets:done");
-  await writeBuildMetadata();
+  await writeBuildMetadata(outputDir);
   await writeBuildRuntimeLog("buildLibrarySite: writeBuildMetadata:done");
   return {
-    outputDir: runtimePaths.library.buildSiteDir,
+    outputDir,
   };
 }

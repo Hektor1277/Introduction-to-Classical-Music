@@ -40,7 +40,7 @@ async function collectTextFiles(rootDir: string): Promise<string[]> {
   const entries = await fs.readdir(rootDir, { withFileTypes: true });
   const files: string[] = [];
   for (const entry of entries) {
-    if (ignoredDirs.has(entry.name)) {
+    if (ignoredDirs.has(entry.name) || entry.name.startsWith("tmp-") || entry.name === "__pycache__") {
       continue;
     }
     const fullPath = path.join(rootDir, entry.name);

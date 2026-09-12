@@ -143,6 +143,31 @@ export async function copyLibraryBundle(sourceRoot: string, targetRoot: string) 
   return ensureLibraryBundle(resolvedTargetRoot);
 }
 
+export async function copyLibrarySourceBundle(sourceRoot: string, targetRoot: string) {
+  const resolvedSourceRoot = path.resolve(sourceRoot);
+  const resolvedTargetRoot = path.resolve(targetRoot);
+  if (resolvedSourceRoot === resolvedTargetRoot) {
+    throw new Error("Library source and target must be different directories");
+  }
+
+  const manifestSource = path.join(resolvedSourceRoot, "library.manifest.json");
+  const contentSource = path.join(resolvedSourceRoot, "content");
+  const assetsSource = path.join(resolvedSourceRoot, "assets");
+  await Promise.all([fs.access(manifestSource), fs.access(contentSource), fs.access(assetsSource)]);
+
+  await fs.mkdir(path.dirname(resolvedTargetRoot), { recursive: true });
+  await fs.rm(resolvedTargetRoot, { recursive: true, force: true });
+  await fs.mkdir(resolvedTargetRoot, { recursive: true });
+  await fs.copyFile(manifestSource, path.join(resolvedTargetRoot, "library.manifest.json"));
+  await fs.cp(contentSource, path.join(resolvedTargetRoot, "content"), { recursive: true, force: true });
+  await fs.cp(assetsSource, path.join(resolvedTargetRoot, "assets"), { recursive: true, force: true });
+
+  return {
+    rootDir: resolvedTargetRoot,
+    manifestPath: path.join(resolvedTargetRoot, "library.manifest.json"),
+  };
+}
+
 export async function seedLibraryBundleFromLegacySource(
   sourceRoot: string,
   libraryRoot: string,

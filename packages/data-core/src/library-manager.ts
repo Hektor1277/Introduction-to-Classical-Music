@@ -11,6 +11,7 @@ import {
 } from "./default-library-content.js";
 import {
   copyLibraryBundle,
+  copyLibrarySourceBundle,
   ensureLibraryBundle,
   getLibraryBundleEntityCounts,
   libraryBundleHasLegacySeedSource,
@@ -333,6 +334,24 @@ export async function exportActiveLibraryBundle(destinationDir: string) {
     summary.manifest.libraryName || path.basename(summary.rootDir),
   );
   await copyLibraryBundle(summary.rootDir, targetRoot);
+  return {
+    exported: true,
+    sourceRoot: summary.rootDir,
+    exportedRoot: targetRoot,
+    manifest: summary.manifest,
+    counts: summary.counts,
+  };
+}
+
+export async function exportActiveLibrarySource(destinationDir: string) {
+  const resolvedDestinationDir = path.resolve(destinationDir);
+  await fs.mkdir(resolvedDestinationDir, { recursive: true });
+  const summary = await getActiveLibrarySummary();
+  const targetRoot = await resolveUniqueExportRoot(
+    resolvedDestinationDir,
+    `${summary.manifest.libraryName || path.basename(summary.rootDir)}-source`,
+  );
+  await copyLibrarySourceBundle(summary.rootDir, targetRoot);
   return {
     exported: true,
     sourceRoot: summary.rootDir,

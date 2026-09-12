@@ -91,7 +91,7 @@ export async function isPortAvailable(port, host = "127.0.0.1") {
 
 export async function findAvailablePort(preferredPort, options = {}) {
   const host = options.host ?? "127.0.0.1";
-  const maxAttempts = options.maxAttempts ?? 20;
+  const maxAttempts = options.maxAttempts ?? 256;
 
   for (let offset = 0; offset <= maxAttempts; offset += 1) {
     const candidate = preferredPort + offset;

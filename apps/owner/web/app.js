@@ -81,6 +81,8 @@ const rebuildButton = document.querySelector("#rebuild-button");
 const libraryOpenButton = document.querySelector("#library-open-button");
 const libraryImportButton = document.querySelector("#library-import-button");
 const libraryExportButton = document.querySelector("#library-export-button");
+const libraryCompareButton = document.querySelector("#library-compare-button");
+const libraryDetailExportButton = document.querySelector("#library-detail-export-button");
 const refreshButton = document.querySelector("#refresh-button");
 const siteForm = document.querySelector("[data-site-form]");
 const entityForms = [...document.querySelectorAll("[data-entity-form]")];
@@ -6228,6 +6230,59 @@ libraryExportButton?.addEventListener("click", async () => {
     if (!result?.cancelled) {
       setResult(result);
     }
+  } catch (error) {
+    setResult(error instanceof Error ? error.message : String(error));
+  }
+});
+
+libraryCompareButton?.addEventListener("click", async () => {
+  try {
+    const sourcePath =
+      (typeof desktopLauncher?.pickLibraryFolder === "function"
+        ? compact((await desktopLauncher.pickLibraryFolder())?.path || "")
+        : "") || compact(window.prompt("请输入要检查或合并的对方库目录路径。") || "");
+    if (!sourcePath) return;
+    const comparison = await fetchJson("/api/library/compare", {
+      method: "POST",
+      body: JSON.stringify({ sourcePath }),
+    });
+    const report = comparison.report || {};
+    const summary = `对方新增 ${report.added?.length || 0} 条，本地独有 ${report.localOnly?.length || 0} 条，字段冲突 ${report.conflicts?.length || 0} 条，完全相同 ${report.unchanged?.length || 0} 条。`;
+    if (!(report.added?.length || report.conflicts?.length)) {
+      setResult(summary);
+      return;
+    }
+    const shouldMerge = window.confirm(`${summary}\n\n确认合并？新增条目将加入本地；冲突默认保留本地字段。`);
+    if (!shouldMerge) {
+      setResult({ report });
+      return;
+    }
+    const merged = await fetchJson("/api/library/merge", {
+      method: "POST",
+      body: JSON.stringify({ sourcePath, decisions: {} }),
+    });
+    await refreshAll();
+    setResult({ message: "库已合并，冲突字段保留本地值。", report: merged.report });
+  } catch (error) {
+    setResult(error instanceof Error ? error.message : String(error));
+  }
+});
+
+libraryDetailExportButton?.addEventListener("click", async () => {
+  try {
+    const response = await fetch("/api/library/details");
+    if (!response.ok) throw new Error(`导出失败（${response.status}）`);
+    const blob = await response.blob();
+    const disposition = response.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+    const fileName = match ? decodeURIComponent(match[1]) : `library-details-${new Date().toISOString().slice(0, 10)}.md`;
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    setResult(`已导出目录详情：${fileName}`);
   } catch (error) {
     setResult(error instanceof Error ? error.message : String(error));
   }

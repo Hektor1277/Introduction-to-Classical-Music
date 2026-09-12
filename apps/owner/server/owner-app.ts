@@ -1,7 +1,7 @@
 // @ts-nocheck
 import express from "express";
 import path from "node:path";
-import { access, readFile as readBinaryFile } from "node:fs/promises";
+import { access, readFile as readBinaryFile, cp, mkdir } from "node:fs/promises";
 
 import {
   applyAutomationProposal,
@@ -85,6 +85,7 @@ import { createHttpRecordingRetrievalProvider } from "../../../packages/automati
 import { mergeBatchSessionIntoLibrary, replaceBatchDraftEntities, resolveConfirmedBatchSelection } from "./batch-session-utils.js";
 import { sanitizeAutomationRunProposalFields, sanitizeProposalPatchMap } from "./proposal-patch-utils.js";
 import { loadReferenceRegistry } from "../../../packages/data-core/src/reference-registry.js";
+import { loadLibraryFromBundleRoot, mergeLibraries } from "../../../packages/data-core/src/library-merge.js";
 
 const app = express();
 const port = Number(process.env.OWNER_PORT || 4322);
@@ -796,6 +797,52 @@ app.get("/api/library", async (_request, response) => {
   }
 });
 
+function markdownCell(value: unknown) {
+  return String(value ?? "").replace(/[|\r\n]/g, " ").trim();
+}
+
+app.get("/api/library/details", async (_request, response) => {
+  try {
+    const library = normalizeOwnerManagedLibrary(await loadLibraryFromDisk());
+    const composers = library.composers || [];
+    const people = library.people || [];
+    const works = library.works || [];
+    const groups = library.workGroups || [];
+    const recordings = library.recordings || [];
+    const peopleById = new Map(people.map((person) => [person.id, person]));
+    const composerById = new Map(composers.map((composer) => [composer.id, composer]));
+    const lines = [
+      "# Library 目录详情", "", `生成时间：${new Date().toISOString()}`, "",
+      "## 统计", "", `- 作曲家：${composers.length}`, `- 人物/团体：${people.length}`, `- 作品组：${groups.length}`, `- 作品：${works.length}`, `- 版本：${recordings.length}`, "",
+      "## 条目树", "",
+    ];
+    for (const composer of composers) {
+      lines.push(`### ${markdownCell(composer.name || composer.title || composer.id)}`);
+      const composerWorks = works.filter((work) => work.composerId === composer.id);
+      if (!composerWorks.length) { lines.push("- （暂无作品）", ""); continue; }
+      for (const work of composerWorks) {
+        lines.push(`- 作品：${markdownCell(work.title || work.titleLatin || work.id)}`);
+        const workRecordings = recordings.filter((recording) => recording.workId === work.id);
+        for (const recording of workRecordings) {
+          const names = [recording.conductorId, ...(recording.performerIds || []), ...(recording.orchestraIds || [])]
+            .map((id) => peopleById.get(id)?.name || id).filter(Boolean).join("、");
+          lines.push(`  - 版本：${markdownCell(recording.title || recording.id)}${names ? `（${markdownCell(names)}）` : ""}`);
+        }
+      }
+      lines.push("");
+    }
+    const orphanWorks = works.filter((work) => !composerById.has(work.composerId));
+    if (orphanWorks.length) {
+      lines.push("### 未关联作曲家的作品");
+      orphanWorks.forEach((work) => lines.push(`- ${markdownCell(work.title || work.id)}`));
+      lines.push("");
+    }
+    response.type("text/markdown; charset=utf-8").set("Content-Disposition", `attachment; filename*=UTF-8''library-details-${new Date().toISOString().slice(0, 10)}.md`).send(`${lines.join("\n")}\n`);
+  } catch (error) {
+    response.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
 app.post("/api/library/import", async (request, response) => {
   try {
     const sourcePath = String(request.body?.sourcePath || "").trim();
@@ -822,6 +869,34 @@ app.post("/api/library/export", async (request, response) => {
     }
     const result = await exportActiveLibraryBundle(destinationPath);
     response.json(result);
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+app.post("/api/library/compare", async (request, response) => {
+  try {
+    const sourcePath = String(request.body?.sourcePath || "").trim();
+    if (!sourcePath) return response.status(400).json({ error: "Missing library source path" });
+    const [local, incoming] = await Promise.all([loadLibraryFromDisk(), loadLibraryFromBundleRoot(sourcePath)]);
+    response.json({ report: (await mergeLibraries(local, incoming)).report });
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+app.post("/api/library/merge", async (request, response) => {
+  try {
+    const sourcePath = String(request.body?.sourcePath || "").trim();
+    if (!sourcePath) return response.status(400).json({ error: "Missing library source path" });
+    const [local, incoming] = await Promise.all([loadLibraryFromDisk(), loadLibraryFromBundleRoot(sourcePath)]);
+    const result = await mergeLibraries(local, incoming, request.body?.decisions || {});
+    const backupRoot = path.join(runtimePaths.library.rootDir, "..", "merge-backups", new Date().toISOString().replace(/[:.]/g, "-"));
+    await mkdir(path.dirname(backupRoot), { recursive: true });
+    await cp(runtimePaths.library.rootDir, backupRoot, { recursive: true });
+    await saveLibraryToDisk(result.library);
+    await writeGeneratedArtifacts();
+    response.json({ merged: true, backupRoot, report: result.report, libraryMeta: await getActiveLibrarySummary() });
   } catch (error) {
     response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -1827,10 +1902,6 @@ void startOwnerApp().catch((error) => {
   process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
   process.exitCode = 1;
 });
-
-
-
-
 
 
 
