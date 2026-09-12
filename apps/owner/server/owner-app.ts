@@ -1,7 +1,7 @@
 // @ts-nocheck
 import express from "express";
 import path from "node:path";
-import { access, readFile as readBinaryFile, cp, mkdir } from "node:fs/promises";
+import { access, readFile as readBinaryFile, cp, mkdir, rm, rename } from "node:fs/promises";
 
 import {
   applyAutomationProposal,
@@ -66,6 +66,9 @@ import {
   exportActiveLibraryBundle,
   getActiveLibrarySummary,
   importLibraryBundle,
+  exportActiveLibrarySourceTo,
+  exportActiveLibraryPackage,
+  renameActiveLibrary,
 } from "../../../packages/data-core/src/library-manager.js";
 import {
   assertOwnerEntityCanDelete,
@@ -867,8 +870,20 @@ app.post("/api/library/export", async (request, response) => {
       response.status(400).json({ error: "Missing library export destination path" });
       return;
     }
-    const result = await exportActiveLibraryBundle(destinationPath);
+    const result = request.body?.package
+      ? await exportActiveLibraryPackage(destinationPath)
+      : request.body?.sourceOnly || request.body?.exactTarget
+      ? await exportActiveLibrarySourceTo(destinationPath)
+      : await exportActiveLibraryBundle(destinationPath);
     response.json(result);
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+app.post("/api/library/rename", async (request, response) => {
+  try {
+    response.json({ renamed: true, libraryMeta: await renameActiveLibrary(String(request.body?.libraryName || "")) });
   } catch (error) {
     response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -927,6 +942,26 @@ app.post("/api/library/build-site", async (_request, response) => {
     });
   } catch (error) {
     response.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+app.post("/api/library/export-site", async (request, response) => {
+  try {
+    const destinationPath = String(request.body?.destinationPath || "").trim();
+    if (!destinationPath) return response.status(400).json({ error: "Missing site export destination path" });
+    const stagingPath = path.join(runtimePaths.appData.cacheDir, `site-export-${Date.now()}`);
+    await mkdir(path.dirname(stagingPath), { recursive: true });
+    const buildResult = await buildLibrarySite({ outputDir: stagingPath, siteBase: String(request.body?.siteBase || "/") });
+    const resolvedTarget = path.resolve(destinationPath);
+    const replacement = `${resolvedTarget}.staging-${Date.now()}`;
+    await rm(replacement, { recursive: true, force: true });
+    await cp(buildResult.outputDir, replacement, { recursive: true, force: true });
+    await rm(resolvedTarget, { recursive: true, force: true });
+    await rename(replacement, resolvedTarget);
+    await rm(stagingPath, { recursive: true, force: true });
+    response.json({ exported: true, outputDir: resolvedTarget });
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
 });
 
@@ -1902,9 +1937,6 @@ void startOwnerApp().catch((error) => {
   process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
   process.exitCode = 1;
 });
-
-
-
 
 
 

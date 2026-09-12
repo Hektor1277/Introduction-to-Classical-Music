@@ -1,0 +1,12 @@
+[
+  {
+    "id": "group-demo",
+    "composerId": "composer-demo",
+    "title": "复合作品组",
+    "slug": "group-demo",
+    "path": [
+      "复合作品组"
+    ],
+    "sortKey": "demo"
+  }
+]

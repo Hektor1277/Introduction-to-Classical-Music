@@ -1,0 +1,33 @@
+[
+  {
+    "id": "recording-shared",
+    "workId": "work-shared",
+    "slug": "recording-shared",
+    "title": "共享版本",
+    "workTypeHint": "unknown",
+    "sortKey": "shared",
+    "isPrimaryRecommendation": false,
+    "updatedAt": "2026-09-12",
+    "images": [],
+    "credits": [
+      {
+        "role": "conductor",
+        "personId": "person-demo-conductor",
+        "displayName": "复测指挥",
+        "label": ""
+      }
+    ],
+    "links": [],
+    "notes": "",
+    "performanceDateText": "",
+    "venueText": "",
+    "albumTitle": "",
+    "label": "",
+    "releaseDate": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    }
+  }
+]

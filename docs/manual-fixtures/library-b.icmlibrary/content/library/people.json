@@ -1,0 +1,21 @@
+[
+  {
+    "id": "person-demo-conductor",
+    "slug": "person-demo-conductor",
+    "name": "复测指挥",
+    "nameLatin": "Demo Conductor",
+    "country": "",
+    "countries": [],
+    "aliases": [],
+    "sortKey": "demo-conductor",
+    "summary": "",
+    "roles": [
+      "conductor"
+    ],
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    }
+  }
+]

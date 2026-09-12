@@ -143,9 +143,9 @@ async function importLibraryBundleAt(sourceRoot: string) {
   return libraryManager.importLibraryBundle(sourceRoot) as Promise<LibrarySummary>;
 }
 
-async function exportActiveLibraryBundleTo(destinationDir: string) {
+async function exportActiveLibraryPackageTo(destinationDir: string) {
   const libraryManager = await loadLibraryManagerModule();
-  return libraryManager.exportActiveLibraryBundle(destinationDir);
+  return libraryManager.exportActiveLibraryPackage(destinationDir);
 }
 
 async function loadSiteBuildModule() {
@@ -594,7 +594,7 @@ ipcMain.handle("launcher:export-library", async () => {
   if (picked.canceled || !picked.path) {
     return { cancelled: true };
   }
-  const result = await exportActiveLibraryBundleTo(picked.path);
+  const result = await exportActiveLibraryPackageTo(picked.path);
   return { cancelled: false, ...result };
 });
 

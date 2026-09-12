@@ -83,6 +83,9 @@ const libraryImportButton = document.querySelector("#library-import-button");
 const libraryExportButton = document.querySelector("#library-export-button");
 const libraryCompareButton = document.querySelector("#library-compare-button");
 const libraryDetailExportButton = document.querySelector("#library-detail-export-button");
+const libraryRenameButton = document.querySelector("#library-rename-button");
+const librarySourceExportButton = document.querySelector("#library-source-export-button");
+const librarySiteExportButton = document.querySelector("#library-site-export-button");
 const refreshButton = document.querySelector("#refresh-button");
 const siteForm = document.querySelector("[data-site-form]");
 const entityForms = [...document.querySelectorAll("[data-entity-form]")];
@@ -6283,6 +6286,48 @@ libraryDetailExportButton?.addEventListener("click", async () => {
     anchor.click();
     URL.revokeObjectURL(url);
     setResult(`已导出目录详情：${fileName}`);
+  } catch (error) {
+    setResult(error instanceof Error ? error.message : String(error));
+  }
+});
+
+libraryRenameButton?.addEventListener("click", async () => {
+  try {
+    const current = state.libraryMeta?.manifest?.libraryName || "";
+    const libraryName = compact(window.prompt("请输入新的库名称。", current) || "");
+    if (!libraryName) return;
+    const result = await fetchJson("/api/library/rename", { method: "POST", body: JSON.stringify({ libraryName }) });
+    state.libraryMeta = result.libraryMeta;
+    renderLibraryStatus();
+    setResult(`库名称已修改为：${libraryName}`);
+  } catch (error) {
+    setResult(error instanceof Error ? error.message : String(error));
+  }
+});
+
+async function promptDestination(promptText) {
+  return (typeof desktopLauncher?.pickLibraryFolder === "function"
+    ? compact((await desktopLauncher.pickLibraryFolder())?.path || "")
+    : "") || compact(window.prompt(promptText) || "");
+}
+
+librarySourceExportButton?.addEventListener("click", async () => {
+  try {
+    const destinationPath = await promptDestination("请选择源库导出目标目录。维护者可直接选择 Salon_library 仓库目录。");
+    if (!destinationPath) return;
+    const result = await fetchJson("/api/library/export", { method: "POST", body: JSON.stringify({ destinationPath, sourceOnly: true, exactTarget: true }) });
+    setResult(`源库已导出到：${result.exportedRoot}`);
+  } catch (error) {
+    setResult(error instanceof Error ? error.message : String(error));
+  }
+});
+
+librarySiteExportButton?.addEventListener("click", async () => {
+  try {
+    const destinationPath = await promptDestination("请选择静态网站导出目录。维护者可直接选择站点部署仓库的目标目录。");
+    if (!destinationPath) return;
+    const result = await fetchJson("/api/library/export-site", { method: "POST", body: JSON.stringify({ destinationPath, siteBase: "/" }) });
+    setResult(`静态网站已导出到：${result.outputDir}`);
   } catch (error) {
     setResult(error instanceof Error ? error.message : String(error));
   }

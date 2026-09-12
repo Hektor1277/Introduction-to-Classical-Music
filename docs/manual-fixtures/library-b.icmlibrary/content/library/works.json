@@ -1,0 +1,42 @@
+[
+  {
+    "id": "work-shared",
+    "composerId": "composer-demo",
+    "groupIds": [
+      "group-demo"
+    ],
+    "slug": "work-shared",
+    "title": "共享作品",
+    "titleLatin": "Shared Work",
+    "aliases": [],
+    "catalogue": "",
+    "summary": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    },
+    "sortKey": "shared",
+    "updatedAt": "2026-09-12"
+  },
+  {
+    "id": "work-b-only",
+    "composerId": "composer-demo",
+    "groupIds": [
+      "group-demo"
+    ],
+    "slug": "work-b-only",
+    "title": "B 独有作品",
+    "titleLatin": "Shared Work",
+    "aliases": [],
+    "catalogue": "",
+    "summary": "",
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    },
+    "sortKey": "b-only",
+    "updatedAt": "2026-09-12"
+  }
+]

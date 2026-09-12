@@ -236,6 +236,27 @@ describe("library manager", () => {
     await expect(stat(path.join(result.exportedRoot, "runtime"))).rejects.toThrow();
   });
 
+  it("renames active libraries and preserves target repository metadata during source export", async () => {
+    const tempRoot = await mkdtemp(path.join(os.tmpdir(), "classical-library-source-target-"));
+    tempDirs.push(tempRoot);
+    const appDataRoot = path.join(tempRoot, "app-data");
+    const activeRoot = path.join(tempRoot, "active");
+    const targetRoot = path.join(tempRoot, "Salon_library");
+    await mkdir(path.join(targetRoot, ".git"), { recursive: true });
+    process.env.ICM_REPO_ROOT = tempRoot;
+    process.env.ICM_APP_DATA_DIR = appDataRoot;
+    process.env.ICM_ACTIVE_LIBRARY_DIR = activeRoot;
+    process.env.ICM_RUNTIME_MODE = "bundle";
+    const { activateLibrary, renameActiveLibrary, exportActiveLibrarySourceTo } = await import("../../packages/data-core/src/library-manager.ts");
+    await activateLibrary(activeRoot, { seedFromLegacy: false });
+    await renameActiveLibrary("官方库复测");
+    const result = await exportActiveLibrarySourceTo(targetRoot);
+    expect(result.exportedRoot).toBe(targetRoot);
+    await expect(stat(path.join(targetRoot, ".git"))).resolves.toBeDefined();
+    await expect(readFile(path.join(targetRoot, "library.manifest.json"), "utf8")).resolves.toContain("官方库复测");
+    await expect(stat(result.backupRoot)).resolves.toBeDefined();
+  });
+
   it("falls back to an empty managed library when no legacy seed source is available", async () => {
     const tempRoot = await mkdtemp(path.join(os.tmpdir(), "classical-library-empty-fallback-"));
     tempDirs.push(tempRoot);

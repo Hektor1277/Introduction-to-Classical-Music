@@ -1,0 +1,21 @@
+[
+  {
+    "id": "composer-demo",
+    "slug": "composer-demo",
+    "name": "复测作曲家",
+    "nameLatin": "Demo Composer",
+    "country": "",
+    "countries": [],
+    "aliases": [],
+    "sortKey": "demo",
+    "summary": "",
+    "roles": [
+      "composer"
+    ],
+    "infoPanel": {
+      "text": "",
+      "articleId": "",
+      "collectionLinks": []
+    }
+  }
+]
