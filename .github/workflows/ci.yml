@@ -45,9 +45,9 @@ jobs:
         with:
           name: windows-installer-${{ github.ref_name }}-${{ github.run_number }}
           path: |
-            dist/*.exe
-            dist/*.blockmap
-            dist/latest*.yml
+            output/releases/*.exe
+            output/releases/*.blockmap
+            output/releases/latest*.yml
           if-no-files-found: error
           retention-days: 14
 
