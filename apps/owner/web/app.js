@@ -84,7 +84,6 @@ const libraryExportButton = document.querySelector("#library-export-button");
 const libraryCompareButton = document.querySelector("#library-compare-button");
 const libraryDetailExportButton = document.querySelector("#library-detail-export-button");
 const libraryRenameButton = document.querySelector("#library-rename-button");
-const librarySourceExportButton = document.querySelector("#library-source-export-button");
 const librarySiteExportButton = document.querySelector("#library-site-export-button");
 const refreshButton = document.querySelector("#refresh-button");
 const siteForm = document.querySelector("[data-site-form]");
@@ -6311,17 +6310,6 @@ async function promptDestination(promptText) {
     : "") || compact(window.prompt(promptText) || "");
 }
 
-librarySourceExportButton?.addEventListener("click", async () => {
-  try {
-    const destinationPath = await promptDestination("请选择源库导出目标目录。维护者可直接选择 Salon_library 仓库目录。");
-    if (!destinationPath) return;
-    const result = await fetchJson("/api/library/export", { method: "POST", body: JSON.stringify({ destinationPath, sourceOnly: true, exactTarget: true }) });
-    setResult(`源库已导出到：${result.exportedRoot}`);
-  } catch (error) {
-    setResult(error instanceof Error ? error.message : String(error));
-  }
-});
-
 librarySiteExportButton?.addEventListener("click", async () => {
   try {
     const destinationPath = await promptDestination("请选择静态网站导出目录。维护者可直接选择站点部署仓库的目标目录。");
@@ -6534,22 +6522,14 @@ const importManagedLibraryWithPicker = async () => {
   return result;
 };
 
-const exportManagedLibrary = async () => {
-  const destinationPath = compact(window.prompt("\u8bf7\u8f93\u5165\u8981\u5bfc\u51fa\u5230\u7684\u76ee\u5f55\u8def\u5f84\u3002") || "");
-  if (!destinationPath) {
-    return { cancelled: true };
-  }
-  return fetchJson("/api/library/export", {
-    method: "POST",
-    body: JSON.stringify({ destinationPath }),
-  });
-};
-
 const exportManagedLibraryWithPicker = async () => {
-  if (typeof desktopLauncher?.exportLibrary === "function") {
-    return desktopLauncher.exportLibrary();
-  }
-  return exportManagedLibrary();
+  const formatChoice = compact(window.prompt("请选择导出形式：1 = 单文件压缩包（推荐分享），2 = 可审计目录包。选择 Salon_library 仓库时将自动保留 Git 元数据。", "1") || "");
+  if (!formatChoice) return { cancelled: true };
+  const destinationPath = typeof desktopLauncher?.pickDirectory === "function"
+    ? compact((await desktopLauncher.pickDirectory())?.path || "")
+    : compact(window.prompt("请输入导出目标目录路径。") || "");
+  if (!destinationPath) return { cancelled: true };
+  return fetchJson("/api/library/export", { method: "POST", body: JSON.stringify({ destinationPath, format: formatChoice === "2" ? "directory" : "compressed" }) });
 };
 
 void bootstrap();

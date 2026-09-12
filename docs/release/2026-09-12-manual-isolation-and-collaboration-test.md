@@ -36,10 +36,10 @@
 1. 在维护工具点击“导入库”，选择 `F:\personal\Sunhaoran\Introduction to Classical Music\repositories\library\Salon_library`。
 2. 确认导入后库位于 `%APPDATA%\buquanshu\libraries\...`，这是预期行为。
 3. 点击“修改库名称”，改为 `官方资料库-复测`，刷新页面确认名称写入 manifest。
-4. 点击“导出源库”，选择临时目录，例如 `F:\personal\Sunhaoran\Introduction to Classical Music\staging\official-source-test`。
-5. 确认导出目录只包含 `library.manifest.json`、`content` 和 `assets`，不包含 `build`、`runtime`、`exports`。
-6. 再次选择已有目标 `Salon_library` 导出，确认工具先生成带时间戳的 `.backup-*` 目录，再替换源内容。
-7. 点击“导出库”到普通目录，确认生成的目录包可重新导入。
+4. 点击“导出库”，选择 `1`，再选择 `F:\personal\Sunhaoran\Introduction to Classical Music\staging`，确认生成单文件 `.icmlibrary` 压缩包并能重新导入。
+5. 再次点击“导出库”，选择 `2`，确认生成可审计目录包；目录只包含 `library.manifest.json`、`content` 和 `assets`。
+6. 点击“导出库”并直接选择已有 `Salon_library`，确认工具自动识别 Git 仓库、保留 `.git`，并生成带时间戳的 `.backup-*` 目录。
+7. 分别导入单文件压缩包和目录包，确认内容、实体数量和 library ID 一致。
 8. 编辑一条测试记录、重启安装版，确认安装版数据持久化；开发版数据不变。
 
 ## 多人 library 比较与合并
@@ -53,14 +53,14 @@
 7. 对需要覆盖的冲突选择对方字段，应用后确认字段值、关系和索引正确。
 8. 检查当前库旁的 `merge-backups` 时间戳快照；必要时关闭程序，用快照恢复后重新打开。
 
-预置库位于软件仓库的 `docs/manual-fixtures/library-a.icmlibrary` 和 `docs/manual-fixtures/library-b.icmlibrary`。直接在“导入库”中选择这两个目录即可，无需手动编辑条目。A 与 B 共用作曲家、作品和一个版本；B 额外包含一条作品，并修改共享版本标题，适合验证新增与字段冲突。
+预置压缩库位于软件仓库的 `docs/manual-fixtures/library-a.icmlibrary` 和 `docs/manual-fixtures/library-b.icmlibrary`；对应目录包为 `library-a-directory.icmlibrary` 和 `library-b-directory.icmlibrary`。直接在“导入库”中选择文件或目录即可。A 与 B 共用作曲家、作品和一个版本；B 额外包含一条作品，并修改共享版本标题。
 
-`.icmlibrary` 是当前项目的专用目录包约定：目录内部仍是可审计的 manifest、JSON 和资源文件，维护工具导出时自动使用该后缀；它不是压缩文件，不应手工改写内部文件。
+`.icmlibrary` 是统一的 library 载体：既可以是便于分享的 ZIP 压缩单文件，也可以是便于 Git 审查的目录包。二者内部结构完全一致，维护工具自动识别。
 
 ## 官方 library 更新（维护者无命令行流程）
 
 1. 仅在安装版当前工作库编辑真实资料。
-2. 点击“导出源库”，直接选择 `F:\personal\Sunhaoran\Introduction to Classical Music\repositories\library\Salon_library`。
+2. 点击“导出库”，直接选择 `F:\personal\Sunhaoran\Introduction to Classical Music\repositories\library\Salon_library`；所选格式不会改变官方仓库处理方式。
 3. 工具先校验 manifest、JSON、资源路径，并在目标目录旁生成备份；失败时不替换目标。
 4. 打开 `Salon_library` 检查差异，确认只出现源资料变更。
 5. 使用 GitHub Desktop 或网页提交并推送 `Salon_library`，不需要运行脚本。

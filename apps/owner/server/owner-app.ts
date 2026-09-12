@@ -66,8 +66,7 @@ import {
   exportActiveLibraryBundle,
   getActiveLibrarySummary,
   importLibraryBundle,
-  exportActiveLibrarySourceTo,
-  exportActiveLibraryPackage,
+  exportActiveLibrary,
   renameActiveLibrary,
 } from "../../../packages/data-core/src/library-manager.js";
 import {
@@ -870,11 +869,8 @@ app.post("/api/library/export", async (request, response) => {
       response.status(400).json({ error: "Missing library export destination path" });
       return;
     }
-    const result = request.body?.package
-      ? await exportActiveLibraryPackage(destinationPath)
-      : request.body?.sourceOnly || request.body?.exactTarget
-      ? await exportActiveLibrarySourceTo(destinationPath)
-      : await exportActiveLibraryBundle(destinationPath);
+    const requestedFormat = request.body?.format === "directory" ? "directory" : request.body?.format === "compressed" ? "compressed" : "auto";
+    const result = await exportActiveLibrary(destinationPath, requestedFormat);
     response.json(result);
   } catch (error) {
     response.status(400).json({ error: error instanceof Error ? error.message : String(error) });
@@ -1937,8 +1933,6 @@ void startOwnerApp().catch((error) => {
   process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
   process.exitCode = 1;
 });
-
-
 
 
 

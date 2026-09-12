@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { validateLibrary, type LibraryData } from "../../shared/src/schema.js";
+import { withLibraryBundleRoot } from "./library-bundle.js";
 
 export type MergeEntityType = "composer" | "person" | "workGroup" | "work" | "recording";
 export type MergeDecision = "local" | "incoming";
@@ -126,14 +127,13 @@ async function readJson<T>(rootDir: string, relativePath: string, fallback: T): 
 }
 
 export async function loadLibraryFromBundleRoot(rootDir: string): Promise<LibraryData> {
-  const libraryRoot = path.resolve(rootDir);
-  return validateLibrary({
+  return withLibraryBundleRoot(rootDir, async (libraryRoot) => validateLibrary({
     composers: await readJson(path.join(libraryRoot, "content"), "library/composers.json", []),
     people: await readJson(path.join(libraryRoot, "content"), "library/people.json", []),
     workGroups: await readJson(path.join(libraryRoot, "content"), "library/work-groups.json", []),
     works: await readJson(path.join(libraryRoot, "content"), "library/works.json", []),
     recordings: await readJson(path.join(libraryRoot, "content"), "library/recordings.json", []),
-  });
+  }));
 }
 
 export async function mergeLibraries(local: LibraryData, incoming: LibraryData, decisions: Record<string, MergeDecision> = {}) {

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "library-bundle-v1",
-  "libraryId": "library-a.icmlibrary",
-  "libraryName": "library-a",
+  "libraryId": "library-b",
+  "libraryName": "library-b",
   "createdAt": "2026-09-12T00:00:00.000Z",
   "updatedAt": "2026-09-12T00:00:00.000Z",
   "appMinVersion": "0.1.0"

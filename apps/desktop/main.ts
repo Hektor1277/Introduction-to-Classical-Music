@@ -143,11 +143,6 @@ async function importLibraryBundleAt(sourceRoot: string) {
   return libraryManager.importLibraryBundle(sourceRoot) as Promise<LibrarySummary>;
 }
 
-async function exportActiveLibraryPackageTo(destinationDir: string) {
-  const libraryManager = await loadLibraryManagerModule();
-  return libraryManager.exportActiveLibraryPackage(destinationDir);
-}
-
 async function loadSiteBuildModule() {
   if (!siteBuildModulePromise) {
     siteBuildModulePromise = import("../../packages/data-core/src/site-build-runner.js");
@@ -378,6 +373,17 @@ async function pickFile(title: string) {
   return { canceled: result.canceled, path: result.filePaths[0] || "" };
 }
 
+async function pickLibrarySource(title: string) {
+  const dialogOptions: OpenDialogOptions = {
+    title,
+    properties: ["openFile", "openDirectory"],
+    filters: [{ name: "不全书资料库", extensions: ["icmlibrary", "zip"] }, { name: "所有文件", extensions: ["*"] }],
+  };
+  const parentWindow = getAnyDesktopWindow();
+  const result = parentWindow ? await dialog.showOpenDialog(parentWindow, dialogOptions) : await dialog.showOpenDialog(dialogOptions);
+  return { canceled: result.canceled, path: result.filePaths[0] || "" };
+}
+
 async function ensureLibraryWindow() {
   if (libraryWindow && !libraryWindow.isDestroyed()) {
     libraryWindow.focus();
@@ -580,7 +586,7 @@ ipcMain.handle("launcher:open-retrieval", async () => {
 
 ipcMain.handle("launcher:import-library", async () => {
   await ensureDesktopRuntimeReady();
-  const picked = await pickDirectory("\u9009\u62e9\u8981\u5bfc\u5165\u7684\u8d44\u6599\u5e93\u76ee\u5f55");
+  const picked = await pickLibrarySource("\u9009\u62e9\u8981\u5bfc\u5165\u7684\u8d44\u6599\u5e93");
   if (picked.canceled || !picked.path) {
     return { cancelled: true };
   }
@@ -588,13 +594,14 @@ ipcMain.handle("launcher:import-library", async () => {
   return { cancelled: false, ...summary };
 });
 
-ipcMain.handle("launcher:export-library", async () => {
+ipcMain.handle("launcher:export-library", async (_event, format: "compressed" | "directory" = "compressed") => {
   await ensureDesktopRuntimeReady();
   const picked = await pickDirectory("\u9009\u62e9\u5bfc\u51fa\u76ee\u5f55");
   if (picked.canceled || !picked.path) {
     return { cancelled: true };
   }
-  const result = await exportActiveLibraryPackageTo(picked.path);
+  const libraryManager = await loadLibraryManagerModule();
+  const result = await libraryManager.exportActiveLibrary(picked.path, format);
   return { cancelled: false, ...result };
 });
 
@@ -613,8 +620,10 @@ ipcMain.handle("desktop:open-external", async (_event, target: string) => {
 });
 
 ipcMain.handle("desktop:pick-library-folder", async () => {
-  return pickDirectory("\u9009\u62e9\u8d44\u6599\u5e93\u76ee\u5f55");
+  return pickLibrarySource("\u9009\u62e9\u8d44\u6599\u5e93\u76ee\u5f55\u6216 .icmlibrary \u6587\u4ef6");
 });
+
+ipcMain.handle("desktop:pick-directory", async () => pickDirectory("\u9009\u62e9\u76ee\u6807\u76ee\u5f55"));
 
 ipcMain.handle("desktop:pick-local-resource-file", async () => {
   return pickFile("\u9009\u62e9\u672c\u5730\u8d44\u6e90\u6587\u4ef6");

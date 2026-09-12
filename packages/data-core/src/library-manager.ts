@@ -17,6 +17,8 @@ import {
   libraryBundleHasLegacySeedSource,
   readLibraryBundleManifest,
   seedLibraryBundleFromLegacySource,
+  withLibraryBundleRoot,
+  writeCompressedLibraryPackage,
 } from "./library-bundle.js";
 
 function sanitizeDirectoryName(value: string) {
@@ -318,11 +320,12 @@ export async function bootstrapActiveLibrary(options: {
 }
 
 export async function importLibraryBundle(sourceRoot: string) {
-  const resolvedSourceRoot = path.resolve(sourceRoot);
-  const manifest = await readLibraryBundleManifest(resolvedSourceRoot);
-  const targetRoot = await resolveUniqueManagedLibraryRoot(manifest.libraryName || path.basename(resolvedSourceRoot));
-  await copyLibraryBundle(resolvedSourceRoot, targetRoot);
-  return activateLibrary(targetRoot);
+  return withLibraryBundleRoot(sourceRoot, async (resolvedSourceRoot) => {
+    const manifest = await readLibraryBundleManifest(resolvedSourceRoot);
+    const targetRoot = await resolveUniqueManagedLibraryRoot(manifest.libraryName || path.basename(resolvedSourceRoot));
+    await copyLibrarySourceBundle(resolvedSourceRoot, targetRoot);
+    return activateLibrary(targetRoot);
+  });
 }
 
 export async function renameActiveLibrary(libraryName: string) {
@@ -360,7 +363,16 @@ export async function exportActiveLibraryPackage(destinationDir: string) {
   const summary = await getActiveLibrarySummary();
   const packageName = `${sanitizeDirectoryName(summary.manifest.libraryName || path.basename(summary.rootDir))}.icmlibrary`;
   const targetRoot = path.join(resolvedDestinationDir, packageName);
-  await copyLibraryBundle(summary.rootDir, targetRoot);
+  await writeCompressedLibraryPackage(summary.rootDir, targetRoot);
+  return { exported: true, sourceRoot: summary.rootDir, exportedRoot: targetRoot, manifest: summary.manifest, counts: summary.counts, format: "icmlibrary-zip-v1" };
+}
+
+export async function exportActiveLibraryDirectoryPackage(destinationDir: string) {
+  const resolvedDestinationDir = path.resolve(destinationDir);
+  await fs.mkdir(resolvedDestinationDir, { recursive: true });
+  const summary = await getActiveLibrarySummary();
+  const targetRoot = await resolveUniqueExportRoot(resolvedDestinationDir, `${summary.manifest.libraryName}.icmlibrary`);
+  await copyLibrarySourceBundle(summary.rootDir, targetRoot);
   return { exported: true, sourceRoot: summary.rootDir, exportedRoot: targetRoot, manifest: summary.manifest, counts: summary.counts, format: "icmlibrary-directory-v1" };
 }
 
@@ -405,4 +417,16 @@ export async function exportActiveLibrarySourceTo(destinationRoot: string) {
     await fs.rm(stagingRoot, { recursive: true, force: true }).catch(() => undefined);
     throw error;
   }
+}
+
+export async function exportActiveLibrary(destinationPath: string, format: "auto" | "compressed" | "directory" = "auto") {
+  const resolvedDestination = path.resolve(destinationPath);
+  const isRepositoryLibrary = await Promise.all([
+    pathExists(path.join(resolvedDestination, ".git")),
+    pathExists(path.join(resolvedDestination, "library.manifest.json")),
+  ]).then(([hasGit, hasManifest]) => hasGit && hasManifest);
+  if (isRepositoryLibrary) return exportActiveLibrarySourceTo(resolvedDestination);
+  return format === "directory"
+    ? exportActiveLibraryDirectoryPackage(resolvedDestination)
+    : exportActiveLibraryPackage(resolvedDestination);
 }
